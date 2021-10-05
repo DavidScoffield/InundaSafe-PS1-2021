@@ -12,6 +12,12 @@ from app.resources.api.issue import issue_api
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 
+# ----- Logger -----
+import logging
+
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+# ------------------
 
 load_dotenv()  # take environment variables from .env.
 
@@ -25,9 +31,7 @@ def create_app(environment="development"):
     app.config.from_object(config[env])
 
     # Configure db
-    # db.init_app(app)
-    app.config["SQLALCHEMY_DATABASE_URI"] = environ.get("BBDD")
-    db = SQLAlchemy(app)
+    db.init_app(app)
 
     # Server Side session
     app.config["SESSION_TYPE"] = "filesystem"

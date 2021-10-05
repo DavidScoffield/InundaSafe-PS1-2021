@@ -30,6 +30,7 @@ CREATE TABLE `permissions` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
+  KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -179,6 +180,7 @@ CREATE TABLE `users` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
@@ -205,9 +207,13 @@ CREATE TABLE `config` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `elements_quantity` int(5) NOT NULL DEFAULT 50,
   `order_by` varchar(25) NOT NULL DEFAULT 'asc',
-  `colors_id` int(11) unsigned NOT NULL,
+  `colors_id_public` int(11) unsigned NOT NULL,
+  `colors_id_private` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `config_ibfk_1` FOREIGN KEY (`colors_id`) REFERENCES `colors` (`id`)
+  KEY (`colors_id_public`),
+  KEY (`colors_id_private`),
+  CONSTRAINT `config_ibfk_1` FOREIGN KEY (`colors_id_public`) REFERENCES `colors` (`id`),
+  CONSTRAINT `config_ibfk_2` FOREIGN KEY (`colors_id_private`) REFERENCES `colors` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -237,6 +243,7 @@ CREATE TABLE `colors` (
   `color_4` varchar(15) NOT NULL,
   `color_5` varchar(15) NOT NULL,
   PRIMARY KEY (`id`)
+  KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -269,7 +276,9 @@ CREATE TABLE `meeting_point` (
   `state` varchar(100),
   `telephone` varchar(50),
   `email` varchar(150),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY (`id`),
+  KEY (`address`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -288,3 +297,24 @@ CREATE TABLE `meeting_point` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2021-10-02 14:47:23
+
+
+
+
+-- COMENTARIOS
+
+-- CREATE TABLE `users` (
+-- `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+-- `email` varchar(30) NOT NULL,
+-- `username` varchar(30) NOT NULL,
+-- `password` varchar(30) NOT NULL,
+-- `first_name` varchar(30) NOT NULL,
+-- `last_name` varchar(30) NOT NULL,
+-- `activo` tinyint(1) NOT NULL,
+-- `created_at` datetime DEFAULT NULL,
+-- `updated_at` datetime DEFAULT NULL,
+-- `Column1` varchar(100) DEFAULT NULL COMMENT 'sdfsdfsdf',
+-- PRIMARY KEY (`id`),
+-- UNIQUE KEY `email` (`email`),
+-- UNIQUE KEY `username` (`username`)
+-- ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1

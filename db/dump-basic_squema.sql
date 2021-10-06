@@ -197,13 +197,13 @@ INSERT INTO `users` VALUES (1,'admin@gmail.com','administrador','123123','Cosme'
 UNLOCK TABLES;
 
 --
--- Table structure for table `config`
+-- Table structure for table `configuration`
 --
 
-DROP TABLE IF EXISTS `config`;
+DROP TABLE IF EXISTS `configuration`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `config` (
+CREATE TABLE `configuration` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `elements_quantity` int(5) NOT NULL DEFAULT 50,
   `order_by` varchar(25) NOT NULL DEFAULT 'asc',
@@ -218,13 +218,13 @@ CREATE TABLE `config` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `config`
+-- Dumping data for table `configuration`
 --
 
-LOCK TABLES `config` WRITE;
-/*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'50', 'asc', 1, 2);
-/*!40000 ALTER TABLE `config` ENABLE KEYS */;
+LOCK TABLES `configuration` WRITE;
+/*!40000 ALTER TABLE `configuration` DISABLE KEYS */;
+INSERT INTO `configuration` VALUES (1,'50', 'asc', 1, 2);
+/*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
 

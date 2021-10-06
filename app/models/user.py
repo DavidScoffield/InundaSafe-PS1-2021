@@ -16,9 +16,31 @@ class User(db.Model):
     active = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime)
+    roles = db.relationship(
+        "Role",
+        secondary="user_has_roles",
+        lazy="subquery",
+        backref=db.backref("users", lazy=True),
+    )
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return "<User %r>" % self.username
+
+    def __init__(
+        self,
+        email: str = None,
+        username: str = None,
+        password: str = None,
+        first_name: str = None,
+        last_name: str = None,
+        active: int = None,
+    ):
+        self.email = email
+        self.username = username
+        self.password = password
+        self.first_name = first_name
+        self.last_name = last_name
+        self.active = active
 
 
 # class User(object):
@@ -53,4 +75,4 @@ class User(db.Model):
 #         cursor = conn.cursor()
 #         cursor.execute(sql, (email, password))
 
-#         return cursor.fetchone()
+# return cursor.fetchone()

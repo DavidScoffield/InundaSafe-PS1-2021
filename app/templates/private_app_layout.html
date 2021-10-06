@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block head %}
+
+{% block title %}
+Private App
+{% endblock %}
+
+{% endblock %}
+
+{% block navbar %}
+
+<nav class="navegation-menu">
+  <ul>
+    <li><a href="#">Registrar administrador</a></li>          <!-- {{url_for('register_admin')}} -->
+    <li><a href="#">Configuración del sistema</a></li>        <!-- {{url_for('configuration')}} -->
+    <li><a href="#">Administrar puntos de encuentro</a></li>  <!-- {{url_for('meeting_points_admin')}} -->
+    <li><a href="#">Mi perfil</a></li>                        <!-- {{url_for('my_profile')}} -->
+    <li><a href="#">Cerrar sesión</a></li>                    <!-- {{url_for('log_out')}} -->
+  </ul>
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+Private App content
+
+{% endblock %}
+
+{% block footer %}
+
+Private App footer
+
+{% endblock %}

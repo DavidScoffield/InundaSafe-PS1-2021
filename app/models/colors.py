@@ -16,3 +16,10 @@ class Color(db.Model):
 
     def __repr__(self):
         return '<Color %r>' % self.name
+
+    def __init__(self, color_1: str = None,color_2: str = None,color_3: str = None,color_4: str = None,color_5: str = None):
+        self.color_1 = color_1
+        self.color_2 = color_2
+        self.color_3 = color_3
+        self.color_4 = color_4
+        self.color_5 = color_5

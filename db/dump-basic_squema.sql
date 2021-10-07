@@ -135,13 +135,13 @@ INSERT INTO `roles` VALUES (1,'rol_administrador'),(2,'rol_operador');
 UNLOCK TABLES;
 
 --
--- Table structure for table `user_has_role`
+-- Table structure for table `user_has_roles`
 --
 
-DROP TABLE IF EXISTS `user_has_role`;
+DROP TABLE IF EXISTS `user_has_roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_has_role` (
+CREATE TABLE `user_has_roles` (
   `user_id` int(11) unsigned NOT NULL,
   `role_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`user_id`,`role_id`),
@@ -153,13 +153,13 @@ CREATE TABLE `user_has_role` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_has_role`
+-- Dumping data for table `user_has_roles`
 --
 
-LOCK TABLES `user_has_role` WRITE;
-/*!40000 ALTER TABLE `user_has_role` DISABLE KEYS */;
-INSERT INTO `user_has_role` VALUES (1,1),(2,2),(3,2);
-/*!40000 ALTER TABLE `user_has_role` ENABLE KEYS */;
+LOCK TABLES `user_has_roles` WRITE;
+/*!40000 ALTER TABLE `user_has_roles` DISABLE KEYS */;
+INSERT INTO `user_has_roles` VALUES (1,1),(2,2),(3,2);
+/*!40000 ALTER TABLE `user_has_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

@@ -15,9 +15,16 @@ class Color(db.Model):
     color_5 = db.Column(db.String(15), nullable=False)
 
     def __repr__(self):
-        return '<Color %r>' % self.name
+        return "<Color %r>" % self.id
 
-    def __init__(self, color_1: str = None,color_2: str = None,color_3: str = None,color_4: str = None,color_5: str = None):
+    def __init__(
+        self,
+        color_1: str = None,
+        color_2: str = None,
+        color_3: str = None,
+        color_4: str = None,
+        color_5: str = None,
+    ):
         self.color_1 = color_1
         self.color_2 = color_2
         self.color_3 = color_3

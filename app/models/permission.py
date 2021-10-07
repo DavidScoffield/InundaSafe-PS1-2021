@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from app.db import db
 
 
 class Permission(db.Model):

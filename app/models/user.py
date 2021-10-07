@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from app.db import db
+from app.models.user_has_roles import user_has_roles
 
 
 class User(db.Model):

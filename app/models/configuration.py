@@ -13,14 +13,14 @@ class Configuration(db.Model):
     colors_id_public = db.Column(
         db.Integer, db.ForeignKey("colors.id"), nullable=False, default="asc"
     )
-    colors_public = db.relationship("Color")
+    colors_public = db.relationship("Color", foreign_keys=[colors_id_public])
     colors_id_private = db.Column(
         db.Integer, db.ForeignKey("colors.id"), nullable=False, default="asc"
     )
-    colors_private = db.relationship("Color")
+    colors_private = db.relationship("Color", foreign_keys=[colors_id_private])
 
     def __repr__(self):
-        return "<Configuration %r>" % self.name
+        return "<Configuration %r>" % self.id
 
     def __init__(
         self,

@@ -17,10 +17,10 @@ from app.helpers.pruebas import modelsTest
 
 
 # ----- Logger -----
-# import logging
+import logging
 
-# logging.basicConfig()
-# logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+logging.basicConfig()
+logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 # ------------------
 
 load_dotenv()  # take environment variables from .env.

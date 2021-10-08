@@ -8,7 +8,7 @@ from app import db
 
 # from app.resources import issue
 # from app.resources import user
-# from app.resources import auth
+from app.resources import auth
 # from app.resources.api.issue import issue_api
 from app.helpers import handler
 from app.helpers import auth as helper_auth
@@ -45,11 +45,11 @@ def create_app(environment="development"):
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
 
     # Autenticación
-    # app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
+    app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
     # app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
-    # app.add_url_rule(
-    #     "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
-    # )
+    app.add_url_rule(
+         "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
+    )
 
     # # Rutas de Consultas
     # app.add_url_rule("/consultas", "issue_index", issue.index)
@@ -64,7 +64,7 @@ def create_app(environment="development"):
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
-        modelsTest()
+        #modelsTest()
         return render_template("home.html")
 
     # Rutas de API-REST (usando Blueprints)

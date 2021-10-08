@@ -29,7 +29,8 @@ DROP TABLE IF EXISTS `permissions`;
 CREATE TABLE `permissions` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -134,13 +135,13 @@ INSERT INTO `roles` VALUES (1,'rol_administrador'),(2,'rol_operador');
 UNLOCK TABLES;
 
 --
--- Table structure for table `user_has_role`
+-- Table structure for table `user_has_roles`
 --
 
-DROP TABLE IF EXISTS `user_has_role`;
+DROP TABLE IF EXISTS `user_has_roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_has_role` (
+CREATE TABLE `user_has_roles` (
   `user_id` int(11) unsigned NOT NULL,
   `role_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`user_id`,`role_id`),
@@ -152,13 +153,13 @@ CREATE TABLE `user_has_role` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_has_role`
+-- Dumping data for table `user_has_roles`
 --
 
-LOCK TABLES `user_has_role` WRITE;
-/*!40000 ALTER TABLE `user_has_role` DISABLE KEYS */;
-INSERT INTO `user_has_role` VALUES (1,1),(2,2),(3,2);
-/*!40000 ALTER TABLE `user_has_role` ENABLE KEYS */;
+LOCK TABLES `user_has_roles` WRITE;
+/*!40000 ALTER TABLE `user_has_roles` DISABLE KEYS */;
+INSERT INTO `user_has_roles` VALUES (1,1),(2,2),(3,2);
+/*!40000 ALTER TABLE `user_has_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -170,15 +171,16 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(30) NOT NULL,
-  `username` varchar(30) NOT NULL,
-  `password` varchar(30) NOT NULL,
-  `first_name` varchar(30) NOT NULL,
-  `last_name` varchar(30) NOT NULL,
-  `activo` tinyint(1) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `email` varchar(150) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
@@ -195,30 +197,34 @@ INSERT INTO `users` VALUES (1,'admin@gmail.com','administrador','123123','Cosme'
 UNLOCK TABLES;
 
 --
--- Table structure for table `config`
+-- Table structure for table `configuration`
 --
 
-DROP TABLE IF EXISTS `config`;
+DROP TABLE IF EXISTS `configuration`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `config` (
+CREATE TABLE `configuration` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `elements_quantity` int(5) NOT NULL DEFAULT 50,
   `order_by` varchar(25) NOT NULL DEFAULT 'asc',
-  `colors_id` int(11) unsigned NOT NULL,
+  `colors_id_public` int(11) unsigned NOT NULL,
+  `colors_id_private` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `config_ibfk_1` FOREIGN KEY (`colors_id`) REFERENCES `colors` (`id`)
+  KEY (`colors_id_public`),
+  KEY (`colors_id_private`),
+  CONSTRAINT `config_ibfk_1` FOREIGN KEY (`colors_id_public`) REFERENCES `colors` (`id`),
+  CONSTRAINT `config_ibfk_2` FOREIGN KEY (`colors_id_private`) REFERENCES `colors` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `config`
+-- Dumping data for table `configuration`
 --
 
-LOCK TABLES `config` WRITE;
-/*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'50', 'asc', 1);
-/*!40000 ALTER TABLE `config` ENABLE KEYS */;
+LOCK TABLES `configuration` WRITE;
+/*!40000 ALTER TABLE `configuration` DISABLE KEYS */;
+INSERT INTO `configuration` VALUES (1,'50', 'asc', 1, 2);
+/*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
@@ -236,7 +242,8 @@ CREATE TABLE `colors` (
   `color_3` varchar(15) NOT NULL,
   `color_4` varchar(15) NOT NULL,
   `color_5` varchar(15) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -267,9 +274,11 @@ CREATE TABLE `meeting_point` (
   `coor_X` varchar(100),
   `coor_Y` varchar(100),
   `state` varchar(100),
-  `telephone` varchar(100),
-  `email` varchar(100),
-  PRIMARY KEY (`id`)
+  `telephone` varchar(50),
+  `email` varchar(150),
+  PRIMARY KEY (`id`),
+  KEY (`id`),
+  KEY (`address`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -288,3 +297,24 @@ CREATE TABLE `meeting_point` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2021-10-02 14:47:23
+
+
+
+
+-- COMENTARIOS
+
+-- CREATE TABLE `users` (
+-- `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+-- `email` varchar(30) NOT NULL,
+-- `username` varchar(30) NOT NULL,
+-- `password` varchar(30) NOT NULL,
+-- `first_name` varchar(30) NOT NULL,
+-- `last_name` varchar(30) NOT NULL,
+-- `activo` tinyint(1) NOT NULL,
+-- `created_at` datetime DEFAULT NULL,
+-- `updated_at` datetime DEFAULT NULL,
+-- `Column1` varchar(100) DEFAULT NULL COMMENT 'sdfsdfsdf',
+-- PRIMARY KEY (`id`),
+-- UNIQUE KEY `email` (`email`),
+-- UNIQUE KEY `username` (`username`)
+-- ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1

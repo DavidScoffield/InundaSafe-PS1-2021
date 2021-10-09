@@ -2,7 +2,18 @@
 <html lang="es">
   <head>
     {% block head %}
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}Inundasafe{% endblock %}</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-white.ico') }}">
+
+
+    {% block styles %}
+    {{ bootstrap.load_css() }}
+    {% endblock %}
+    
     {% endblock %}
   </head>
   <body>
@@ -18,5 +29,10 @@
       {% block footer %}
       {% endblock %}
     </footer>
+
+    {% block scripts %}
+      <!-- Optional JavaScript -->
+      {{ bootstrap.load_js() }}
+    {% endblock %}
   </body>
 </html>

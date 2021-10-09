@@ -7,7 +7,7 @@ from config import config
 from app import db
 
 # from app.resources import issue
-# from app.resources import user
+from app.resources import user
 from app.resources import auth
 # from app.resources.api.issue import issue_api
 from app.helpers import handler
@@ -57,7 +57,7 @@ def create_app(environment="development"):
     # app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
 
     # # Rutas de Usuarios
-    # app.add_url_rule("/usuarios", "user_index", user.index)
+    app.add_url_rule("/usuarios", "user_index", user.index)
     # app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
 

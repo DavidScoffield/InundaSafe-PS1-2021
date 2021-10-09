@@ -4,10 +4,25 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>usuarios</h1>
+  <h1>Usuarios</h1>
   {% for user in users %}
-  <li>{{ user.email }} - {{ user.first_name }} - {{ user.last_name }} - {{ user.password }}</li>
+  <li>
+      {% for rol in user.roles %}
+        {{rol.name}}
+      {% endfor %} -
+      {{ user.email }} - 
+      {{ user.first_name }} 
+      {{ user.last_name }} - 
+      {% if user.active == 1 %} 
+        Activo, <button class="link">Bloquear</button>
+      {% else %} 
+        Bloqueado, <button class="link">Desbloquear</button>
+      {% endif %}
+  </li>
   {% endfor %}
-  <a href="{{ url_for('home') }}" class="link">Volver</a>
-  <a href="{{ url_for('user_new') }}" class="link">Nuevo</a>
+  <a href="#" class="link">Volver</a>      
+  <a href="#" class="link">Nuevo</a>     
 {% endblock %}
+
+<!--{{ url_for('home') }}-->
+<!--{{ url_for('user_new') }}-->

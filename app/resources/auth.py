@@ -19,6 +19,14 @@ def authenticate():
     if not user:
         flash("Usuario o clave incorrecto.")
         return redirect(url_for("auth_login"))
+    
+    if user.active == 0:
+        flash("El usuario esta bloqueado")
+        return redirect(url_for("auth_login"))
+
+    #for rol in user.roles:
+
+        #print(rol.permissions, flush=True)
 
     session["user"] = user.id
     flash("La sesión se inició correctamente.")

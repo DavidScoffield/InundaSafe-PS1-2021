@@ -41,6 +41,9 @@ class User(db.Model):
         self.last_name = last_name
         self.active = active
 
+    @classmethod
+    def find_by_email_and_pass(cls, email, password):
+         return User.query.filter(User.email==email and User.password==password).first()
 
 # class User(object):
 #     @classmethod

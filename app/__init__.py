@@ -17,10 +17,10 @@ from app.helpers.pruebas import modelsTest
 
 
 # ----- Logger -----
-import logging
+#import logging
 
-logging.basicConfig()
-logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+#logging.basicConfig()
+#logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 # ------------------
 
 load_dotenv()  # take environment variables from .env.
@@ -46,7 +46,7 @@ def create_app(environment="development"):
 
     # Autenticación
     app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
-    # app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
+    app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
     app.add_url_rule(
          "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
     )

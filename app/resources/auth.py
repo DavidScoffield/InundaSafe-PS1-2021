@@ -13,17 +13,16 @@ def authenticate():
     params = request.form
 
     #user = User.find_by_email_and_pass(conn, params["email"], params["password"])
-    user = User.query.filter(User.email==params["email"] and User.password==params["password"]) # first() devuelve un scalar
-
-    print(user, flush=True)
-
+    #user = User.query.filter(User.email==params["email"] and User.password==params["password"]).first()
+    user = User.find_by_email_and_pass(params["email"], params["password"])
+    
     if not user:
         flash("Usuario o clave incorrecto.")
         return redirect(url_for("auth_login"))
 
-    session["user"] = params["email"]               # uso params[email] pq user es un scalar.
+    session["user"] = user.id
     flash("La sesión se inició correctamente.")
-    print(session, flush=True)
+
     return redirect(url_for("home"))
 
 

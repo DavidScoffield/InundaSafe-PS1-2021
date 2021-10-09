@@ -2,6 +2,7 @@ from os import path, environ
 from flask import Flask, render_template, g, Blueprint
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
 from dotenv import load_dotenv
 from config import config
 from app import db
@@ -10,6 +11,7 @@ from app import db
 # from app.resources import user
 # from app.resources import auth
 # from app.resources.api.issue import issue_api
+from app.resources.config import config_routes
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 
@@ -17,10 +19,10 @@ from app.helpers.pruebas import modelsTest
 
 
 # ----- Logger -----
-import logging
+# import logging
 
-logging.basicConfig()
-logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+# logging.basicConfig()
+# logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 # ------------------
 
 load_dotenv()  # take environment variables from .env.
@@ -29,6 +31,9 @@ load_dotenv()  # take environment variables from .env.
 def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
+
+    # Setea bootstrap para la aplicacion
+    bootstrap = Bootstrap(app)
 
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)
@@ -66,6 +71,12 @@ def create_app(environment="development"):
     def home():
         modelsTest()
         return render_template("home.html")
+
+    # Rutas pagina configuracion(usando Blueprints)
+    config_route_base = Blueprint("config", __name__, url_prefix="/config")
+    config_route_base.register_blueprint(config_routes)
+
+    app.register_blueprint(config_route_base)
 
     # Rutas de API-REST (usando Blueprints)
     # api = Blueprint("api", __name__, url_prefix="/api")

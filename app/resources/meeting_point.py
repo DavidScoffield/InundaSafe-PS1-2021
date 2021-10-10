@@ -10,7 +10,7 @@ def new():
     if request.method == "POST":
 
         try:
-            MeetingPoint.meeting_point_new(**request.form)
+            MeetingPoint.new(**request.form)
         except:
             flash("El nombre y la dirección del punto de encuentro son campos obligatorios")
         else:

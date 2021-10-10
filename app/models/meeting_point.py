@@ -36,7 +36,7 @@ class MeetingPoint(db.Model):
         self.email = email
     
     @classmethod
-    def meeting_point_new(cls, **args):
+    def new(cls, **args):
         "Recibe los parámetros del formulario, crea el meeting point y lo guarda en la base de datos"
         
         args["name"] = args["name"].strip()

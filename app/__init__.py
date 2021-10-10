@@ -8,8 +8,8 @@ from config import config
 from app import db
 
 # from app.resources import issue
-# from app.resources import user
-# from app.resources import auth
+from app.resources import user
+from app.resources import auth
 # from app.resources.api.issue import issue_api
 from app.resources.config import config_routes
 from app.helpers import handler
@@ -20,10 +20,10 @@ from app.helpers.pruebas import modelsTest
 
 
 # ----- Logger -----
-# import logging
+#import logging
 
-# logging.basicConfig()
-# logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+#logging.basicConfig()
+#logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 # ------------------
 
 load_dotenv()  # take environment variables from .env.
@@ -52,11 +52,11 @@ def create_app(environment="development"):
     app.jinja_env.globals.update(get_actual_config=helper_config.actual_config)
 
     # Autenticación
-    # app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
-    # app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
-    # app.add_url_rule(
-    #     "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
-    # )
+    app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
+    app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
+    app.add_url_rule(
+         "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
+    )
 
     # # Rutas de Consultas
     # app.add_url_rule("/consultas", "issue_index", issue.index)
@@ -64,14 +64,16 @@ def create_app(environment="development"):
     # app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
 
     # # Rutas de Usuarios
-    # app.add_url_rule("/usuarios", "user_index", user.index)
-    # app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
-    # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
+    app.add_url_rule("/usuarios", "user_index", user.index)
+    app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
+    app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
+
+    app.add_url_rule("/home_privada", "home_private", auth.login_private)
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
-        modelsTest()
+        #modelsTest()
         return render_template("home.html")
 
     # Rutas pagina configuracion(usando Blueprints)

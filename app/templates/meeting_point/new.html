@@ -1,0 +1,42 @@
+{% extends "private_app_layout.html" %}
+
+{% block head %}
+
+{% block title %} Alta punto de encuentro {% endblock %}
+
+{% endblock %}
+
+{% block navbar %} {{ super() }} {% endblock %}
+
+{% block content %}
+
+<form method="POST">    
+    <label for="name">Nombre:</label><br>
+    <input type="text" id="name" name="name">
+
+    <label for="address">Dirección:</label>
+    <input type="text" id="address" name="address">
+
+    <label for="coor_X">Coordenada X:</label>
+    <input type="text" id="coor_X" name="coor_X">
+
+    <label for="coor_Y">Coordenada Y:</label>
+    <input type="text" id="coor_Y" name="coor_Y">
+
+    <label for="telephone">Teléfono:</label>
+    <input type="text" id="telephone" name="telephone">
+
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email">
+
+    <label for="state">Estado</label>
+    <select name="state" id="state">
+        <option value="publicated">publicado</option>
+        <option value="despublicated">despublicado</option>
+    </select>
+    <input type="submit" value="Crear">
+</form>
+
+{% endblock %}
+
+{% block footer %} {% endblock %}

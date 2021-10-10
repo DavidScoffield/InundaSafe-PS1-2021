@@ -31,8 +31,10 @@ def authenticate():
     session["user"] = user.id
     flash("La sesión se inició correctamente.")
 
-    return redirect(url_for("home"))
+    return redirect(url_for("home_private"))
 
+def login_private():
+    return render_template("home_private.html")
 
 def logout():
     del session["user"]

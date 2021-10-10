@@ -1,4 +1,4 @@
-from flask import redirect, render_template, request, url_for, session, abort
+from flask import redirect, render_template, request, url_for, session, abort, flash
 #from app.db import connection
 from app.models.user import User
 from app.helpers.auth import authenticated
@@ -26,6 +26,21 @@ def create():
     if not authenticated(session):
         abort(401)
 
-    conn = connection()
-    User.create(conn, request.form)
+    #conn = connection()
+    #User.create(conn, request.form)
+    params = request.form
+
+    user = User.check_existing_email_or_username(params["email"], params["username"])
+
+
+    if user.email == params["email"]:
+        flash("Ya existe un usuario con ese email")
+        return redirect(url_for("user_new"))
+
+    if user.username == params["username"]:
+        flash("Ya existe un usuario con ese nombre de usuario")
+        return redirect(url_for("user_new"))
+
+        #ACA SE INSERTA AL USUARIO EN LA BD
+
     return redirect(url_for("user_index"))

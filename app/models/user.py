@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from app.db import db
 from app.models.user_has_roles import user_has_roles
+from sqlalchemy import or_
 
 
 class User(db.Model):
@@ -44,6 +45,10 @@ class User(db.Model):
     @classmethod
     def find_by_email_and_pass(cls, email, password):
         return User.query.filter(User.email==email and User.password==password).first()
+
+    @classmethod
+    def check_existing_email_or_username(cls, email, username):
+        return User.query.filter(or_(User.username==username, User.email==email)).first()
 
     @classmethod
     def find_all_users(cls):

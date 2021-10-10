@@ -14,6 +14,7 @@ from app import db
 from app.resources.config import config_routes
 from app.helpers import handler
 from app.helpers import auth as helper_auth
+from app.helpers import config as helper_config
 
 from app.helpers.pruebas import modelsTest
 
@@ -48,6 +49,7 @@ def create_app(environment="development"):
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
+    app.jinja_env.globals.update(get_actual_config=helper_config.actual_config)
 
     # Autenticación
     # app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)

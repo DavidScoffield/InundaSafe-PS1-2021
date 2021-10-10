@@ -1,4 +1,3 @@
-
 from flask import redirect, render_template, request, url_for, abort, session, flash
 #from app.db import connection
 from app.models.user import User
@@ -24,11 +23,13 @@ def authenticate():
         flash("El usuario esta bloqueado")
         return redirect(url_for("auth_login"))
 
-    #for rol in user.roles:
-
-        #print(rol.permissions, flush=True)
+    permisos = []
+    for rol in user.roles:
+        for permiso in rol.permissions:
+            permisos.append(permiso.name)
 
     session["user"] = user.id
+    session["permissions"] = permisos
     flash("La sesión se inició correctamente.")
 
     return redirect(url_for("home_private"))

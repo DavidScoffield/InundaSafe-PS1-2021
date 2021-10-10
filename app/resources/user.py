@@ -2,10 +2,14 @@ from flask import redirect, render_template, request, url_for, session, abort, f
 #from app.db import connection
 from app.models.user import User
 from app.helpers.auth import authenticated
+from app.helpers.check_permission import check_permission
 
 # Protected resources
 def index():
     if not authenticated(session):
+        abort(401)
+
+    if (not check_permission("usuario_index")):
         abort(401)
 
     #conn = connection()

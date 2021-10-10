@@ -12,9 +12,13 @@ InundaSafe | Private App
 {% block navbar %}
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="d-flex align-items-center">
-    <img src="{{ url_for('static', filename='favicon.ico') }}" alt="Logo de la aplicación" style="width: 32px; height: 32px; margin-right: 5px;">
-    <a class="navbar-brand font-weight-bold" href="#">InundaSafe</a>
+  <div>
+    <a class="navbar-brand font-weight-bold d-flex align-items-center" href="{{url_for('home')}}">
+      <img src="{{ url_for('static', filename='favicon.ico') }}" alt="Logo de la aplicación" style="width: 32px; height: 32px; margin-right: 5px;">
+      <span>
+        InundaSafe
+      </span>
+    </a>
   </div>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -26,7 +30,7 @@ InundaSafe | Private App
         <a class="nav-link" href="#">Administrar usuarios</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Configuración</a>
+        <a class="nav-link" href="{{url_for('config_routes.index')}}">Configuración</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Puntos de encuentro</a>

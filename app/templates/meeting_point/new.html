@@ -10,6 +10,14 @@
 
 {% block content %}
 
+{% with messages = get_flashed_messages() %}
+
+    {% for message in messages %}
+        <p>{{message}}</p>
+    {% endfor %}
+
+{% endwith %} 
+
 <form method="POST">    
     <label for="name">Nombre:</label><br>
     <input type="text" id="name" name="name" required>

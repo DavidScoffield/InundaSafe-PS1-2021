@@ -5,8 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from config import config
 from app import db
-
-# from app.resources import issue
+from app.resources.meeting_point import meeting_point
 # from app.resources import user
 # from app.resources import auth
 # from app.resources.api.issue import issue_api
@@ -64,8 +63,10 @@ def create_app(environment="development"):
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
-        modelsTest()
+        #modelsTest()
         return render_template("home.html")
+    
+    app.register_blueprint(meeting_point)
 
     # Rutas de API-REST (usando Blueprints)
     # api = Blueprint("api", __name__, url_prefix="/api")

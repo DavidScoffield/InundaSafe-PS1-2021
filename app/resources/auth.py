@@ -12,14 +12,14 @@ def authenticate():
     email = params["email"]
     password = params["password"]
 
-    user = User.find_by_email_and_pass(email, password)
-    
-    if not user:
-        flash("Usuario o clave incorrecto.")
-        return redirect(url_for("auth_login"))
-    
     if(not email or not password):
         flash("Se deben completar todos los campos")
+        return redirect(url_for("auth_login"))
+
+    user = User.find_by_email_and_pass(email, password)
+
+    if not user:
+        flash("Usuario o clave incorrecto.")
         return redirect(url_for("auth_login"))
 
     if user.active == 0:

@@ -73,10 +73,9 @@ def create_app(environment="development"):
         return render_template("home.html")
 
     # Rutas pagina configuracion(usando Blueprints)
-    config_route_base = Blueprint("config", __name__, url_prefix="/config")
-    config_route_base.register_blueprint(config_routes)
-
-    app.register_blueprint(config_route_base)
+    # config_route_base = Blueprint("config_route", __name__, url_prefix="/config")
+    # config_route_base.register_blueprint(config_routes)
+    app.register_blueprint(config_routes)
 
     # Rutas de API-REST (usando Blueprints)
     # api = Blueprint("api", __name__, url_prefix="/api")

@@ -31,3 +31,7 @@ class Configuration(db.Model):
         self.order_by = order_by
         self.colors_id_public = colors_id_public
         self.colors_id_private = colors_id_private
+
+    @classmethod
+    def actual(cls):
+        return Configuration.query.all()[0]

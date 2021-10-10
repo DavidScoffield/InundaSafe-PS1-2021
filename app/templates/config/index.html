@@ -1,0 +1,101 @@
+{% extends "private_app_layout.html" %} {% block title %}InundaSafe | Configuración{% endblock %} {%
+block head %} {{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='config.css') }}" />
+{% endblock %} {% block content %}
+
+<div class="container mx-auto py-4">
+  <!-- TITULO -->
+  <div class="d-flex align-items-center">
+    <a href="{{url_for('home')}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Configuración del Sistema</h1>
+  </div>
+  <!-- BODY CONFIG -->
+  <form method="post" class="row mt-4">
+    <!-- PARTE IZQ -->
+    <div class="col mb-3">
+      <!-- LISTADOS -->
+      <div>
+        <p class="font-weight-bold">Listados</p>
+      </div>
+      <div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <label class="m-0"> Cantidad de elementos por página </label>
+          <select type="range" class="rounded-sm">
+            {% for i in range(15,60) %} {% if i == config.elements_quantity %}
+            <option value="{{i}}" selected>{{i}}</option>
+            {% else %}
+            <option value="{{i}}">{{i}}</option>
+            {% endif %} {% endfor %}
+          </select>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <label class="m-0"> Criterio de ordenación </label>
+          <select type="range" class="rounded-sm">
+            <option value="asc"  {% if  config.order_by == 'asc' %} 
+            selected 
+            {% endif %}
+            >Ascendente</option>
+            <option value="desc"  {% if config.order_by == 'desc' %} 
+            selected 
+            {% endif %}
+            >Descendiente</option>
+          </select>
+        </div>
+        {#
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <label class="m-0"> Valores límites para alertas </label>
+          <select type="range" class="rounded-sm">
+            {% for i in range(0,10) %}
+            <option value="{{i}}">{{i}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        #}
+      </div>
+    </div>
+
+    <!-- PARTE DER -->
+    <div class="col d-flex flex-column align-items-center">
+      <!-- PALETA COLORES PRIV -->
+      <div class="p-3 mb-4 card">
+        <div class="d-flex flex-column align-items-center">
+          <p class="mb-0">Paleta de colores</p>
+          <p>(Aplicación pública)</p>
+        </div>
+        <div class="palettes">
+          {% for color in colors %}
+          <div class="palette-color">
+            <div class="color" style="background-color: {{color.color_1}}"></div>
+            <div class="color" style="background-color: {{color.color_2}}"></div>
+            <div class="color" style="background-color: {{color.color_4}}"></div>
+            <div class="color" style="background-color: {{color.color_3}}"></div>
+            <div class="color" style="background-color: {{color.color_5}}"></div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <!-- PALETA COLORES PUBL -->
+      <div class="p-3 card">
+        <div class="d-flex flex-column align-items-center">
+          <p class="mb-0">Paleta de colores</p>
+          <p>(Aplicación privada)</p>
+        </div>
+        <div class="palettes">
+          {% for color in colors %}
+          <div class="palette-color">
+            <div class="color" style="background-color: {{color.color_1}}"></div>
+            <div class="color" style="background-color: {{color.color_2}}"></div>
+            <div class="color" style="background-color: {{color.color_4}}"></div>
+            <div class="color" style="background-color: {{color.color_3}}"></div>
+            <div class="color" style="background-color: {{color.color_5}}"></div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

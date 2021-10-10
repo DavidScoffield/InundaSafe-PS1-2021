@@ -1,6 +1,6 @@
 .card {
   border-radius: 15px;
-  background-color: greenyellow;
+  /* background-color: greenyellow; */
 }
 
 .palettes {
@@ -8,27 +8,40 @@
   overflow-y: hidden;
   overflow-x: auto;
   white-space: nowrap;
+  margin-top: 10px;
 }
 
 .palette-color {
-  height: 100px;
+  /* height: 100px; */
   min-width: 100px;
-  border-radius: 50px;
+  border-radius: 15px;
   margin: 8px;
   display: inline-block;
+  cursor: pointer;
 }
 
 .color {
   height: 20px;
-  background-color: red;
 }
 
-.palettes::-webkit-scrollbar {
+.input-radio {
+  visibility: hidden;
+}
+
+.input-radio:checked + .palette-color {
+  box-shadow: 0px 0px 15px 8px #00c3ff83;
+}
+
+/* SCROLL STYLES */
+.palettes::-webkit-scrollbar,
+.select::-webkit-scrollbar {
   -webkit-appearance: none;
 }
 
 .palettes::-webkit-scrollbar-button:increment,
-.palettes::-webkit-scrollbar-button {
+.palettes::-webkit-scrollbar-button,
+.select::-webkit-scrollbar-button:increment,
+.select::-webkit-scrollbar-button {
   display: none;
 }
 
@@ -36,13 +49,19 @@
   height: 10px;
 }
 
-.palettes::-webkit-scrollbar-thumb {
+.select::-webkit-scrollbar:vertical {
+  max-width: 6px;
+}
+
+.palettes::-webkit-scrollbar-thumb,
+.select::-webkit-scrollbar-thumb {
   background-color: #b0b0b0;
   border-radius: 20px;
   /* border: 2px solid #d8d8d8; */
 }
 
-.palettes::-webkit-scrollbar-track {
+.palettes::-webkit-scrollbar-track,
+.select::-webkit-scrollbar-track {
   border-radius: 10px;
-  background-color: #3f3f3f60;
+  background-color: #3f3f3f38;
 }

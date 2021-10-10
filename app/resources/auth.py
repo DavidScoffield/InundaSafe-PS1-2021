@@ -8,17 +8,20 @@ def login():
 
 
 def authenticate():
-    #conn = connection()
     params = request.form
+    email = params["email"]
+    password = params["password"]
 
-    #user = User.find_by_email_and_pass(conn, params["email"], params["password"])
-    #user = User.query.filter(User.email==params["email"] and User.password==params["password"]).first()
-    user = User.find_by_email_and_pass(params["email"], params["password"])
+    user = User.find_by_email_and_pass(email, password)
     
     if not user:
         flash("Usuario o clave incorrecto.")
         return redirect(url_for("auth_login"))
     
+    if(not email or not password):
+        flash("Se deben completar todos los campos")
+        return redirect(url_for("auth_login"))
+
     if user.active == 0:
         flash("El usuario esta bloqueado")
         return redirect(url_for("auth_login"))
@@ -27,6 +30,7 @@ def authenticate():
     for rol in user.roles:
         for permiso in rol.permissions:
             permisos.append(permiso.name)
+    permisos = set(permisos)
 
     session["user"] = user.id
     session["permissions"] = permisos

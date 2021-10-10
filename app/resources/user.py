@@ -23,6 +23,9 @@ def index():
 def new():
     if not authenticated(session):
         abort(401)
+    
+    if (not check_permission("usuario_show")):
+        abort(401)
 
     return render_template("user/new.html")
 
@@ -30,31 +33,44 @@ def new():
 def create():
     if not authenticated(session):
         abort(401)
+    
+    if (not check_permission("usuario_new")):
+        abort(401)
 
-    #conn = connection()
-    #User.create(conn, request.form)
     params = request.form.to_dict()
-    user = User.check_existing_email_or_username(params["email"], params["username"])
+    
+    first_name = params["first_name"]
+    last_name = params["last_name"]
+    username = params["username"]
+    email = params["email"]
+    password = params["password"]
+    state = request.form.get('state')
+    selectedRoles = request.form.getlist('rol')
+
+    if (not first_name or not last_name or not username or not email or not password or not state or not len(selectedRoles)):
+        flash("Se deben completar todos los campos")
+        return redirect(url_for("user_new"))
+
+    user = User.check_existing_email_or_username(email, username)
 
     if user:
-        if user.email == params["email"]:
+        if user.email == email:
             flash("Ya existe un usuario con ese email")
             return redirect(url_for("user_new"))
 
-        if user.username == params["username"]:
+        if user.username == username:
             flash("Ya existe un usuario con ese nombre de usuario")
             return redirect(url_for("user_new"))
 
-    if params["state"] == "activo": #depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
-        params["state"] = 1
+    if state == "activo": #depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
+        state = 1
     else:
-        params["state"] = 0
+        state = 0
     
-    new_user = User(params["email"], params["username"], params["password"], params["first_name"], params["last_name"], params["state"])
+    new_user = User(email, username, password, first_name, last_name, state)
     User.insert_user(new_user)   #inserto al usuario en la bd
 
-    roles = Role.find_roles_from_strings(request.form.getlist('rol')) #lista con los roles que va a tener el nuevo usuario
+    roles = Role.find_roles_from_strings(selectedRoles) #lista con los roles que va a tener el nuevo usuario
     Role.insert_rol(roles, new_user)  #inserto los roles en la tabla user_has_roles
      
-    #FALTA VALIDAR CASOS BÁSICOS, COMO QUE NO SEA VACIO, ETC
     return redirect(url_for("user_index"))

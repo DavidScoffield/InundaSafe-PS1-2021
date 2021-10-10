@@ -1,5 +1,4 @@
 {% extends "layout.html" %}
-{% from 'bootstrap/nav.html' import render_nav_item %}
 
 {% block title %}
 InundaSafe | Private App
@@ -13,7 +12,7 @@ InundaSafe | Private App
 
 {% set bp = request.blueprint %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-gradient">
   <div>
     <a class="navbar-brand font-weight-bold d-flex align-items-center" href="{{url_for('home')}}">
       <img src="{{ url_for('static', filename='favicon.ico') }}" alt="Logo de la aplicación" style="width: 32px; height: 32px; margin-right: 5px;">
@@ -42,7 +41,7 @@ InundaSafe | Private App
       </li>
     </ul>
     <div class="btn-group">
-      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button type="button" class="btn button-gradient dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Perfil
       </button>
       <div class="dropdown-menu dropdown-menu-lg-right">

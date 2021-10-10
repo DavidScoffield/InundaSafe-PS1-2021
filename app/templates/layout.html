@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    {% set config_app = get_actual_config() %}
+    
     {% block head %}
     <title>{% block title %}Inundasafe{% endblock %}</title>
 
@@ -18,6 +20,18 @@
     {% block styles %}
     {{ bootstrap.load_css() }}
     {% endblock %}
+
+    <!-- COLORS APP -->
+    <style>
+      *{ 
+        --color-1: {{config_app.colors_private.color_1}};
+        --color-2: {{config_app.colors_private.color_2}};
+        --color-3: {{config_app.colors_private.color_3}};
+        --color-4: {{config_app.colors_private.color_4}};
+        --color-5: {{config_app.colors_private.color_5}};
+      }
+    </style>
+
     
     {% endblock %}
   </head>
@@ -26,7 +40,7 @@
       {% block navbar %}
       {% endblock %}
     </div>
-    <div>
+    <div class="mt-5">
       {% block content %}
       {% endblock %}
     </div>

@@ -1,6 +1,8 @@
 .card {
-  border-radius: 15px;
-  /* background-color: greenyellow; */
+  background: #f5fffd;
+  box-shadow: 29px 10px 78px rgba(57, 57, 57, 0.08);
+  border-radius: 20px;
+  background-color: var(--color-5);
 }
 
 .palettes {

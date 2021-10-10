@@ -11,6 +11,8 @@ InundaSafe | Private App
 
 {% block navbar %}
 
+{% set bp = request.blueprint %}
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div>
     <a class="navbar-brand font-weight-bold d-flex align-items-center" href="{{url_for('home')}}">
@@ -27,12 +29,15 @@ InundaSafe | Private App
   <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="#">Administrar usuarios</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{{url_for('config_routes.index')}}">Configuración</a>
-      </li>
-      <li class="nav-item">
+        <!-- <li class="nav-item {% if bp == 'admin_user' %} active {% endif %} "> -->
+          <a class="nav-link" href="#">Administrar usuarios</a>
+        </li>
+        <!-- <li class="nav-item"> -->
+          <li class="nav-item {% if bp == 'config_routes' %} active {% endif %} ">
+            <a class="nav-link" href="{{url_for('config_routes.index')}}">Configuración</a>
+          </li>
+          <li class="nav-item">
+        <!-- <li class="nav-item {% if bp == 'meeting_point' %} active {% endif %} "> -->
         <a class="nav-link" href="#">Puntos de encuentro</a>
       </li>
     </ul>

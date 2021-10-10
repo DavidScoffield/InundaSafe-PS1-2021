@@ -237,11 +237,11 @@ DROP TABLE IF EXISTS `colors`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `colors` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `color_1` varchar(15) NOT NULL,
-  `color_2` varchar(15) NOT NULL,
-  `color_3` varchar(15) NOT NULL,
-  `color_4` varchar(15) NOT NULL,
-  `color_5` varchar(15) NOT NULL,
+  `color_1` varchar(15) NOT NULL COMMENT 'Textos con color, gradient(der) botones',
+  `color_2` varchar(15) NOT NULL COMMENT 'gradient(izq) botones',
+  `color_3` varchar(15) NOT NULL COMMENT 'background header',
+  `color_4` varchar(15) NOT NULL COMMENT 'ilustraciones',
+  `color_5` varchar(15) NOT NULL COMMENT 'background app',
   PRIMARY KEY (`id`),
   KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
@@ -256,7 +256,10 @@ LOCK TABLES `colors` WRITE;
 INSERT INTO `colors` VALUES 
   (1,'#00D9F5','#00F5A0','#C6FCE5','#63FFC2','#F5FFFD'), 
   (2,'#F1BD04','#F50F00','#FCE6C6','#FFAE63','#FFFAF5'),
-  (3,'#0463F1','#F500CE','#C6D8FC','#637CFF','#F5F8FF');
+  (3,'#0463F1','#F500CE','#C6D8FC','#637CFF','#F5F8FF'),
+  (4,'#F50000','#0045F5','#FCC6D3','#8D1CD2','#FFF5F5'), 
+  (5,'#EFA8E4','#34E8FF','#F8E1F4','#9CD7F6','#FFF7FA'),
+  (6,'#B8DFD8','#FFB319','#FFF0C9','#F8CC32','#F3F3F0');
 /*!40000 ALTER TABLE `colors` ENABLE KEYS */;
 UNLOCK TABLES;
 

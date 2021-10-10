@@ -2,6 +2,7 @@
 from app.db import db
 from app.models.user_has_roles import user_has_roles
 from sqlalchemy import or_
+import datetime
 
 
 class User(db.Model):
@@ -14,8 +15,8 @@ class User(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime)
-    updated_at = db.Column(db.DateTime)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow) #se modifico para que se guarde la fecha en la bd
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     roles = db.relationship(
         "Role",
         secondary="user_has_roles",
@@ -49,6 +50,11 @@ class User(db.Model):
     @classmethod
     def check_existing_email_or_username(cls, email, username):
         return User.query.filter(or_(User.username==username, User.email==email)).first()
+
+    @classmethod
+    def insert_user(cls, new_user):
+        db.session.add(new_user)
+        db.session.commit()   
 
     @classmethod
     def find_all_users(cls):

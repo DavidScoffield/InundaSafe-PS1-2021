@@ -1,0 +1,48 @@
+.card {
+  border-radius: 15px;
+  background-color: greenyellow;
+}
+
+.palettes {
+  max-width: 300px;
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.palette-color {
+  height: 100px;
+  min-width: 100px;
+  border-radius: 50px;
+  margin: 8px;
+  display: inline-block;
+}
+
+.color {
+  height: 20px;
+  background-color: red;
+}
+
+.palettes::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+.palettes::-webkit-scrollbar-button:increment,
+.palettes::-webkit-scrollbar-button {
+  display: none;
+}
+
+.palettes::-webkit-scrollbar:horizontal {
+  height: 10px;
+}
+
+.palettes::-webkit-scrollbar-thumb {
+  background-color: #b0b0b0;
+  border-radius: 20px;
+  /* border: 2px solid #d8d8d8; */
+}
+
+.palettes::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #3f3f3f60;
+}

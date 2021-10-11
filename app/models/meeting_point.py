@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from app.db import db
 
-
 class MeetingPoint(db.Model):
 
     __tablename__ = "meeting_point"
@@ -34,3 +33,11 @@ class MeetingPoint(db.Model):
         self.state = state
         self.telephone = telephone
         self.email = email
+    
+    @classmethod
+    def new(cls, **args):
+        "Recibe los parámetros del formulario, crea el meeting point y lo guarda en la base de datos"
+
+        meeting_point = MeetingPoint(**args)
+        db.session.add(meeting_point)
+        db.session.commit()

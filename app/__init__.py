@@ -6,6 +6,7 @@ from flask_bootstrap import Bootstrap
 from dotenv import load_dotenv
 from config import config
 from app import db
+from app.resources.meeting_point import meeting_point
 from app.resources import user
 from app.resources import auth
 from app.resources.config import config_routes
@@ -60,14 +61,19 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
     )
-
+    
     # Rutas de Usuarios
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
 
+    app.add_url_rule("/home_privada", "home_private", auth.login_private)
+
     # Rutas pagina configuracion(usando Blueprints)
     app.register_blueprint(config_routes)
+
+    # Rutas página meeting points (usando Blueprints)
+    app.register_blueprint(meeting_point)
 
     # Handlers
     app.register_error_handler(404, handler.not_found_error)

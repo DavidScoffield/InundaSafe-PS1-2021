@@ -1,5 +1,4 @@
 from flask import redirect, render_template, request, url_for, abort, session, flash
-#from app.db import connection
 from app.models.user import User
 
 
@@ -13,12 +12,12 @@ def authenticate():
     password = params["password"]
 
     user = User.find_by_email_and_pass(email, password)
-    
+
     if not user:
         flash("Usuario o clave incorrecto.")
         return redirect(url_for("auth_login"))
-    
-    if(not email or not password):
+
+    if not email or not password:
         flash("Se deben completar todos los campos")
         return redirect(url_for("auth_login"))
 
@@ -38,8 +37,10 @@ def authenticate():
 
     return redirect(url_for("home_private"))
 
+
 def login_private():
     return render_template("home_private.html")
+
 
 def logout():
     del session["user"]

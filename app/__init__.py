@@ -12,6 +12,7 @@ from app.resources.config import config_routes
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.helpers import config as helper_config
+from app.helpers.importModels import *
 
 
 # ----- Logger -----

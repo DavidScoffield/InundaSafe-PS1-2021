@@ -1,50 +1,37 @@
-{% extends "private_app_layout.html" %}
+{% from 'bootstrap/form.html' import render_form %}
 
-{% block head %}
+{% extends "private_app_layout.html" %} 
 
-{% block title %} Alta punto de encuentro {% endblock %}
+{% block title %} InundaSafe | Alta punto de encuentro {% endblock %} 
 
-{% endblock %}
+{% block head %} 
 
-{% block navbar %} {{ super() }} {% endblock %}
+{{ super() }}
+
+
+{% endblock %} 
 
 {% block content %}
+<br>
+<div class="container mx-auto py-4">
+<div class="d-flex align-items-center">
+    <a href="{{url_for('home')}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Alta de punto de encuentro</h1>
+  </div>
 
 {% with messages = get_flashed_messages() %}
-
+<br>
     {% for message in messages %}
         <p>{{message}}</p>
     {% endfor %}
 
 {% endwith %} 
 
-<form method="POST">    
-    <label for="name">Nombre:</label><br>
-    <input type="text" id="name" name="name" required>
-
-    <label for="address">Dirección:</label>
-    <input type="text" id="address" name="address" required>
-
-    <label for="coor_X">Coordenada X:</label>
-    <input type="text" id="coor_X" name="coor_X">
-
-    <label for="coor_Y">Coordenada Y:</label>
-    <input type="text" id="coor_Y" name="coor_Y">
-
-    <label for="telephone">Teléfono:</label>
-    <input type="tel" id="telephone" name="telephone">
-
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email">
-
-    <label for="state">Estado</label>
-    <select name="state" id="state">
-        <option value="publicated">publicado</option>
-        <option value="despublicated">despublicado</option>
-    </select>
-    <input type="submit" value="Crear">
+<form method="POST" action="{{url_for('meeting_point.new')}}">    
+    {{ render_form(form) }}
 </form>
 
+</div>
 {% endblock %}
-
-{% block footer %} {% endblock %}

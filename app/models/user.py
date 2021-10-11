@@ -49,6 +49,13 @@ class User(db.Model):
     def find_all_users(cls):
         return User.query.all()
 
+    @classmethod
+    def update_state(cls, user_id, new_state):
+        user = User.query.filter(User.id==user_id).first()
+        user.active = new_state
+        db.session.commit()
+
+
 # class User(object):
 #     @classmethod
 #     def all(cls, conn):

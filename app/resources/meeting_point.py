@@ -1,8 +1,10 @@
 from app.models.meeting_point import MeetingPoint
-from flask import render_template, Blueprint, request, flash, redirect, url_for
+from flask import render_template, Blueprint, request, flash, redirect, url_for, session, abort
 from app.db import db
 from wtforms import SubmitField, validators, IntegerField, StringField, SelectField
 from flask_wtf import Form
+from app.helpers.auth import authenticated
+from app.helpers.check_permission import check_permission
 
 meeting_point = Blueprint("meeting_point", __name__, url_prefix="/meeting-point")
 
@@ -19,12 +21,27 @@ class NewMeetingPointForm(Form):
 @meeting_point.route("/new", methods = ['GET','POST'])
 def new():
 
+    #if not authenticated(session):
+        #abort(401)
+
+    #if (not check_permission("usuario_index")):
+        #abort(401)
+
     if request.method == "POST":
-        args = request.form
-        if is_empty(args["name"]) or is_empty(args["address"]):
-            flash("El nombre y la dirección del punto de encuentro son campos obligatorios")
+        form = NewMeetingPointForm(request.form)
+        if not form.validate_on_submit():
+            flash("Por favor, corrija los errores")
         else:
+            args = form.data
+            del args["submit"]
+            del args["csrf_token"]
             MeetingPoint.new(**args)
             flash("Punto de encuentro agregado exitosamente")
+    else:
+        form = NewMeetingPointForm()
 
-    return render_template("meeting_point/new.html")
+    return render_template("meeting_point/new.html", form = form)
+
+
+
+

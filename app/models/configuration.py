@@ -31,3 +31,22 @@ class Configuration(db.Model):
         self.order_by = order_by
         self.colors_id_public = colors_id_public
         self.colors_id_private = colors_id_private
+
+    @classmethod
+    def actual(cls):
+        return Configuration.query.limit(1).all()[0]
+
+    @classmethod
+    def update(
+        cls,
+        elements_quantity: int = None,
+        order_by: str = None,
+        colors_id_public: int = None,
+        colors_id_private: int = None,
+    ):
+        actual = Configuration.actual()
+        actual.elements_quantity = elements_quantity
+        actual.order_by = order_by
+        actual.colors_id_public = colors_id_public
+        actual.colors_id_private = colors_id_private
+        db.session.commit()

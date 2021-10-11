@@ -9,11 +9,11 @@ meeting_point = Blueprint("meeting_point", __name__, url_prefix="/meeting-point"
 def new():
 
     if request.method == "POST":
-
+        args = request.form
         if is_empty(args["name"]) or is_empty(args["address"]):
             flash("El nombre y la dirección del punto de encuentro son campos obligatorios")
         else:
-            MeetingPoint.new(**request.form)
+            MeetingPoint.new(**args)
             flash("Punto de encuentro agregado exitosamente")
 
     return render_template("meeting_point/new.html")

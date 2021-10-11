@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from app.db import db
-from app.helpers.validators import is_empty
 
 class MeetingPoint(db.Model):
 
@@ -38,9 +37,6 @@ class MeetingPoint(db.Model):
     @classmethod
     def new(cls, **args):
         "Recibe los parámetros del formulario, crea el meeting point y lo guarda en la base de datos"
-
-        if is_empty(args["name"]) or is_empty(args["address"]) :
-            raise Exception("Faltan campos obligatorios")
 
         meeting_point = MeetingPoint(**args)
         db.session.add(meeting_point)

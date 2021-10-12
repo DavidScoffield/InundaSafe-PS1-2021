@@ -20,7 +20,7 @@
         {% set buttonText = 'Desbloquear' %}
         Bloqueado, 
       {% endif %}
-      <form action="{{ url_for('user_toggle_state', user_id=user.id, state=user.active ) }}" method="POST">
+      <form action="{{ url_for('user.toggle_state', user_id=user.id, state=user.active ) }}" method="POST">
         <button type="submit">{{buttonText}}</button>
       </form>
   </li>

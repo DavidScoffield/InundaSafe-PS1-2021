@@ -1,10 +1,12 @@
-from flask import redirect, render_template, request, url_for, session, abort
+from flask import redirect, render_template, request, url_for, session, abort, Blueprint
 #from app.db import connection
 from app.models.user import User
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
 
-# Protected resources
+user = Blueprint("user", __name__, url_prefix="/usuarios")
+
+@user.route("/", methods=['GET'])
 def index():
     if not authenticated(session):
         abort(401)
@@ -32,6 +34,7 @@ def create():
     User.create(conn, request.form)
     return redirect(url_for("user_index"))
 
+@user.route("/toggle_state/<int:user_id>/<state>", methods=['POST'])
 def toggle_state(user_id, state):
     if not authenticated(session):
         abort(401)
@@ -44,4 +47,4 @@ def toggle_state(user_id, state):
 
     User.update_state(user_id, new_state)
 
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user.index"))

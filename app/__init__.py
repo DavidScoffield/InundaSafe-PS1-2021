@@ -10,6 +10,7 @@ from app import db
 from app.resources import user
 from app.resources import auth
 # from app.resources.api.issue import issue_api
+from app.resources.user import user as user_blueprint
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 
@@ -57,10 +58,11 @@ def create_app(environment="development"):
     # app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
 
     # # Rutas de Usuarios
-    app.add_url_rule("/usuarios", "user_index", user.index)
+    #   #   #   app.add_url_rule("/usuarios", "user_index", user.index)
     # app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
-    app.add_url_rule("/usuarios/toggle_state/<int:user_id>/<state>", "user_toggle_state", user.toggle_state, methods=["POST"])
+    #   #   #   app.add_url_rule("/usuarios/toggle_state/<int:user_id>/<state>", "user_toggle_state", user.toggle_state, methods=["POST"])
+    app.register_blueprint(user_blueprint)
 
     # Ruta para el Home (usando decorator)
     @app.route("/")

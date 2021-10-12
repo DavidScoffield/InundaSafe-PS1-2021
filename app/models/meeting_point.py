@@ -53,3 +53,12 @@ class MeetingPoint(db.Model):
         paginated_meeting_points = ordered_meeting_points.paginate(max_per_page = elements_quantity, per_page = elements_quantity, page=page_number, error_out = True)
 
         return paginated_meeting_points
+
+    @classmethod
+    def delete(cls, id):
+        "Borra un punto de encuentro"
+
+        meeting_point = MeetingPoint.query.filter_by(id = id).first()
+
+        db.session.delete(meeting_point)
+        db.session.commit()

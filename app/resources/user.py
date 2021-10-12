@@ -67,10 +67,6 @@ def create():
     else:
         state = 0
     
-    new_user = User(email, username, password, first_name, last_name, state)
-    User.insert_user(new_user)   #inserto al usuario en la bd
-
-    roles = Role.find_roles_from_strings(selectedRoles) #lista con los roles que va a tener el nuevo usuario
-    Role.insert_rol(roles, new_user)  #inserto los roles en la tabla user_has_roles
+    User.insert_user(email, username, password, first_name, last_name, state, selectedRoles)   #inserto al usuario en la bd
      
     return redirect(url_for("user_index"))

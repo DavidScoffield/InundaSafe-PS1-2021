@@ -4,6 +4,7 @@ import datetime
 from app.db import db
 from app.helpers.bcrypt import check_password, generate_password_hash
 from app.models.user_has_roles import user_has_roles
+from app.models.role import Role
 
 
 class User(db.Model):
@@ -66,9 +67,17 @@ class User(db.Model):
         ).first()
 
     @classmethod
-    def insert_user(cls, new_user):
+    def insert_user(
+        cls, email, username, password, first_name, last_name, state, selectedRoles
+    ):
+        new_user = User(email, username, password, first_name, last_name, state)
         db.session.add(new_user)
         db.session.commit()
+
+        roles = Role.find_roles_from_strings(
+            selectedRoles
+        )  # lista con los roles que va a tener el nuevo usuario
+        Role.insert_rol(roles, new_user)  # inserto los roles en la tabla user_has_roles
 
     @classmethod
     def find_all_users(cls):

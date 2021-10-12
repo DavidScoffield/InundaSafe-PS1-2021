@@ -2,13 +2,13 @@ from app.models.meeting_point import MeetingPoint
 from flask import render_template, Blueprint, request, flash, redirect, url_for, session, abort
 from app.db import db
 from wtforms import SubmitField, validators, IntegerField, StringField, SelectField
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
 
 meeting_point = Blueprint("meeting_point", __name__, url_prefix="/meeting-point")
 
-class NewMeetingPointForm(Form):
+class NewMeetingPointForm(FlaskForm):
     name = StringField('Nombre', [validators.DataRequired(message = "Este campo es obligatorio"), validators.Regexp('^[a-z A-Z]+$', message = "Por favor, ingrese un nombre válido")])
     address = StringField('Dirección', [validators.DataRequired(message = "Este campo es obligatorio")])
     coor_X = StringField('Coordenada X', [validators.Optional(), validators.Regexp('^[\d]+$', message = "Por favor, ingrese una coordenada X válida")])
@@ -41,6 +41,16 @@ def new():
         form = NewMeetingPointForm()
 
     return render_template("meeting_point/new.html", form = form)
+
+@meeting_point.route("/<int:page_number>")
+def index(page_number):
+
+    if not authenticated(session) or not check_permission("punto_encuentro_index"):
+        abort(401)
+
+    meeting_points = MeetingPoint.paginate(page_number)
+
+    return render_template("meeting_point/index.html", meeting_points = meeting_points)
 
 
 

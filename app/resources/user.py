@@ -13,8 +13,6 @@ def index():
     if (not check_permission("usuario_index")):
         abort(401)
 
-    #conn = connection()
-    #users = User.all(conn)
     users = User.find_all_users()
 
     return render_template("user/index.html", users=users)
@@ -69,4 +67,18 @@ def create():
     
     User.insert_user(email, username, password, first_name, last_name, state, selectedRoles)   #inserto al usuario en la bd
      
+    return redirect(url_for("user_index"))
+
+def toggle_state(user_id, state):
+    if not authenticated(session):
+        abort(401)
+
+    if (not check_permission("usuario_update")): #ojo con este permiso
+        abort(401)
+
+    # Si su estado era Activo (1), hay que ponerlo en 0 (Bloqueado). Si era Bloqueado hay que ponerlo en 1
+    new_state = 0 if int(state)==1 else 1
+
+    User.update_state(user_id, new_state)
+
     return redirect(url_for("user_index"))

@@ -13,7 +13,7 @@ from app.resources.config import config_routes
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.helpers import config as helper_config
-from app.helpers.importModels import *
+from app.helpers.import_models import *
 
 
 # ----- Logger -----
@@ -61,7 +61,7 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
     )
-    
+
     # Rutas de Usuarios
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])

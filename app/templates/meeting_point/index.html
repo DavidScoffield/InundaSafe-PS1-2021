@@ -17,7 +17,7 @@
 <div class="container mx-auto py-4">
 
 <div class="w-100 d-flex justify-content-center">
-<a class="btn btn-primary button-gradient" role="button" href="{{url_for('meeting_point.new')}}">Agregar nuevo punto de encuentro</a>
+    <a class="btn btn-primary button-gradient" role="button" href="{{url_for('meeting_point.new')}}">Agregar nuevo punto de encuentro</a>
 </div>
 <br>
     
@@ -40,7 +40,7 @@
             <td class="text-center">{{mp.email}}</td>
             <td class="text-center"><a class="btn btn-primary button-gradient mx-1" role="button" href="#">Ver</a>
                 <a class="btn btn-primary button-gradient mx-1" role="button" href="#">Editar</a>
-                <a class="btn btn-primary button-gradient mx-1" role="button" href="#">Eliminar</a>
+                <a class="btn btn-primary button-gradient mx-1" role="button" href="#" onclick="confirm_destroy('{{url_for('meeting_point.destroy', id=mp.id)}}')">Eliminar</a>
         </tr>
         {% endfor %}
     </tbody>
@@ -70,6 +70,14 @@
       {% endif %}
     </ul>
   </nav>
+
+    <script>
+        function confirm_destroy(url) {
+            if (confirm("¿Está seguro que desea borrar el punto de encuentro?")) {
+                window.location.href = url
+            }
+        }
+    </script>
 
 </div>
 

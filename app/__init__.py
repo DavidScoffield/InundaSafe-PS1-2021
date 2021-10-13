@@ -67,6 +67,7 @@ def create_app(environment="development"):
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
     app.add_url_rule("/usuarios/toggle_state/<int:user_id>/<state>", "user_toggle_state", user.toggle_state, methods=["POST"])
+    app.add_url_rule("/usuarios/editar/<int:user_id>", "user_edit", user.edit)
 
     app.add_url_rule("/home_privada", "home_private", auth.login_private)
 

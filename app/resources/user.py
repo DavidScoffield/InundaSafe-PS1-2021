@@ -82,3 +82,13 @@ def toggle_state(user_id, state):
     User.update_state(user_id, new_state)
 
     return redirect(url_for("user_index"))
+
+def edit(user_id):
+    if not authenticated(session):
+        abort(401)
+    
+    if (not check_permission("usuario_show")): #es este permiso????????'
+        abort(401)
+
+    user = User.find_user_by_id(user_id)
+    return render_template("user/edit_other_user.html", user=user)

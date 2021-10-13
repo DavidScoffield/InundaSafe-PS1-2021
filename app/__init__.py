@@ -84,8 +84,6 @@ def create_app(environment="development"):
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
 
-    app.add_url_rule("/home_privada", "home_private", auth.login_private)
-
     # Rutas pagina configuracion(usando Blueprints)
     app.register_blueprint(config_routes)
 

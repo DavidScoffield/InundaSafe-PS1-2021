@@ -47,6 +47,7 @@ def create_app(environment="development"):
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
     app.jinja_env.globals.update(get_actual_config=helper_config.actual_config)
+    app.jinja_env.globals.update(translate_state=lambda state: "Publicado" if state == "publicated" else "Despublicado")
 
     # Ruta para el Home (usando decorator)
     @app.route("/")

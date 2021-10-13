@@ -58,7 +58,7 @@ def new():
 
     return render_template("meeting_point/new.html", form = form)
 
-@meeting_point.route("/<int:page_number>")
+@meeting_point.get("/<int:page_number>")
 def index(page_number):
 
     if not authenticated(session) or not check_permission("punto_encuentro_index"):

@@ -5,27 +5,31 @@
 {% endblock %}
 {% block content %}
   <h1>Usuarios</h1>
-  {% for user in users %}
-  <li>
-      {% for rol in user.roles %}
-        {{rol.name}}, 
-      {% endfor %} 
-      {{ user.email }} - 
-      {{ user.first_name }} 
-      {{ user.last_name }} - 
-      {% if user.active == 1 %}
-        {% set buttonText = 'Bloquear' %}
-        Activo, 
-      {% else %} 
-        {% set buttonText = 'Desbloquear' %}
-        Bloqueado, 
-      {% endif %}
-      {% if not helper_is_admin(user.roles) %}
-        <form action="{{ url_for('user.toggle_state', user_id=user.id, state=user.active ) }}" method="POST">
-          <button type="submit">{{buttonText}}</button>
-        </form>  
-      {% endif %}
-  </li>
+  <ul class="list-group">
+    {% for user in users %}
+    <li class="list-group-item">
+        {% for rol in user.roles %}
+          {{rol.name}}, 
+        {% endfor %} 
+        {{ user.email }} - 
+        {{ user.first_name }} 
+        {{ user.last_name }} - 
+        {% if user.active == 1 %}
+          {% set buttonText = 'Bloquear' %}
+          Activo, 
+        {% else %} 
+          {% set buttonText = 'Desbloquear' %}
+          Bloqueado, 
+        {% endif %}
+        {% if not helper_is_admin(user.roles) %}
+          <div class="d-inline-flex">
+            <form  action="{{ url_for('user.toggle_state', user_id=user.id, state=user.active ) }}" method="POST">
+              <button class="button-gradient" type="submit">{{buttonText}}</button>
+            </form>
+          <div>
+        {% endif %}
+    </li>
+  </ul>
   {% endfor %}
   <a href="{{url_for('home_private')}}" class="link">Volver</a>      
   <a href="#" class="link">Nuevo</a>     

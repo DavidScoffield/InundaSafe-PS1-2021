@@ -17,6 +17,7 @@ class User(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Integer, nullable=False)
+    is_deleted = db.Column(db.Integer, nullable=False)
     created_at = db.Column(
         db.DateTime, default=datetime.datetime.utcnow
     )  # se modifico para que se guarde la fecha en la bd
@@ -39,6 +40,7 @@ class User(db.Model):
         first_name: str = None,
         last_name: str = None,
         active: int = None,
+        is_deleted: int = None,
     ):
         self.email = email
         self.username = username
@@ -46,6 +48,7 @@ class User(db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.active = active
+        self.is_deleted = is_deleted
 
     @classmethod
     def find_by_email_and_pass(cls, email, password):

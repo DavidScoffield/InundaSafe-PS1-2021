@@ -74,10 +74,6 @@ def create_app(environment="development"):
     # app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
 
     # # Rutas de Usuarios
-    #   #   #   app.add_url_rule("/usuarios", "user_index", user.index)
-    # app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
-    # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
-    #   #   #   app.add_url_rule("/usuarios/toggle_state/<int:user_id>/<state>", "user_toggle_state", user.toggle_state, methods=["POST"])
     app.register_blueprint(user_blueprint)
     # Rutas de Usuarios
     app.add_url_rule("/usuarios", "user_index", user.index)

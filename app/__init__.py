@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from config import config
 from app import db
 from app.resources import auth
+from app.resources.home import home as home_route
 from app.resources.meeting_point import meeting_point
 from app.resources.user import user as user_blueprint
 from app.resources.config import config_routes
@@ -50,12 +51,8 @@ def create_app(environment="development"):
     app.jinja_env.globals.update(helper_has_role=helper_has_role.has_role)
     app.jinja_env.globals.update(get_actual_config=helper_config.actual_config)
 
-    # Ruta para el Home (usando decorator)
-    @app.route("/")
-    def home():
-        return render_template("home.html")
-
-    app.add_url_rule("/home_privada", "home_private", auth.login_private)
+    # Ruta HOME
+    app.register_blueprint(home_route)
 
     # Rutas Autenticación
     app.register_blueprint(auth_routes)

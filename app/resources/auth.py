@@ -48,11 +48,7 @@ def authenticate():
     session["permissions"] = permisos
     flash("La sesión se inició correctamente.")
 
-    return redirect(url_for("home_private"))
-
-
-def login_private():
-    return render_template("home_private.html")
+    return redirect(url_for("home.index"))
 
 
 @auth_routes.get("/cerrar_sesion", endpoint="auth_logout")

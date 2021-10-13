@@ -25,7 +25,7 @@ def index():
 
     return render_template("user/index.html", users=users)
 
-
+@user.get("/nuevo")
 def new():
     if not authenticated(session):
         abort(401)
@@ -35,7 +35,7 @@ def new():
 
     return render_template("user/new.html")
 
-
+@user.post("/nuevo")
 def create():
     if not authenticated(session):
         abort(401)
@@ -55,18 +55,18 @@ def create():
 
     if (not first_name or not last_name or not username or not email or not password or not state or not len(selectedRoles)):
         flash("Se deben completar todos los campos")
-        return redirect(url_for("user_new"))
+        return redirect(url_for("user.new"))
 
     user = User.check_existing_email_or_username(email, username)
 
     if user:
         if user.email == email:
             flash("Ya existe un usuario con ese email")
-            return redirect(url_for("user_new"))
+            return redirect(url_for("user.new"))
 
         if user.username == username:
             flash("Ya existe un usuario con ese nombre de usuario")
-            return redirect(url_for("user_new"))
+            return redirect(url_for("user.new"))
 
     if state == "activo": #depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
         state = 1
@@ -90,4 +90,15 @@ def toggle_state(user_id, state):
 
     User.update_state(user_id, new_state)
 
-    return redirect(url_for("user.index"))
+    return redirect(url_for("user_index"))
+
+@user.get("/editar/<int:user_id>")
+def edit(user_id):
+    if not authenticated(session):
+        abort(401)
+    
+    if (not check_permission("usuario_show")): #es este permiso????????'
+        abort(401)
+
+    user = User.find_user_by_id(user_id)
+    return render_template("user/edit_other_user.html", user=user)

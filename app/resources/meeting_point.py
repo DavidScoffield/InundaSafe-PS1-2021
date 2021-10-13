@@ -37,11 +37,8 @@ class NewMeetingPointForm(FlaskForm):
 @meeting_point.route("/new", methods = ['GET','POST'])
 def new():
 
-    #if not authenticated(session):
-        #abort(401)
-
-    #if (not check_permission("usuario_index")):
-        #abort(401)
+    if not authenticated(session) or not check_permission("punto_encuentro_new"):
+        abort(401)
 
     if request.method == "POST":
         form = NewMeetingPointForm(request.form)
@@ -51,8 +48,11 @@ def new():
             args = form.data
             del args["submit"]
             del args["csrf_token"]
-            MeetingPoint.new(**args)
-            flash("Punto de encuentro agregado exitosamente")
+            if MeetingPoint.exists_address(args["address"]):
+                flash("Ya existe un punto de encuentro con esa dirección")
+            else:
+                MeetingPoint.new(**args)
+                flash("Punto de encuentro agregado exitosamente")
     else:
         form = NewMeetingPointForm()
 

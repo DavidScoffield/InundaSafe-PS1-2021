@@ -25,9 +25,9 @@
           <button type="submit">{{buttonText}}</button>
         </form>  
       {% endif %}
-      <a class="nav-link" href="{{url_for('user_edit', user_id=user.id)}}">Editar</a>
+      <a class="nav-link" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
   </li>
   {% endfor %}
   <a href="{{url_for('home_private')}}" class="link">Volver</a>      
-  <a href="#" class="link">Nuevo</a>     
+  <a href="{{url_for('user.new')}}" class="link">Nuevo</a>     
 {% endblock %}

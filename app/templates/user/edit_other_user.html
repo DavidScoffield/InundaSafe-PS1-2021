@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
   <h1>Editar datos de {{user.first_name}}:</h1>
-  <form action="{{ url_for('user_create') }}" method="POST">
+  <form action="{{ url_for('user.create') }}" method="POST">
     <p>
       <label>Nombre:<label></br>
       <input name="first_name" value={{user.first_name}} placeholder="Ingrese un nombre"/>

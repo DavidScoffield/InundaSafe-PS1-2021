@@ -1,0 +1,78 @@
+{% from 'bootstrap/form.html' import render_form %}
+
+{% extends "private_app_layout.html" %} 
+
+{% block title %} InundaSafe | Listado de puntos de encuentro {% endblock %} 
+
+{% block head %} 
+
+{{ super() }}
+
+{% endblock %} 
+
+{% block content %}
+
+<br>
+
+<div class="container mx-auto py-4">
+
+<div class="w-100 d-flex justify-content-center">
+<a class="btn btn-primary button-gradient" role="button" href="{{url_for('meeting_point.new')}}">Agregar nuevo punto de encuentro</a>
+</div>
+<br>
+    
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col" class="text-center">Nombre</th>
+            <th scope="col" class="text-center">Dirección</th>
+            <th scope="col" class="text-center">Teléfono</th>
+            <th scope="col" class="text-center">Email</th>
+            <th scope="col" class="text-center">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for mp in meeting_points.items %}
+        <tr>
+            <td class="text-center">{{mp.name}}</td>
+            <td class="text-center">{{mp.address}}</td>
+            <td class="text-center">{{mp.telephone}}</td>
+            <td class="text-center">{{mp.email}}</td>
+            <td class="text-center"><a class="btn btn-primary button-gradient mx-1" role="button" href="#">Ver</a>
+                <a class="btn btn-primary button-gradient mx-1" role="button" href="#">Editar</a>
+                <a class="btn btn-primary button-gradient mx-1" role="button" href="#">Eliminar</a>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      {% if meeting_points.has_prev %}
+        <li class="page-item"></li>
+        <a class="page-link" href="{{url_for('meeting_point.index', page_number=meeting_points.prev_num)}}" tabindex="-1">Anterior</a>
+      {% else %}
+        <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1">Anterior</a>
+      {% endif %}
+      </li>
+        {% for page in meeting_points.iter_pages() %}
+            {% if page %}
+            <li class="page-item"><a class="page-link" href="{{url_for('meeting_point.index', page_number=page)}}">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
+      {% if meeting_points.has_next %}
+        <li class="page-item"></li>
+        <a class="page-link" href="{{url_for('meeting_point.index', page_number=meeting_points.next_num)}}">Siguiente</a>
+      {% else %}
+        <li class="page-item disabled">
+        <a class="page-link" href="#">Siguiente</a>
+      {% endif %}
+    </ul>
+  </nav>
+
+</div>
+
+{% endblock %}
+
+{% block footer %} {{super()}} {% endblock %}

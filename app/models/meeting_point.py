@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from app.db import db
+from app.helpers.config import actual_config
 
 class MeetingPoint(db.Model):
 
@@ -41,3 +42,14 @@ class MeetingPoint(db.Model):
         meeting_point = MeetingPoint(**args)
         db.session.add(meeting_point)
         db.session.commit()
+
+    @classmethod
+    def paginate(cls, page_number):
+        "Retorna una lista con todos los meeting points, teniendo en cuenta el paginado"
+
+        elements_quantity = actual_config().elements_quantity
+        order = actual_config().order_by
+        ordered_meeting_points = MeetingPoint.query.order_by(eval(f"MeetingPoint.name.{order}()"))
+        paginated_meeting_points = ordered_meeting_points.paginate(max_per_page = elements_quantity, per_page = elements_quantity, page=page_number, error_out = True)
+
+        return paginated_meeting_points

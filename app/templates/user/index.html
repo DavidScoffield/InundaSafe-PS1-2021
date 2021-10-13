@@ -20,9 +20,11 @@
         {% set buttonText = 'Desbloquear' %}
         Bloqueado, 
       {% endif %}
-      <form action="{{ url_for('user_toggle_state', user_id=user.id, state=user.active ) }}" method="POST">
-        <button type="submit">{{buttonText}}</button>
-      </form>
+      {% if not helper_is_admin(user.roles) %}
+        <form action="{{ url_for('user.toggle_state', user_id=user.id, state=user.active ) }}" method="POST">
+          <button type="submit">{{buttonText}}</button>
+        </form>  
+      {% endif %}
       <a class="nav-link" href="{{url_for('user_edit', user_id=user.id)}}">Editar</a>
   </li>
   {% endfor %}

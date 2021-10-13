@@ -3,13 +3,13 @@ from flask import render_template, Blueprint, request, flash, redirect, url_for,
 from app.db import db
 from wtforms import SubmitField, validators, IntegerField, StringField, SelectField
 from wtforms.fields.html5 import EmailField
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
 
 meeting_point = Blueprint("meeting_point", __name__, url_prefix="/meeting-point")
 
-class NewMeetingPointForm(Form):
+class NewMeetingPointForm(FlaskForm):
 
     "Crea el formulario para dar de alta a un meeting point"
 
@@ -57,6 +57,16 @@ def new():
         form = NewMeetingPointForm()
 
     return render_template("meeting_point/new.html", form = form)
+
+@meeting_point.route("/<int:page_number>")
+def index(page_number):
+
+    if not authenticated(session) or not check_permission("punto_encuentro_index"):
+        abort(401)
+
+    meeting_points = MeetingPoint.paginate(page_number)
+
+    return render_template("meeting_point/index.html", meeting_points = meeting_points)
 
 
 

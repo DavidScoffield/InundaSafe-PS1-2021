@@ -173,7 +173,7 @@ CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(150) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
+  `password_hash` longtext NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `active` tinyint(1) NOT NULL,

@@ -14,7 +14,7 @@ InundaSafe | Private App
 
 <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-gradient">
   <div>
-    <a class="navbar-brand font-weight-bold d-flex align-items-center" href="{{url_for('home')}}">
+    <a class="navbar-brand font-weight-bold d-flex align-items-center" href="{{url_for('home_private')}}">
       <img src="{{ url_for('static', filename='favicon.ico') }}" alt="Logo de la aplicación" style="width: 32px; height: 32px; margin-right: 5px;">
       <span>
         InundaSafe
@@ -34,10 +34,9 @@ InundaSafe | Private App
           <li class="nav-item {% if bp == 'config_routes' %} active {% endif %} ">
             <a class="nav-link" href="{{url_for('config_routes.index')}}">Configuración</a>
           </li>
-          <li class="nav-item">
-        <!-- <li class="nav-item {% if bp == 'meeting_point' %} active {% endif %} "> -->
-        <a class="nav-link" href="#">Puntos de encuentro</a>
-      </li>
+          <li class="nav-item {% if bp == 'meeting_point' %} active {% endif %} ">
+            <a class="nav-link" href="{{url_for('meeting_point.index', page_number=1)}}">Puntos de encuentro</a>
+        </li>
     </ul>
     <div class="btn-group">
       <button type="button" class="btn button-gradient dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

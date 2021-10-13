@@ -9,6 +9,11 @@ from app import db
 from app.resources.meeting_point import meeting_point
 from app.resources import user
 from app.resources import auth
+# from app.resources.api.issue import issue_api
+from app.resources.user import user as user_blueprint
+from app.helpers import has_role as helper_has_role
+
+from app.helpers.pruebas import modelsTest
 from app.resources.config import config_routes
 from app.helpers import handler
 from app.helpers import auth as helper_auth
@@ -46,6 +51,7 @@ def create_app(environment="development"):
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
+    app.jinja_env.globals.update(helper_has_role=helper_has_role.has_role)
     app.jinja_env.globals.update(get_actual_config=helper_config.actual_config)
 
     # Ruta para el Home (usando decorator)
@@ -62,10 +68,8 @@ def create_app(environment="development"):
         "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
     )
 
-    # Rutas de Usuarios
-    app.add_url_rule("/usuarios", "user_index", user.index)
-    app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
-    app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
+    # # Rutas de Usuarios
+    app.register_blueprint(user_blueprint)
 
     # Rutas pagina configuracion(usando Blueprints)
     app.register_blueprint(config_routes)

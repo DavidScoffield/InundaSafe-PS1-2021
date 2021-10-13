@@ -8,21 +8,26 @@
   {% for user in users %}
   <li>
       {% for rol in user.roles %}
-        {{rol.name}}
-      {% endfor %} -
+        {{rol.name}}, 
+      {% endfor %} 
       {{ user.email }} - 
       {{ user.first_name }} 
       {{ user.last_name }} - 
-      {% if user.active == 1 %} 
-        Activo, <button class="link">Bloquear</button>
+      {% if user.active == 1 %}
+        {% set buttonText = 'Bloquear' %}
+        Activo, 
       {% else %} 
-        Bloqueado, <button class="link">Desbloquear</button>
+        {% set buttonText = 'Desbloquear' %}
+        Bloqueado, 
       {% endif %}
+      {% if not helper_has_role(user.roles, "rol_administrador") %}
+        <form action="{{ url_for('user.toggle_state', user_id=user.id, state=user.active ) }}" method="POST">
+          <button type="submit">{{buttonText}}</button>
+        </form>  
+      {% endif %}
+      <a class="nav-link" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
   </li>
   {% endfor %}
   <a href="{{url_for('home_private')}}" class="link">Volver</a>      
-  <a href="#" class="link">Nuevo</a>     
+  <a href="{{url_for('user.new')}}" class="link">Nuevo</a>     
 {% endblock %}
-
-<!--{{ url_for('home') }}-->
-<!--{{ url_for('user_new') }}-->

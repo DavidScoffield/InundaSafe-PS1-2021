@@ -1,10 +1,22 @@
-from flask import redirect, render_template, request, url_for, session, abort, flash
+from flask import (
+    redirect,
+    render_template,
+    request,
+    url_for,
+    session,
+    abort,
+    Blueprint,
+    flash,
+)
 from app.models.user import User
 from app.models.role import Role
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
 
-# Protected resources
+user = Blueprint("user", __name__, url_prefix="/usuarios")
+
+
+@user.route("/", methods=["GET"])
 def index():
     if not authenticated(session):
         abort(401)
@@ -14,9 +26,16 @@ def index():
 
     users = User.find_all_users()
 
+    # elimino al usuario del listado para que no se liste a él mismo
+    this_user_id = session["user"]
+    for user in users:
+        if user.id == this_user_id:
+            users.remove(user)
+
     return render_template("user/index.html", users=users)
 
 
+@user.get("/nuevo")
 def new():
     if not authenticated(session):
         abort(401)
@@ -27,6 +46,7 @@ def new():
     return render_template("user/new.html")
 
 
+@user.post("/nuevo")
 def create():
     if not authenticated(session):
         abort(401)
@@ -54,18 +74,18 @@ def create():
         or not len(selectedRoles)
     ):
         flash("Se deben completar todos los campos")
-        return redirect(url_for("user_new"))
+        return redirect(url_for("user.new"))
 
     user = User.check_existing_email_or_username(email, username)
 
     if user:
         if user.email == email:
             flash("Ya existe un usuario con ese email")
-            return redirect(url_for("user_new"))
+            return redirect(url_for("user.new"))
 
         if user.username == username:
             flash("Ya existe un usuario con ese nombre de usuario")
-            return redirect(url_for("user_new"))
+            return redirect(url_for("user.new"))
 
     if (
         state == "activo"
@@ -79,3 +99,31 @@ def create():
     )  # inserto al usuario en la bd
 
     return redirect(url_for("user_index"))
+
+
+@user.route("/toggle_state/<int:user_id>/<state>", methods=["POST"])
+def toggle_state(user_id, state):
+    if not authenticated(session):
+        abort(401)
+
+    if not check_permission("usuario_update"):  # ojo con este permiso
+        abort(401)
+
+    # Si su estado era Activo (1), hay que ponerlo en 0 (Bloqueado). Si era Bloqueado hay que ponerlo en 1
+    new_state = 0 if int(state) == 1 else 1
+
+    User.update_state(user_id, new_state)
+
+    return redirect(url_for("user_index"))
+
+
+@user.get("/editar/<int:user_id>")
+def edit(user_id):
+    if not authenticated(session):
+        abort(401)
+
+    if not check_permission("usuario_show"):  # es este permiso????????'
+        abort(401)
+
+    user = User.find_user_by_id(user_id)
+    return render_template("user/edit_other_user.html", user=user)

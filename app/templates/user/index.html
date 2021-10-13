@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "private_app_layout.html" %}
 {% block title %}Usuarios{% endblock %}
 {% block head %}
   {{ super() }}
@@ -27,6 +27,6 @@
       {% endif %}
   </li>
   {% endfor %}
-  <a href="#" class="link">Volver</a>      
+  <a href="{{url_for('home_private')}}" class="link">Volver</a>      
   <a href="#" class="link">Nuevo</a>     
 {% endblock %}

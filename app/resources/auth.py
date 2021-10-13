@@ -1,5 +1,4 @@
 from flask import redirect, render_template, request, url_for, abort, session, flash
-#from app.db import connection
 from app.models.user import User
 
 
@@ -36,7 +35,11 @@ def authenticate():
     session["permissions"] = permisos
     flash("La sesión se inició correctamente.")
 
-    return redirect(url_for("home"))
+    return redirect(url_for("home_private"))
+
+
+def login_private():
+    return render_template("home_private.html")
 
 
 def logout():

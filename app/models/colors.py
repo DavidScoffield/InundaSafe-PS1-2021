@@ -28,3 +28,7 @@ class Color(db.Model):
         self.color_3 = color_3
         self.color_4 = color_4
         self.color_5 = color_5
+
+    @classmethod
+    def all(cls):
+        return Color.query.all()

@@ -104,10 +104,12 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-
 db/db.sqlite
 
 flask_session
 .vim
 coc-settings.json
 .vscode
+
+# docker
+docker-compose.yml

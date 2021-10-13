@@ -27,11 +27,14 @@
         <p>{{message}}</p>
     {% endfor %}
 
-{% endwith %} 
+{% endwith %}
 
 <form method="POST" action="{{url_for('meeting_point.new')}}">    
     {{ render_form(form) }}
 </form>
+
+<br>
+<i>* Campos obligatorios</i>
 
 </div>
 {% endblock %}

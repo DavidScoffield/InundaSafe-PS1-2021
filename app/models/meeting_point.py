@@ -37,7 +37,7 @@ class MeetingPoint(db.Model):
     
     @classmethod
     def new(cls, **args):
-        "Recibe los parámetros del formulario, crea el meeting point y lo guarda en la base de datos"
+        "Recibe los parámetros para crear el meeting point y lo guarda en la base de datos"
 
         meeting_point = MeetingPoint(**args)
         db.session.add(meeting_point)
@@ -62,3 +62,8 @@ class MeetingPoint(db.Model):
 
         db.session.delete(meeting_point)
         db.session.commit()
+        
+    def exists_address(cls, address):
+        "Verifica si existe un punto de encuentro con la dirección recibida por parámetro"
+        
+        return MeetingPoint.query.filter(MeetingPoint.address.ilike(address)).first() is not None

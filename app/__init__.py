@@ -11,7 +11,7 @@ from app.resources import user
 from app.resources import auth
 # from app.resources.api.issue import issue_api
 from app.resources.user import user as user_blueprint
-from app.helpers import is_admin as helper_is_admin
+from app.helpers import has_role as helper_has_role
 
 from app.helpers.pruebas import modelsTest
 from app.resources.config import config_routes
@@ -51,7 +51,7 @@ def create_app(environment="development"):
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
-    app.jinja_env.globals.update(helper_is_admin=helper_is_admin.is_admin)
+    app.jinja_env.globals.update(helper_has_role=helper_has_role.has_role)
     app.jinja_env.globals.update(get_actual_config=helper_config.actual_config)
 
     # Ruta para el Home (usando decorator)

@@ -29,10 +29,10 @@
     <p>
       <label>Roles:<label></br>
       <label>  
-      <input name="rol" type="checkbox" value="rol_administrador"  {{"checked" if rol_administrador in user.roles}}/>Administrador
+      <input name="rol" type="checkbox" value="rol_administrador"   {{ "checked" if helper_has_role(user.roles, "rol_administrador") }}/>Administrador
       </label>
       <label>
-      <input name="rol" type="checkbox" value="rol_operador" {{"checked" if rol_operador in user.roles}}/>Operador
+      <input name="rol" type="checkbox" value="rol_operador"  {{"checked" if helper_has_role(user.roles, "rol_operador") }}/>Operador
       </label>
     </p>
     <p>

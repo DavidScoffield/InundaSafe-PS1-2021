@@ -1,21 +1,17 @@
-from os import path, environ
+from os import environ
 from flask import Flask, render_template
 from flask_session import Session
-from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from dotenv import load_dotenv
 from config import config
 from app import db
-from app.resources.meeting_point import meeting_point
-from app.resources import user
 from app.resources import auth
-# from app.resources.api.issue import issue_api
+from app.resources.meeting_point import meeting_point
 from app.resources.user import user as user_blueprint
-from app.helpers import has_role as helper_has_role
-
-from app.helpers.pruebas import modelsTest
 from app.resources.config import config_routes
+from app.resources.auth import auth_routes
 from app.helpers import handler
+from app.helpers import has_role as helper_has_role
 from app.helpers import auth as helper_auth
 from app.helpers import config as helper_config
 from app.helpers.import_models import *
@@ -61,12 +57,8 @@ def create_app(environment="development"):
 
     app.add_url_rule("/home_privada", "home_private", auth.login_private)
 
-    # Autenticación
-    app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
-    app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
-    app.add_url_rule(
-        "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
-    )
+    # Rutas Autenticación
+    app.register_blueprint(auth_routes)
 
     # # Rutas de Usuarios
     app.register_blueprint(user_blueprint)

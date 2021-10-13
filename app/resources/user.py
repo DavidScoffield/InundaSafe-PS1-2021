@@ -16,6 +16,12 @@ def index():
 
     users = User.find_all_users()
 
+    #elimino al usuario del listado para que no se liste a él mismo
+    this_user_id = session["user"]
+    for user in users:
+        if (user.id == this_user_id):
+            users.remove(user)
+
     return render_template("user/index.html", users=users)
 
 

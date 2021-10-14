@@ -134,7 +134,7 @@ def create():
     return redirect(url_for("meeting_point.new"))
 
 
-@meeting_point.route("/<int:page_number>")
+@meeting_point.get("/<int:page_number>")
 def index(page_number):
     "Controller para mostrar el listado de puntos de encuentro"
 

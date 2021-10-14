@@ -51,6 +51,7 @@ def create_app(environment="development"):
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
     app.jinja_env.globals.update(helper_has_role=helper_has_role.has_role)
     app.jinja_env.globals.update(get_actual_config=helper_config.actual_config)
+    app.jinja_env.globals.update(translate_state=lambda state: "Publicado" if state == "publicated" else "Despublicado")
     app.jinja_env.globals.update(
         helper_has_permission=helper_permissions.check_permission
     )

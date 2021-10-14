@@ -3,18 +3,22 @@ from flask import (
     render_template,
     request,
     url_for,
-    abort,
     session,
     flash,
     Blueprint,
 )
 from app.models.user import User
+from app.helpers.auth import authenticated
 
 auth_routes = Blueprint("auth_routes", __name__, url_prefix="/auth")
 
 
 @auth_routes.get("/iniciar_sesion", endpoint="auth_login")
 def login():
+
+    if authenticated(session):
+        return redirect(url_for("home.index"))
+
     return render_template("auth/login.html")
 
 

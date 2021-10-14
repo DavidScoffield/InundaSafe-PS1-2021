@@ -14,7 +14,7 @@ InundaSafe | Private App
 
 <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-gradient">
   <div>
-    <a class="navbar-brand font-weight-bold d-flex align-items-center" href="{{url_for('home_private')}}">
+    <a class="navbar-brand font-weight-bold d-flex align-items-center" href="{{url_for('home.index')}}">
       <img src="{{ url_for('static', filename='favicon.ico') }}" alt="Logo de la aplicación" style="width: 32px; height: 32px; margin-right: 5px;">
       <span>
         InundaSafe
@@ -27,16 +27,21 @@ InundaSafe | Private App
 
   <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-        <li class="nav-item {% if bp == 'user_index' %} active {% endif %} ">
-          <a class="nav-link" href="{{url_for('user_index')}}">Administrar usuarios</a>
+        {% if helper_has_permission("usuario_index") %}
+        <li class="nav-item {% if bp == 'user' %} active {% endif %} ">
+          <a class="nav-link" href="{{url_for('user.index')}}">Administrar usuarios</a>
         </li>
-        <!-- <li class="nav-item"> -->
-          <li class="nav-item {% if bp == 'config_routes' %} active {% endif %} ">
-            <a class="nav-link" href="{{url_for('config_routes.index')}}">Configuración</a>
-          </li>
-          <li class="nav-item {% if bp == 'meeting_point' %} active {% endif %} ">
-            <a class="nav-link" href="{{url_for('meeting_point.index', page_number=1)}}">Puntos de encuentro</a>
+        {% endif %}
+        {% if helper_has_permission("config_show") %}
+        <li class="nav-item {% if bp == 'config_routes' %} active {% endif %} ">
+          <a class="nav-link" href="{{url_for('config_routes.index')}}">Configuración</a>
         </li>
+        {% endif %}
+        {% if helper_has_permission("punto_encuentro_index") %}
+        <li class="nav-item {% if bp == 'meeting_point' %} active {% endif %} ">
+          <a class="nav-link" href="{{url_for('meeting_point.index', page_number=1)}}">Puntos de encuentro</a>
+        </li>
+        {% endif %}
     </ul>
     <div class="btn-group">
       <button type="button" class="btn button-gradient dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -44,7 +49,7 @@ InundaSafe | Private App
       </button>
       <div class="dropdown-menu dropdown-menu-lg-right">
         <button class="dropdown-item" type="button">Mi Perfil</button>
-        <a class="dropdown-item" href="{{url_for('auth_logout')}}">Cerrar Sesión</a>
+        <a class="dropdown-item" href="{{url_for('auth_routes.auth_logout')}}">Cerrar Sesión</a>
       </div>
     </div>
   </div>

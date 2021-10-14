@@ -103,8 +103,8 @@ class NewMeetingPointForm(FlaskForm):
 def new():
     "Controller para mostrar el formulario para el alta de un punto de encuentro"
 
-    #if not authenticated(session) or not check_permission("punto_encuentro_new"):
-        #abort(401)
+    if not authenticated(session) or not check_permission("punto_encuentro_new"):
+        abort(401)
 
     form = NewMeetingPointForm()
 
@@ -115,8 +115,8 @@ def new():
 def create():
     "Controller para crear el punto de encuentro a partir de los datos del formulario"
     print("ENTRO?", flush=True)
-    #if not authenticated(session) or not check_permission("punto_encuentro_create"):
-        #abort(401)
+    if not authenticated(session) or not check_permission("punto_encuentro_create"):
+        abort(401)
 
     form = NewMeetingPointForm(request.form)
     if not form.validate_on_submit():

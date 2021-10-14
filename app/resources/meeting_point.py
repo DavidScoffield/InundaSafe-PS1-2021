@@ -1,5 +1,14 @@
 from app.models.meeting_point import MeetingPoint
-from flask import render_template, Blueprint, request, flash, redirect, url_for, session, abort
+from flask import (
+    render_template,
+    Blueprint,
+    request,
+    flash,
+    redirect,
+    url_for,
+    session,
+    abort,
+)
 from app.db import db
 from wtforms import SubmitField, validators, IntegerField, StringField, SelectField
 from wtforms.fields.html5 import EmailField
@@ -9,48 +18,105 @@ from app.helpers.check_permission import check_permission
 
 meeting_point = Blueprint("meeting_point", __name__, url_prefix="/meeting-point")
 
+
 class NewMeetingPointForm(FlaskForm):
 
     "Crea el formulario para dar de alta a un meeting point"
 
-    name = StringField('Nombre (*)', [validators.DataRequired(message = "Este campo es obligatorio"), 
-                                      validators.Regexp('^[a-z A-Z]+$', message = "Por favor, ingrese un nombre válido")],
-                        render_kw={"pattern" : "[a-z A-Z]+$", "title" : "El nombre no puede contener números"})
-    
-    address = StringField('Dirección (*)', [validators.DataRequired(message = "Este campo es obligatorio")])
+    name = StringField(
+        "Nombre (*)",
+        [
+            validators.DataRequired(message="Este campo es obligatorio"),
+            validators.Regexp(
+                "^[a-z A-Z]+$", message="Por favor, ingrese un nombre válido"
+            ),
+        ],
+        render_kw={
+            "pattern": "[a-z A-Z]+$",
+            "title": "El nombre no puede contener números",
+        },
+    )
 
-    coor_X = StringField('Coordenada X', [validators.Optional(), validators.Regexp('^[\d]+$', message = "Por favor, ingrese una coordenada X válida")],
-                          render_kw={"pattern" : "^[\d]+$", "title" : "La coordenada no puede contener letras"})
+    address = StringField(
+        "Dirección (*)", [validators.DataRequired(message="Este campo es obligatorio")]
+    )
 
-    coor_Y = StringField('Coordenada Y', [validators.Optional(), validators.Regexp('^[\d]+$', message = "Por favor, ingrese una coordenada Y válida")],
-                          render_kw={"pattern" : "^[\d]+$", "title" : "La coordenada no puede contener letras"})
+    coor_X = StringField(
+        "Coordenada X",
+        [
+            validators.Optional(),
+            validators.Regexp(
+                "^[\d]+$", message="Por favor, ingrese una coordenada X válida"
+            ),
+        ],
+        render_kw={
+            "pattern": "^[\d]+$",
+            "title": "La coordenada no puede contener letras",
+        },
+    )
 
-    telephone = StringField('Teléfono', [validators.Optional(), validators.Regexp('^[\d]+$', message = "Por favor, ingrese un número de teléfono válido")],
-                            render_kw={"pattern" : "^[\d]+$", "title" : "El teléfono no puede contener letras"})
+    coor_Y = StringField(
+        "Coordenada Y",
+        [
+            validators.Optional(),
+            validators.Regexp(
+                "^[\d]+$", message="Por favor, ingrese una coordenada Y válida"
+            ),
+        ],
+        render_kw={
+            "pattern": "^[\d]+$",
+            "title": "La coordenada no puede contener letras",
+        },
+    )
 
-    email = EmailField('Email', [validators.Email(message = "Por favor, ingrese un email válido"), validators.Optional()])
+    telephone = StringField(
+        "Teléfono",
+        [
+            validators.Optional(),
+            validators.Regexp(
+                "^[\d]+$", message="Por favor, ingrese un número de teléfono válido"
+            ),
+        ],
+        render_kw={
+            "pattern": "^[\d]+$",
+            "title": "El teléfono no puede contener letras",
+        },
+    )
 
-    state = SelectField('Estado', choices = [("publicated", "Publicado"), ("despublicated", "Despublicado")])
+    email = EmailField(
+        "Email",
+        [
+            validators.Email(message="Por favor, ingrese un email válido"),
+            validators.Optional(),
+        ],
+    )
 
-    submit = SubmitField('Guardar', render_kw={'class':'button-gradient'})
+    state = SelectField(
+        "Estado",
+        choices=[("publicated", "Publicado"), ("despublicated", "Despublicado")],
+    )
+
+    submit = SubmitField("Guardar", render_kw={"class": "button-gradient"})
+
 
 @meeting_point.get("/new")
 def new():
     "Controller para mostrar el formulario para el alta de un punto de encuentro"
 
-    if not authenticated(session) or not check_permission("punto_encuentro_new"):
-        abort(401)
+    #if not authenticated(session) or not check_permission("punto_encuentro_new"):
+        #abort(401)
 
     form = NewMeetingPointForm()
 
-    return render_template("meeting_point/new.html", form = form)
+    return render_template("meeting_point/new.html", form=form)
+
 
 @meeting_point.post("/new")
 def create():
     "Controller para crear el punto de encuentro a partir de los datos del formulario"
-
-    if not authenticated(session) or not check_permission("punto_encuentro_create"):
-        abort(401)
+    print("ENTRO?", flush=True)
+    #if not authenticated(session) or not check_permission("punto_encuentro_create"):
+        #abort(401)
 
     form = NewMeetingPointForm(request.form)
     if not form.validate_on_submit():
@@ -60,6 +126,7 @@ def create():
         del args["submit"]
         del args["csrf_token"]
         if MeetingPoint.exists_address(args["address"]):
+            print("AAAAAAAA", flush=True)
             flash("Ya existe un punto de encuentro con esa dirección")
         else:
             MeetingPoint.new(**args)
@@ -76,8 +143,4 @@ def index(page_number):
 
     meeting_points = MeetingPoint.paginate(page_number)
 
-    return render_template("meeting_point/index.html", meeting_points = meeting_points)
-
-
-
-
+    return render_template("meeting_point/index.html", meeting_points=meeting_points)

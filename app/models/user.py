@@ -61,6 +61,16 @@ class User(db.Model):
         )
 
     @classmethod
+    def update_state(cls, user_id, new_state):
+        user = User.query.filter(User.id==user_id).first()
+        user.active = new_state
+        db.session.commit()
+
+    @classmethod
+    def find_user_by_id(cls, user_id):
+        return User.query.filter(User.id==user_id).first()
+        
+    @classmethod
     def check_existing_email_or_username(cls, email, username):
         return User.query.filter(
             or_(User.username == username, User.email == email)

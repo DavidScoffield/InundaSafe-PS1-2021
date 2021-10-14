@@ -55,6 +55,15 @@ class MeetingPoint(db.Model):
         return paginated_meeting_points
 
     @classmethod
+    def delete(cls, id):
+        "Borra un punto de encuentro"
+
+        meeting_point = MeetingPoint.query.filter_by(id = id).first()
+
+        db.session.delete(meeting_point)
+        db.session.commit()
+
+    @classmethod
     def exists_address(cls, address):
         "Verifica si existe un punto de encuentro con la dirección recibida por parámetro"
         

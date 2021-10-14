@@ -1,17 +1,10 @@
-{% extends "private_app_layout.html" %}
-
-{% block head %}
-
-{% block title %} {{ super() }} {% endblock %}
-
-{% endblock %}
-
-{% block navbar %} {{ super() }} {% endblock %}
-
+{% extends "private_app_layout.html" %} 
+{% block title %}InundaSafe | Home Privada{% endblock %} 
+{% block head %} 
+{{ super() }}
+{% endblock head %}
 {% block content %}
-
-HOME
+<h1>Inicio</h1>
+<p>Página de inicio de la aplicación</p>
 
 {% endblock %}
-
-{% block footer %} {% endblock %}

@@ -17,7 +17,7 @@
 <div class="container mx-auto py-4">
 
 <div class="w-100 d-flex justify-content-center">
-<a class="btn btn-primary button-gradient" role="button" href="{{url_for('meeting_point.new')}}">Agregar nuevo punto de encuentro</a>
+    <a class="btn btn-primary button-gradient" role="button" href="{{url_for('meeting_point.new')}}">Agregar nuevo punto de encuentro</a>
 </div>
 <br>
     
@@ -38,7 +38,11 @@
             <td class="text-center">{{translate_state(mp.state)}}</td>
             <td class="text-center"><a class="btn btn-primary button-gradient mx-1" role="button" href="#">Ver</a>
                 <a class="btn btn-primary button-gradient mx-1" role="button" href="#">Editar</a>
-                <a class="btn btn-primary button-gradient mx-1" role="button" href="#">Eliminar</a>
+                <form action="{{url_for('meeting_point.destroy')}}" method="post" class="d-inline">
+                  <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
+                  <button type="submit" onclick="confirm_destroy(event)" class="btn btn-primary button-gradient mx-1">Eliminar</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -56,7 +60,7 @@
       </li>
         {% for page in meeting_points.iter_pages() %}
             {% if page %}
-            <li class="page-item"><a class="page-link" href="{{url_for('meeting_point.index', page_number=page)}}">{{ page }}</a></li>
+              <li class="page-item"><a class="page-link" href="{{url_for('meeting_point.index', page_number=page)}}">{{ page }}</a></li>
             {% endif %}
         {% endfor %}
       {% if meeting_points.has_next %}
@@ -68,6 +72,15 @@
       {% endif %}
     </ul>
   </nav>
+
+  <script>
+    function confirm_destroy(e)
+    {
+        if(!confirm("¿Está seguro que desea borrar el punto de encuentro?")) {
+            e.preventDefault();
+        }
+    }
+    </script>
 
 </div>
 

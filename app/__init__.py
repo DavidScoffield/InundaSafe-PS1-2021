@@ -1,16 +1,19 @@
-from os import path, environ
+from os import environ
 from flask import Flask, render_template
 from flask_session import Session
-from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from dotenv import load_dotenv
 from config import config
 from app import db
-from app.resources.meeting_point import meeting_point
-from app.resources import user
 from app.resources import auth
+from app.resources.home import home as home_route
+from app.resources.meeting_point import meeting_point
+from app.resources.user import user as user_blueprint
 from app.resources.config import config_routes
+from app.resources.auth import auth_routes
 from app.helpers import handler
+from app.helpers import check_permission as helper_permissions
+from app.helpers import has_role as helper_has_role
 from app.helpers import auth as helper_auth
 from app.helpers import config as helper_config
 from app.helpers.import_models import *
@@ -46,27 +49,21 @@ def create_app(environment="development"):
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
+    app.jinja_env.globals.update(helper_has_role=helper_has_role.has_role)
     app.jinja_env.globals.update(get_actual_config=helper_config.actual_config)
     app.jinja_env.globals.update(translate_state=lambda state: "Publicado" if state == "publicated" else "Despublicado")
-
-    # Ruta para el Home (usando decorator)
-    @app.route("/")
-    def home():
-        return render_template("home.html")
-
-    app.add_url_rule("/home_privada", "home_private", auth.login_private)
-
-    # Autenticación
-    app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
-    app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
-    app.add_url_rule(
-        "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
+    app.jinja_env.globals.update(
+        helper_has_permission=helper_permissions.check_permission
     )
 
-    # Rutas de Usuarios
-    app.add_url_rule("/usuarios", "user_index", user.index)
-    app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
-    app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
+    # Ruta HOME
+    app.register_blueprint(home_route)
+
+    # Rutas Autenticación
+    app.register_blueprint(auth_routes)
+
+    # # Rutas de Usuarios
+    app.register_blueprint(user_blueprint)
 
     # Rutas pagina configuracion(usando Blueprints)
     app.register_blueprint(config_routes)

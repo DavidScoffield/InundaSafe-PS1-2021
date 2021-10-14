@@ -101,11 +101,11 @@ INSERT INTO `role_has_permissions` VALUES
   (2,1),
   (2,2),
   (2,4),
-  (2,5),
-  (2,6),
-  (2,7),
-  (2,9),
-  (2,10);
+  (2,5);
+  -- (2,6),
+  -- (2,7),
+  -- (2,9),
+  -- (2,10)
 /*!40000 ALTER TABLE `role_has_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 

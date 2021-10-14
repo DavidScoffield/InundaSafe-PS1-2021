@@ -62,7 +62,8 @@ class MeetingPoint(db.Model):
 
         db.session.delete(meeting_point)
         db.session.commit()
-        
+
+    @classmethod
     def exists_address(cls, address):
         "Verifica si existe un punto de encuentro con la dirección recibida por parámetro"
         

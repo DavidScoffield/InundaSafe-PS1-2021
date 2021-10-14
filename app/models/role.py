@@ -20,3 +20,14 @@ class Role(db.Model):
 
     def __init__(self, name: str = None):
         self.name = name
+
+    @classmethod
+    def find_roles_from_strings(cls, roles):
+        return Role.query.filter(Role.name.in_(roles)).all()
+
+    @classmethod
+    def insert_rol(cls, roles, new_user):
+        for rol in roles:
+            new_user.roles.append(rol) 
+        db.session.commit()   
+    

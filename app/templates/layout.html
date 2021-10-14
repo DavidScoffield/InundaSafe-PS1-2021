@@ -1,9 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
+    {% set config_app = get_actual_config() %}
+    
     {% block head %}
+    <title>{% block title %}Inundasafe{% endblock %}</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- FONTAWASOME -->
+    <script src="https://kit.fontawesome.com/3f9cdd4385.js" crossorigin="anonymous"></script>
+
+    <!-- ICONO DE LA APP -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-white.ico') }}">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-    <title>{% block title %}{% endblock %}</title>
+
+
+    {% block styles %}
+    {{ bootstrap.load_css() }}
+    {% endblock %}
+
+    <!-- COLORS APP -->
+    <style>
+      *{ 
+        --color-1: {{config_app.colors_private.color_1}};
+        --color-2: {{config_app.colors_private.color_2}};
+        --color-3: {{config_app.colors_private.color_3}};
+        --color-4: {{config_app.colors_private.color_4}};
+        --color-5: {{config_app.colors_private.color_5}};
+      }
+    </style>
+
+    
     {% endblock %}
   </head>
   <body>
@@ -11,23 +40,18 @@
       {% block navbar %}
       {% endblock %}
     </div>
-    <div id="content">
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          <ul class="flashes">
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-          </ul>
-        {% endif %}
-      {% endwith %}
-
+    <div class="mt-5">
       {% block content %}
       {% endblock %}
     </div>
-    <div id="footer">
+    <footer>
       {% block footer %}
       {% endblock %}
-    </div>
+    </footer>
+
+    {% block scripts %}
+      <!-- Optional JavaScript -->
+      {{ bootstrap.load_js() }}
+    {% endblock %}
   </body>
 </html>

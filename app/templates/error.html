@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    {% set config_app = get_actual_config() %}
     {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='error.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
     {% endblock %}
     <title>Error!</title>
+    <!-- COLORS APP -->
+    <style>
+      *{ 
+        --color-1: {{config_app.colors_private.color_1}};
+        --color-2: {{config_app.colors_private.color_2}};
+        --color-3: {{config_app.colors_private.color_3}};
+        --color-4: {{config_app.colors_private.color_4}};
+        --color-5: {{config_app.colors_private.color_5}};
+      }
+    </style>
   </head>
   <body>
     <h1>{{ error_name }}</h1>
     <p class="zoom-area"><b>Error!</b> {{ error_description }} </p>
       <div class="link-container">
-        <a href="{{ url_for('home') }}" class="more-link">Go to the homepage</a>
+        <a href="{{ url_for('home.index') }}" class="more-link button-gradient">Volver a la pagina inicial</a>
       </div>
   </body>
 </html>

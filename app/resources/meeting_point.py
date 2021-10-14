@@ -34,32 +34,42 @@ class NewMeetingPointForm(FlaskForm):
 
     submit = SubmitField('Guardar', render_kw={'class':'button-gradient'})
 
-@meeting_point.route("/new", methods = ['GET','POST'])
+@meeting_point.get("/new")
 def new():
+    "Controller para mostrar el formulario para el alta de un punto de encuentro"
 
     if not authenticated(session) or not check_permission("punto_encuentro_new"):
         abort(401)
 
-    if request.method == "POST":
-        form = NewMeetingPointForm(request.form)
-        if not form.validate_on_submit():
-            flash("Por favor, corrija los errores")
-        else:
-            args = form.data
-            del args["submit"]
-            del args["csrf_token"]
-            if MeetingPoint.exists_address(args["address"]):
-                flash("Ya existe un punto de encuentro con esa dirección")
-            else:
-                MeetingPoint.new(**args)
-                flash("Punto de encuentro agregado exitosamente")
-    else:
-        form = NewMeetingPointForm()
+    form = NewMeetingPointForm()
 
     return render_template("meeting_point/new.html", form = form)
 
+@meeting_point.post("/new")
+def create():
+    "Controller para crear el punto de encuentro a partir de los datos del formulario"
+
+    if not authenticated(session) or not check_permission("punto_encuentro_create"):
+        abort(401)
+
+    form = NewMeetingPointForm(request.form)
+    if not form.validate_on_submit():
+        flash("Por favor, corrija los errores")
+    else:
+        args = form.data
+        del args["submit"]
+        del args["csrf_token"]
+        if MeetingPoint.exists_address(args["address"]):
+            flash("Ya existe un punto de encuentro con esa dirección")
+        else:
+            MeetingPoint.new(**args)
+            flash("Punto de encuentro agregado exitosamente")
+
+    return redirect(url_for("meeting_point.new"))
+
 @meeting_point.route("/<int:page_number>")
 def index(page_number):
+    "Controller para mostrar el listado de puntos de encuentro"
 
     if not authenticated(session) or not check_permission("punto_encuentro_index"):
         abort(401)

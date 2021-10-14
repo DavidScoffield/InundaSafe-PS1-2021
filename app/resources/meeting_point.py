@@ -68,13 +68,13 @@ def index(page_number):
 
     return render_template("meeting_point/index.html", meeting_points = meeting_points)
 
-@meeting_point.route("/delete/<int:id>")
-def destroy(id):
+@meeting_point.post("/delete")
+def destroy():
 
     if not authenticated(session) or not check_permission("punto_encuentro_destroy"):
         abort(401)
 
-    MeetingPoint.delete(id)
+    MeetingPoint.delete(request.form["id_meeting_point"])
 
     #flash("Punto de encuentro borrado exitosamente")
 

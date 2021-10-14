@@ -114,7 +114,7 @@ def new():
 @meeting_point.post("/new")
 def create():
     "Controller para crear el punto de encuentro a partir de los datos del formulario"
-    print("ENTRO?", flush=True)
+    
     if not authenticated(session) or not check_permission("punto_encuentro_create"):
         abort(401)
 
@@ -126,7 +126,6 @@ def create():
         del args["submit"]
         del args["csrf_token"]
         if MeetingPoint.exists_address(args["address"]):
-            print("AAAAAAAA", flush=True)
             flash("Ya existe un punto de encuentro con esa dirección")
         else:
             MeetingPoint.new(**args)

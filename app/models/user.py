@@ -96,6 +96,14 @@ class User(db.Model):
     def find_all_users(cls):
         return User.query.all()
 
+    #Baja logica
+    @classmethod
+    def delete_user(cls, user_id):
+        user = User.query.filter(User.id==user_id).first()
+        user.is_deleted = 1
+        db.session.commit()
+
+
     @property
     def password(self):
         "Creacion de excepcion en caso de que se quiera hacer el get de password"

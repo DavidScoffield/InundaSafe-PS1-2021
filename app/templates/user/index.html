@@ -21,7 +21,7 @@
           {% set buttonText = 'Desbloquear' %}
           Bloqueado, 
         {% endif %}
-        {% if not helper_is_admin(user.roles) %}
+        {% if not helper_has_role(user.roles, "rol_administrador") %}
           <div class="d-inline-flex">
             <form  action="{{ url_for('user.toggle_state', user_id=user.id, state=user.active ) }}" method="POST">
               <button class="button-gradient" type="submit">{{buttonText}}</button>

@@ -92,6 +92,15 @@ def toggle_state(user_id, state):
 
     return redirect(url_for("user_index"))
 
+@user.post("/editar")
+def delete():
+    if not authenticated(session) or not check_permission("usuario_destroy"):
+        abort(401)
+
+
+    User.delete_user(request.form["user_id"])
+    return redirect(url_for("user.index"))
+
 @user.get("/editar/<int:user_id>")
 def edit(user_id):
     if not authenticated(session):

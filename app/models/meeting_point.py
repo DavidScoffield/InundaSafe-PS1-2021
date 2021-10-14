@@ -37,7 +37,7 @@ class MeetingPoint(db.Model):
     
     @classmethod
     def new(cls, **args):
-        "Recibe los parámetros del formulario, crea el meeting point y lo guarda en la base de datos"
+        "Recibe los parámetros para crear el meeting point y lo guarda en la base de datos"
 
         meeting_point = MeetingPoint(**args)
         db.session.add(meeting_point)
@@ -53,3 +53,9 @@ class MeetingPoint(db.Model):
         paginated_meeting_points = ordered_meeting_points.paginate(max_per_page = elements_quantity, per_page = elements_quantity, page=page_number, error_out = True)
 
         return paginated_meeting_points
+
+    @classmethod
+    def exists_address(cls, address):
+        "Verifica si existe un punto de encuentro con la dirección recibida por parámetro"
+        
+        return MeetingPoint.query.filter(MeetingPoint.address.ilike(address)).first() is not None

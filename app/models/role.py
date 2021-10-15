@@ -29,5 +29,11 @@ class Role(db.Model):
     def insert_rol(cls, roles, new_user):
         for rol in roles:
             new_user.roles.append(rol) 
-        db.session.commit()   
+        db.session.commit() 
+
+    @classmethod
+    def delete_rol(cls, roles, new_user):
+        for rol in roles:
+            new_user.roles.clear(rol) 
+        db.session.commit()  
     

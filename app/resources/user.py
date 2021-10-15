@@ -98,7 +98,7 @@ def create():
         email, username, password, first_name, last_name, state, selectedRoles
     )  # inserto al usuario en la bd
 
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user.index"))
 
 
 @user.route("/toggle_state/<int:user_id>/<state>", methods=["POST"])
@@ -114,7 +114,7 @@ def toggle_state(user_id, state):
 
     User.update_state(user_id, new_state)
 
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user.index"))
 
 
 @user.get("/editar/<int:user_id>")
@@ -127,3 +127,46 @@ def edit(user_id):
 
     user = User.find_user_by_id(user_id)
     return render_template("user/edit_other_user.html", user=user)
+
+@user.post("/editar/<int:user_id>")
+def update(user_id):
+    if not authenticated(session):
+        abort(401)
+
+    if not check_permission("usuario_update"):  # ojo con este permiso
+        abort(401)
+
+    params = request.form.to_dict()
+    first_name = params["first_name"]
+    last_name = params["last_name"]
+    username = params["username"]
+    email = params["email"]
+    password = params["password"]
+    state = request.form.get("state")
+    selectedRoles = request.form.getlist("rol")
+    
+    if (
+        not first_name
+        or not last_name
+        or not username
+        or not email
+        or not password
+        or not state
+        or not len(selectedRoles)
+    ):
+        flash("Se deben completar todos los campos")
+        return redirect(url_for("user.edit", user_id=user_id))
+
+    user_email_username = User.check_existing_email_or_username_with_different_id(email, username, user_id)
+    if user_email_username:
+        if user_email_username.email == email:
+            flash("Ya existe un usuario con ese email")
+            return redirect(url_for("user.edit", user_id=user_id))
+
+        if user_email_username.username == username:
+            flash("Ya existe un usuario con ese nombre de usuario")
+            return redirect(url_for("user.edit", user_id=user_id))
+
+    User.update_user(user_id, params, selectedRoles)
+    
+    return redirect(url_for("user.edit", user_id=user_id))

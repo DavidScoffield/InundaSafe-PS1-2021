@@ -44,6 +44,21 @@ class MeetingPoint(db.Model):
         db.session.commit()
 
     @classmethod
+    def find_by_id(cls, id):
+        "Retorna el meeting point correspondiente al id recibido por parámetro"
+
+        return MeetingPoint.query.get(id)
+
+    def get_attributes(self):
+        "Retorna un diccionario con los atributos del meeting point"
+
+        attributes = vars(self)
+        del attributes["_sa_instance_state"]
+        del attributes["id"]
+
+        return attributes
+
+    @classmethod
     def paginate(cls, page_number):
         "Retorna una lista con todos los meeting points, teniendo en cuenta el paginado"
 
@@ -55,6 +70,12 @@ class MeetingPoint(db.Model):
         return paginated_meeting_points
 
     @classmethod
+    def exists_address(cls, address):
+        "Verifica si existe un punto de encuentro con la dirección recibida por parámetro"
+        
+        return MeetingPoint.query.filter(MeetingPoint.address.ilike(address)).first() is not None
+
+    @classmethod
     def delete(cls, id):
         "Borra un punto de encuentro"
 
@@ -63,8 +84,10 @@ class MeetingPoint(db.Model):
         db.session.delete(meeting_point)
         db.session.commit()
 
-    @classmethod
-    def exists_address(cls, address):
-        "Verifica si existe un punto de encuentro con la dirección recibida por parámetro"
+    def update(self, **args):
+        "Actualiza los datos del meeting point con los recibidos por parámetro"
         
-        return MeetingPoint.query.filter(MeetingPoint.address.ilike(address)).first() is not None
+        for attribute, value in args.items():
+            setattr(self, attribute, value)
+            
+        db.session.commit()

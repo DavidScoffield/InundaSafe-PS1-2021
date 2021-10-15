@@ -188,3 +188,26 @@ def update(user_id):
     User.update_user(user_id, params, selectedRoles)
     
     return redirect(url_for("user.edit", user_id=user_id))
+
+@user.get("/miPerfil")
+def edit_my_profile():
+    if not authenticated(session):
+        abort(401)
+
+    if not check_permission("usuario_show"):
+        abort(401)
+    
+    user = User.find_user_by_id(session['user'])
+
+    return render_template("user/my_profile.html", user=user)
+
+@user.post("/miPerfil")
+def update_my_profile():
+    if not authenticated(session):
+        abort(401)
+
+    if not check_permission("usuario_update"):  # ojo con este permiso
+        abort(401)
+
+  
+    return redirect(url_for("user.edit_my_profile"))

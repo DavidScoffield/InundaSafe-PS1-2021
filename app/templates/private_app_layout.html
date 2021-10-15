@@ -43,7 +43,7 @@ InundaSafe | Private App
         Perfil
       </button>
       <div class="dropdown-menu dropdown-menu-lg-right">
-        <button class="dropdown-item" type="button">Mi Perfil</button>
+        <a class="dropdown-item" href="{{url_for('user.edit_my_profile')}}">Mi Perfil</a>
         <a class="dropdown-item" href="{{url_for('auth_routes.auth_logout')}}">Cerrar Sesión</a>
       </div>
     </div>

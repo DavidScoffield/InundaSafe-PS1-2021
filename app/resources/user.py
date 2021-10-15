@@ -35,6 +35,13 @@ def index(page_number):
 
     users = User.paginate(page_number)
 
+    #elimino al usuario del listado para que no se liste a él mismo
+    this_user_id = session["user"]
+    for user in users.items:
+        if (user.id == this_user_id):
+            users.items.remove(user)
+
+
     return render_template("user/index.html", users=users)
 
 

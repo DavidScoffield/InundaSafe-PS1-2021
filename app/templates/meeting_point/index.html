@@ -49,8 +49,7 @@
         <tr>
             <th scope="col" class="text-center">Nombre</th>
             <th scope="col" class="text-center">Dirección</th>
-            <th scope="col" class="text-center">Teléfono</th>
-            <th scope="col" class="text-center">Email</th>
+            <th scope="col" class="text-center">Estado</th>
             <th scope="col" class="text-center">Acciones</th>
         </tr>
     </thead>
@@ -59,8 +58,7 @@
         <tr>
             <td class="text-center">{{mp.name}}</td>
             <td class="text-center">{{mp.address}}</td>
-            <td class="text-center">{{mp.telephone}}</td>
-            <td class="text-center">{{mp.email}}</td>
+            <td class="text-center">{{translate_state(mp.state)}}</td>
             <td class="text-center"><a class="btn btn-primary button-gradient mx-1" role="button" href="#">Ver</a>
                 <a class="btn btn-primary button-gradient mx-1" role="button" href="#">Editar</a>
                 <form action="{{url_for('meeting_point.destroy')}}" method="post" class="d-inline">

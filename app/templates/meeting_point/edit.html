@@ -1,0 +1,41 @@
+{% from 'bootstrap/form.html' import render_form %}
+
+{% extends "private_app_layout.html" %} 
+
+{% block title %} InundaSafe | Alta punto de encuentro {% endblock %} 
+
+{% block head %} 
+
+{{ super() }}
+
+
+{% endblock %} 
+
+{% block content %}
+<br>
+<div class="container mx-auto py-4">
+<div class="d-flex align-items-center">
+    <a href="{{url_for('meeting_point.index', page_number=1)}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Modificación de punto de encuentro</h1>
+  </div>
+
+{% with messages = get_flashed_messages() %}
+<br>
+    {% for message in messages %}
+        <p>{{message}}</p>
+    {% endfor %}
+
+{% endwith %}
+
+<form method="POST" action="{{url_for('meeting_point.update')}}">
+    <input name="id_meeting_point" type="hidden" value="{{id_meeting_point}}">
+    {{ render_form(form) }}
+</form>
+
+<br>
+<i>* Campos obligatorios</i>
+
+</div>
+{% endblock %}

@@ -81,15 +81,14 @@ class User(db.Model):
         ).first()
     
     @classmethod
-    def check_existing_email_or_username_with_different_id(cls, email, username, id_user):
-        return User.query.filter(or_(User.username == username, User.email == email)).filter(User.id != id_user).first()
+    def check_existing_email_with_different_id(cls, email, id_user):
+        return User.query.filter(User.email == email).filter(User.id != id_user).first()
 
     @classmethod
     def update_user(cls, user_id, data, selectedRoles):
         user = User.find_user_by_id(user_id)
         user.first_name = data['first_name']
         user.last_name = data['last_name']
-        user.username = data['username']
         user.email = data['email']
         user.password = data['password']
         if (data['state'] == "activo"): # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd

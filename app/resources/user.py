@@ -163,7 +163,6 @@ def update(user_id):
     params = request.form.to_dict()
     first_name = params["first_name"]
     last_name = params["last_name"]
-    username = params["username"]
     email = params["email"]
     password = params["password"]
     state = request.form.get("state")
@@ -172,7 +171,6 @@ def update(user_id):
     if (
         not first_name
         or not last_name
-        or not username
         or not email
         or not password
         or not state
@@ -181,14 +179,10 @@ def update(user_id):
         flash("Se deben completar todos los campos")
         return redirect(url_for("user.edit", user_id=user_id))
 
-    user_email_username = User.check_existing_email_or_username_with_different_id(email, username, user_id)
-    if user_email_username:
-        if user_email_username.email == email:
+    user_email = User.check_existing_email_with_different_id(email, user_id)
+    if user_email:
+        if user_email.email == email:
             flash("Ya existe un usuario con ese email")
-            return redirect(url_for("user.edit", user_id=user_id))
-
-        if user_email_username.username == username:
-            flash("Ya existe un usuario con ese nombre de usuario")
             return redirect(url_for("user.edit", user_id=user_id))
 
     User.update_user(user_id, params, selectedRoles)

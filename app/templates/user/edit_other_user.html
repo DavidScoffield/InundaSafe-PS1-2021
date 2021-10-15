@@ -12,16 +12,16 @@
   <h1>Editar datos de {{user.first_name}}:</h1>
   <form action="{{ url_for('user.update', user_id=user.id) }}" method="POST">
     <p>
+      <label>Nombre de usuario:<label></br>
+      <p>{{user.username}}</p>
+    </p>
+    <p>
       <label>Nombre:<label></br>
       <input name="first_name" value={{user.first_name}} placeholder="Ingrese un nombre"/>
     </p>
     <p>
       <label>Apellido:<label></br>
       <input name="last_name" value={{user.last_name}} placeholder="Ingrese un apellido"/>
-    </p>
-    <p>
-      <label>Nombre de usuario:<label></br>
-      <input name="username" value={{user.username}} placeholder="Ingrese un nombre de usuario"/>
     </p>
     <p>
       <label>Email:<label></br>

@@ -5,6 +5,7 @@ from app.db import db
 from app.helpers.bcrypt import check_password, generate_password_hash
 from app.models.user_has_roles import user_has_roles
 from app.models.role import Role
+from app.helpers.config import actual_config
 
 
 class User(db.Model):
@@ -17,6 +18,7 @@ class User(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Integer, nullable=False)
+    is_deleted = db.Column(db.Integer, nullable=False)
     created_at = db.Column(
         db.DateTime, default=datetime.datetime.utcnow
     )  # se modifico para que se guarde la fecha en la bd
@@ -39,6 +41,7 @@ class User(db.Model):
         first_name: str = None,
         last_name: str = None,
         active: int = None,
+        is_deleted: int = 0,
     ):
         self.email = email
         self.username = username
@@ -46,6 +49,7 @@ class User(db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.active = active
+        self.is_deleted = is_deleted
 
     @classmethod
     def find_by_email_and_pass(cls, email, password):
@@ -115,6 +119,26 @@ class User(db.Model):
     @classmethod
     def find_all_users(cls):
         return User.query.all()
+
+    @classmethod
+    def paginate(cls, page_number):
+        "Retorna una lista con todos los usuarios, teniendo en cuenta el paginado"
+
+        elements_quantity = actual_config().elements_quantity
+        order = actual_config().order_by
+        ordered_users = User.query.filter(User.is_deleted==0).order_by(eval(f"User.first_name.{order}()"))
+        paginated_users = ordered_users.paginate(max_per_page = elements_quantity, per_page = elements_quantity, page=page_number, error_out = True)
+
+        return paginated_users
+
+
+    #Baja logica
+    @classmethod
+    def delete_user(cls, user_id):
+        user = User.query.filter(User.id==user_id).first()
+        user.is_deleted = 1
+        db.session.commit()
+
 
     @property
     def password(self):

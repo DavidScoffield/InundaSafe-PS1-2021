@@ -103,7 +103,7 @@ class User(db.Model):
 
         elements_quantity = actual_config().elements_quantity
         order = actual_config().order_by
-        ordered_users = User.query.order_by(eval(f"User.first_name.{order}()"))
+        ordered_users = User.query.filter(User.is_deleted==0).order_by(eval(f"User.first_name.{order}()"))
         paginated_users = ordered_users.paginate(max_per_page = elements_quantity, per_page = elements_quantity, page=page_number, error_out = True)
 
         return paginated_users

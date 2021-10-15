@@ -7,23 +7,36 @@ from app.helpers.check_permission import check_permission
 
 user = Blueprint("user", __name__, url_prefix="/usuarios")
 
-@user.route("/", methods=['GET'])
-def index():
+#@user.route("/", methods=['GET'])
+#def index():
+#    if not authenticated(session):
+#        abort(401)
+#
+#    if (not check_permission("usuario_index")):
+#        abort(401)
+#
+#    users = User.find_all_users()
+#
+#    #elimino al usuario del listado para que no se liste a él mismo
+#    this_user_id = session["user"]
+#    for user in users:
+#        if (user.id == this_user_id):
+#            users.remove(user)
+#
+#    return render_template("user/index.html", users=users)
+
+@user.get("/<int:page_number>")
+def index(page_number):
     if not authenticated(session):
         abort(401)
 
     if (not check_permission("usuario_index")):
         abort(401)
 
-    users = User.find_all_users()
-
-    #elimino al usuario del listado para que no se liste a él mismo
-    this_user_id = session["user"]
-    for user in users:
-        if (user.id == this_user_id):
-            users.remove(user)
+    users = User.paginate(page_number)
 
     return render_template("user/index.html", users=users)
+
 
 @user.get("/nuevo")
 def new():
@@ -75,7 +88,7 @@ def create():
     
     User.insert_user(email, username, password, first_name, last_name, state, selectedRoles)   #inserto al usuario en la bd
      
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user.index", page_number=1))
 
 @user.route("/toggle_state/<int:user_id>/<state>", methods=['POST'])
 def toggle_state(user_id, state):
@@ -90,7 +103,7 @@ def toggle_state(user_id, state):
 
     User.update_state(user_id, new_state)
 
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user.index", page_number=1))
 
 @user.post("/editar")
 def delete():
@@ -99,7 +112,7 @@ def delete():
 
 
     User.delete_user(request.form["user_id"])
-    return redirect(url_for("user.index"))
+    return redirect(url_for("user.index", page_number=1))
 
 @user.get("/editar/<int:user_id>")
 def edit(user_id):

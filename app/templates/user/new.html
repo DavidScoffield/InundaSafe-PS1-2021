@@ -55,5 +55,5 @@
       <button type="reset">Limpiar</button>
     </p>
   </form>
-  <a href="{{ url_for('user_index') }}" class="link">Volver</a>
+  <a href="{{url_for('user.index', page_number=1)}}" class="link">Volver</a>
 {% endblock %}

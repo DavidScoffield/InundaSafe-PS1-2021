@@ -5,6 +5,7 @@ from app.db import db
 from app.helpers.bcrypt import check_password, generate_password_hash
 from app.models.user_has_roles import user_has_roles
 from app.models.role import Role
+from app.helpers.config import actual_config
 
 
 class User(db.Model):
@@ -40,7 +41,7 @@ class User(db.Model):
         first_name: str = None,
         last_name: str = None,
         active: int = None,
-        is_deleted: int = None,
+        is_deleted: int = 0,
     ):
         self.email = email
         self.username = username
@@ -95,6 +96,18 @@ class User(db.Model):
     @classmethod
     def find_all_users(cls):
         return User.query.all()
+
+    @classmethod
+    def paginate(cls, page_number):
+        "Retorna una lista con todos los usuarios, teniendo en cuenta el paginado"
+
+        elements_quantity = actual_config().elements_quantity
+        order = actual_config().order_by
+        ordered_users = User.query.order_by(eval(f"User.first_name.{order}()"))
+        paginated_users = ordered_users.paginate(max_per_page = elements_quantity, per_page = elements_quantity, page=page_number, error_out = True)
+
+        return paginated_users
+
 
     #Baja logica
     @classmethod

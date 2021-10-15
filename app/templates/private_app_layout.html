@@ -27,8 +27,8 @@ InundaSafe | Private App
 
   <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-        <li class="nav-item {% if bp == 'user_index' %} active {% endif %} ">
-          <a class="nav-link" href="{{url_for('user.index')}}">Administrar usuarios</a>
+        <li class="nav-item {% if bp == 'user.index' %} active {% endif %} ">
+          <a class="nav-link" href="{{url_for('user.index', page_number=1)}}">Administrar usuarios</a>
         </li>
         <!-- <li class="nav-item"> -->
           <li class="nav-item {% if bp == 'config_routes' %} active {% endif %} ">

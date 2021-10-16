@@ -172,18 +172,6 @@ def update(user_id):
     state = request.form.get("state")
     selectedRoles = request.form.getlist("rol")
 
-    #este if está por si dos admins se intentan sacar el permiso de admin mutuamente al mismo tiempo
-    roles = Role.find_roles_from_strings(selectedRoles) 
-    if not has_role(roles, "rol_administrador"): #si NO está chequeado el admin, entonces
-        all_users = User.find_all_users() #busco a todos los usuarios
-        lista = []
-        for u in all_users:
-            for r in u.roles:
-                lista.append(r.name) #y armo una lista con todos los roles de todos los usuarios
-        if (lista.count("rol_administrador") <= 1): #si hay 1 admin entonces no es posible dejar de ser admin porque no puede dejar de haber
-            flash("No puede dejar de ser administrador ya que usted es el único existente")
-            return redirect(url_for("user.edit_my_profile"))
-
     if (
         not first_name
         or not last_name
@@ -194,6 +182,26 @@ def update(user_id):
     ):
         flash("Se deben completar todos los campos")
         return redirect(url_for("user.edit", user_id=user_id))
+
+    #este if está por si dos admins se intentan sacar el permiso de admin mutuamente al mismo tiempo
+    roles = Role.find_roles_from_strings(selectedRoles) 
+
+    user = User.find_user_by_id(user_id)  
+    user_was_admin=False 
+    for rol in user.roles:
+        if(rol.name == "rol_administrador"):
+            user_was_admin=True
+
+    if not has_role(roles, "rol_administrador") and user_was_admin: #si NO está chequeado el admin, entonces    
+        all_users = User.find_all_users() #busco a todos los usuarios
+        lista = []
+        for u in all_users:
+            for r in u.roles:
+                lista.append(r.name) #y armo una lista con todos los roles de todos los usuarios
+        if (lista.count("rol_administrador") <= 1): #si hay 1 admin entonces no es posible dejar de ser admin porque no puede dejar de haber
+            flash("No puede dejar de ser administrador ya que usted es el único existente")
+            return redirect(url_for("user.edit", user_id=user_id))
+
 
     user_email = User.check_existing_email_with_different_id(email, user_id)
     if user_email:

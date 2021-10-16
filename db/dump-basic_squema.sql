@@ -46,6 +46,7 @@ INSERT INTO `permissions` VALUES
   (2,'punto_encuentro_new'),
   (13,'punto_encuentro_create'),
   (3,'punto_encuentro_destroy'),
+  (14,'punto_encuentro_edit'),
   (4,'punto_encuentro_update'),
   (5,'punto_encuentro_show'),
   -- USER
@@ -99,12 +100,14 @@ INSERT INTO `role_has_permissions` VALUES
   (1,11),
   (1,12),
   (1,13),
+  (1,14),
   -- OPERATOR
   (2,1),
   (2,2),
   (2,4),
   (2,5),
-  (2,13);
+  (2,13),
+  (2,14);
   -- (2,6),
   -- (2,7),
   -- (2,9),

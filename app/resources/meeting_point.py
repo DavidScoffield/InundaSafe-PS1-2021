@@ -21,7 +21,7 @@ from wtforms.fields.html5 import EmailField
 from flask_wtf import FlaskForm
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
-from app.helpers.check_param_search_meeting_point import (
+from app.helpers.check_param_search import (
     check_param,
 )
 
@@ -192,8 +192,8 @@ def index(page_number):
     name = args.get("name")
     state = args.get("state")
 
-    name = check_param("name", name)
-    state = check_param("state", state)
+    name = check_param("@meeting_point/name", name)
+    state = check_param("@meeting_point/state", state)
 
     meeting_points = MeetingPoint.search(
         page_number=page_number,

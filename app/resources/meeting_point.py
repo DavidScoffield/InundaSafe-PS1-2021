@@ -36,7 +36,6 @@ def new():
         "meeting_point/new.html", form=form
     )
 
-
 @meeting_point.post("/new")
 def create():
     "Controller para crear el punto de encuentro a partir de los datos del formulario"
@@ -149,10 +148,9 @@ def edit():
 
     return render_template("meeting_point/edit.html", form=form, id_meeting_point=id_meeting_point)
 
-
 @meeting_point.post("/update")
 def update():
-    "Controller para crear el punto de encuentro a partir de los datos del formulario"
+    "Controller para modificar el punto de encuentro a partir de los datos del formulario"
 
     if not authenticated(session) or not check_permission("punto_encuentro_update"):
         abort(401)
@@ -180,3 +178,16 @@ def update():
             flash("Punto de encuentro modificado exitosamente")
 
     return render_template("meeting_point/edit.html", form=form, id_meeting_point=id_meeting_point)
+
+@meeting_point.post("/show")
+def show():
+    "Controller para mostrar la información de un punto de encuentro"
+
+    if not authenticated(session) or not check_permission("punto_encuentro_show"):
+        abort(401)
+
+    id_meeting_point = request.form["id_meeting_point"]
+
+    meeting_point = MeetingPoint.find_by_id(id_meeting_point)
+
+    return render_template("meeting_point/show.html", meeting_point=meeting_point)

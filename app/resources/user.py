@@ -8,30 +8,15 @@ from flask import (
     Blueprint,
     flash,
 )
+
 from app.models.user import User
 from app.models.role import Role
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
 
-user = Blueprint("user", __name__, url_prefix="/usuarios")
+from app.helpers.forms.new_user_form import NewUserForm
 
-#@user.route("/", methods=['GET'])
-#def index():
-#    if not authenticated(session):
-#        abort(401)
-#
-#    if (not check_permission("usuario_index")):
-#        abort(401)
-#
-#    users = User.find_all_users()
-#
-#    #elimino al usuario del listado para que no se liste a él mismo
-#    this_user_id = session["user"]
-#    for user in users:
-#        if (user.id == this_user_id):
-#            users.remove(user)
-#
-#    return render_template("user/index.html", users=users)
+user = Blueprint("user", __name__, url_prefix="/usuarios")
 
 @user.get("/<int:page_number>")
 def index(page_number):
@@ -61,7 +46,9 @@ def new():
     if not check_permission("usuario_show"):
         abort(401)
 
-    return render_template("user/new.html")
+    form = NewUserForm()
+
+    return render_template("user/new.html", form=form)
 
 
 @user.post("/nuevo")
@@ -72,7 +59,9 @@ def create():
     if not check_permission("usuario_new"):
         abort(401)
 
-    params = request.form.to_dict()
+    form = NewUserForm(request.form)
+
+    params = form.data
 
     first_name = params["first_name"]
     last_name = params["last_name"]
@@ -80,40 +69,42 @@ def create():
     email = params["email"]
     password = params["password"]
     state = request.form.get("state")
-    selectedRoles = request.form.getlist("rol")
+    #selectedRoles = request.form.getlist("rol")
 
-    if (
-        not first_name
-        or not last_name
-        or not username
-        or not email
-        or not password
-        or not state
-        or not len(selectedRoles)
-    ):
-        flash("Se deben completar todos los campos")
-        return redirect(url_for("user.new"))
+    selectedRoles = []
 
-    user = User.check_existing_email_or_username(email, username)
+    #genero una lista de strings con los roles seleccionados en el form
+    for rol in ["rol_administrador", "rol_operador"]:
+        if(params[rol]):
+            selectedRoles += [rol]
 
-    if user:
-        if user.email == email:
-            flash("Ya existe un usuario con ese email")
-            return redirect(url_for("user.new"))
 
-        if user.username == username:
-            flash("Ya existe un usuario con ese nombre de usuario")
-            return redirect(url_for("user.new"))
-
-    if (
-        state == "activo"
-    ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
-        state = 1
+    #validaciones back: validate_on_submit() llama a los validators.DataRequired() de todos los campos (chequea que no esten vacios) y llama 
+    # ademas al validador custom validate_rol_label() definido en la clase que chequea que se haya clickeado al menos un checkbox.
+    if not form.validate_on_submit():
+        flash("Por favor, corrija los errores")
+        return render_template("user/new.html", form=form)
     else:
-        state = 0
-    
-    User.insert_user(email, username, password, first_name, last_name, state, selectedRoles)   #inserto al usuario en la bd
-     
+        user = User.check_existing_email_or_username(email, username)
+
+        if user:
+            if user.email == email:
+                flash("Ya existe un usuario con ese email")
+                return redirect(url_for("user.new"))
+
+            if user.username == username:
+                flash("Ya existe un usuario con ese nombre de usuario")
+                return redirect(url_for("user.new"))
+        if (
+            state == "activo"
+        ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
+            state = 1
+        else:
+            state = 0
+        
+        User.insert_user(email, username, password, first_name, last_name, state, selectedRoles)   #inserto al usuario en la bd
+
+    flash("Usuario creado correctamente")
     return redirect(url_for("user.index", page_number=1))
 
 

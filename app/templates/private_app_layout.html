@@ -29,7 +29,7 @@ InundaSafe | Private App
     <ul class="navbar-nav mr-auto">
         {% if helper_has_permission("usuario_index") %}
         <li class="nav-item {% if bp == 'user' %} active {% endif %} ">
-          <a class="nav-link" href="{{url_for('user.index')}}">Administrar usuarios</a>
+          <a class="nav-link" href="{{url_for('user.index', page_number=1)}}">Administrar usuarios</a>
         </li>
         {% endif %}
         {% if helper_has_permission("config_show") %}

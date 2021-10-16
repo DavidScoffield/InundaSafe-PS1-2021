@@ -4,8 +4,13 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
+{% with messages = get_flashed_messages() %} {% if messages %}
+  {% for message in messages %}
+  {{ message }}
+  {% endfor %}
+{% endif %} {% endwith %} 
   <h1>Editar datos de {{user.first_name}}:</h1>
-  <form action="{{ url_for('user.create') }}" method="POST">
+  <form action="{{ url_for('user.update', user_id=user.id) }}" method="POST">
     <p>
       <label>Nombre:<label></br>
       <input name="first_name" value={{user.first_name}} placeholder="Ingrese un nombre"/>
@@ -46,13 +51,29 @@
     </p>
     
     <p>
-      <input type="submit" value="Crear">
-      <button type="reset">Limpiar</button>
+      <input type="submit" value="Editar">
     </p>
   </form>
+  <div>
+    <form  action="{{ url_for('user.delete') }}" method="POST">
+      <input type="hidden" name="user_id" value="{{user.id}}">
+      <button type="submit" onclick="confirm_destroy(event)" class="btn btn-danger mx-1 rounded">Eliminar Usuario</button>
+    </form>
+  </div>
 
   <a href="{{url_for('home.index')}}" class="link">Volver</a>      
-  <a href="#" class="link">Nuevo</a>     
+  <a href="#" class="link">Nuevo</a>   
+  
+  
+  <script>
+    function confirm_destroy(e)
+    {
+        if(!confirm("¿Está seguro que desea borrar a este usuario?")) {
+            e.preventDefault();
+        }
+    }
+    </script>
+
 {% endblock %}
 
 

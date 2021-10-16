@@ -2,6 +2,7 @@
 from app.db import db
 from app.helpers.config import actual_config
 
+
 class MeetingPoint(db.Model):
 
     __tablename__ = "meeting_point"
@@ -34,7 +35,7 @@ class MeetingPoint(db.Model):
         self.state = state
         self.telephone = telephone
         self.email = email
-    
+
     @classmethod
     def new(cls, **args):
         "Recibe los parámetros para crear el meeting point y lo guarda en la base de datos"
@@ -58,28 +59,63 @@ class MeetingPoint(db.Model):
 
         return attributes
 
+    def search(
+        cls,
+        page_number: int = 1,
+        name: str = "",
+        state: str = "",
+    ):
+        "Retorna una lista con todos los meeting points, teniendo en cuenta los filtros pasados por parametro, en caso que estos sean vacio retorna todos los meeting points. Retorna el resultado paginado"
+
+        ac = actual_config()
+        order = ac.order_by
+        ordered_meeting_points = (
+            MeetingPoint.query.filter(
+                MeetingPoint.name.contains(name)
+            )
+            .filter(MeetingPoint.state.startswith(state))
+            .order_by(eval(f"MeetingPoint.name.{order}()"))
+        )
+        paginated_meeting_points = MeetingPoint.paginate(
+            ordered_meeting_points, page_number
+        )
+        return paginated_meeting_points
+
     @classmethod
-    def paginate(cls, page_number):
-        "Retorna una lista con todos los meeting points, teniendo en cuenta el paginado"
-
-        elements_quantity = actual_config().elements_quantity
-        order = actual_config().order_by
-        ordered_meeting_points = MeetingPoint.query.order_by(eval(f"MeetingPoint.name.{order}()"))
-        paginated_meeting_points = ordered_meeting_points.paginate(max_per_page = elements_quantity, per_page = elements_quantity, page=page_number, error_out = True)
-
+    def paginate(
+        cls,
+        meeting_points,
+        page_number: int = 1,
+    ):
+        "Retorna la lista de meeting points pasados por parametro paginados"
+        ac = actual_config()
+        elements_quantity = ac.elements_quantity
+        paginated_meeting_points = meeting_points.paginate(
+            max_per_page=elements_quantity,
+            per_page=elements_quantity,
+            page=page_number,
+            error_out=False,
+        )
         return paginated_meeting_points
 
     @classmethod
     def exists_address(cls, address):
         "Verifica si existe un punto de encuentro con la dirección recibida por parámetro"
-        
-        return MeetingPoint.query.filter(MeetingPoint.address.ilike(address)).first() is not None
+
+        return (
+            MeetingPoint.query.filter(
+                MeetingPoint.address.ilike(address)
+            ).first()
+            is not None
+        )
 
     @classmethod
     def delete(cls, id):
         "Borra un punto de encuentro"
 
-        meeting_point = MeetingPoint.query.filter_by(id = id).first()
+        meeting_point = MeetingPoint.query.filter_by(
+            id=id
+        ).first()
 
         db.session.delete(meeting_point)
         db.session.commit()

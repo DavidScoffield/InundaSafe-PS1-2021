@@ -13,26 +13,37 @@ from flask import (
 from app.db import db
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
+from app.helpers.check_param_search import (
+    check_param,
+)
 
-meeting_point = Blueprint("meeting_point", __name__, url_prefix="/meeting-point")
+meeting_point = Blueprint(
+    "meeting_point", __name__, url_prefix="/meeting-point"
+)
 
 @meeting_point.get("/new")
 def new():
     "Controller para mostrar el formulario para el alta de un punto de encuentro"
 
-    if not authenticated(session) or not check_permission("punto_encuentro_new"):
+    if not authenticated(session) or not check_permission(
+        "punto_encuentro_new"
+    ):
         abort(401)
 
     form = MeetingPointForm()
 
-    return render_template("meeting_point/new.html", form=form)
+    return render_template(
+        "meeting_point/new.html", form=form
+    )
 
 
 @meeting_point.post("/new")
 def create():
     "Controller para crear el punto de encuentro a partir de los datos del formulario"
-    
-    if not authenticated(session) or not check_permission("punto_encuentro_create"):
+
+    if not authenticated(session) or not check_permission(
+        "punto_encuentro_create"
+    ):
         abort(401)
 
     form = MeetingPointForm(request.form)
@@ -43,29 +54,77 @@ def create():
         del args["submit"]
         del args["csrf_token"]
         if MeetingPoint.exists_address(args["address"]):
-            flash("Ya existe un punto de encuentro con esa dirección")
+            flash(
+                "Ya existe un punto de encuentro con esa dirección"
+            )
         else:
             MeetingPoint.new(**args)
-            flash("Punto de encuentro agregado exitosamente")
+            flash(
+                "Punto de encuentro agregado exitosamente"
+            )
 
-    return redirect(url_for("meeting_point.new"))
+    return render_template("meeting_point/new.html", form=form)
 
 
-@meeting_point.route("/<int:page_number>")
+@meeting_point.get("/<int:page_number>")
 def index(page_number):
-    "Controller para mostrar el listado de puntos de encuentro"
+    """
+    Controller para mostrar el listado de puntos de encuentro
+    Recibe como parametro el numero de la pagina a mostrar
+    Puede recibir como argumentos:
+    - name : string -> campo de filtro para los nombres de puntos de encuentro
+    - state : string -> campo de filtro para los estados(publicado, despublicado) de puntos de encuentro
+    """
 
-    if not authenticated(session) or not check_permission("punto_encuentro_index"):
+    if not authenticated(session) or not check_permission(
+        "punto_encuentro_index"
+    ):
         abort(401)
 
-    meeting_points = MeetingPoint.paginate(page_number)
+    args = request.args
+    name = args.get("name")
+    state = args.get("state")
 
-    return render_template("meeting_point/index.html", meeting_points = meeting_points)
+    name = check_param("@meeting_point/name", name)
+    state = check_param("@meeting_point/state", state)
+
+    meeting_points = MeetingPoint.search(
+        page_number=page_number,
+        state=state,
+        name=name,
+    )
+
+    # En caso que no encuentre ningun resultado resultado se redirige a la pagina 1 con los argumentos de busqueda
+    if (
+        meeting_points.page != 1
+        and meeting_points.page > meeting_points.pages
+    ):
+        # Si la cantidad de paginas es 0, se redirigira a la pagina 1
+        if meeting_points.pages > 0:
+            page = meeting_points.pages
+        else:
+            page = 1
+
+        return redirect(
+            url_for(
+                "meeting_point.index",
+                page_number=page,
+                **request.args
+            )
+        )
+
+    return render_template(
+        "meeting_point/index.html",
+        meeting_points=meeting_points,
+    )
+
 
 @meeting_point.post("/delete")
 def destroy():
 
-    if not authenticated(session) or not check_permission("punto_encuentro_destroy"):
+    if not authenticated(session) or not check_permission(
+        "punto_encuentro_destroy"
+    ):
         abort(401)
 
     MeetingPoint.delete(request.form["id_meeting_point"])

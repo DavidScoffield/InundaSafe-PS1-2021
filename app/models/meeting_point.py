@@ -59,7 +59,7 @@ class MeetingPoint(db.Model):
             MeetingPoint.query.filter(
                 MeetingPoint.name.contains(name)
             )
-            .filter(MeetingPoint.state.contains(state))
+            .filter(MeetingPoint.state.startswith(state))
             .order_by(eval(f"MeetingPoint.name.{order}()"))
         )
         paginated_meeting_points = MeetingPoint.paginate(

@@ -100,7 +100,28 @@ class User(db.Model):
 
         Role.delete_rol(user.roles, user) 
         Role.insert_rol(roles, user)
-        print(roles, user.roles, flush=True)
+    
+    @classmethod
+    def update_profile(cls, user, data, selectedRoles, isAdmin):
+        user.first_name = data['first_name']
+        user.last_name = data['last_name']
+        user.email = data['email']
+        user.password = data['password']
+        
+        if isAdmin:
+            if (data['state'] == "activo"): # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
+                user.active = 1
+            else:
+                user.active = 0
+            
+            db.session.commit()
+            
+            roles = Role.find_roles_from_strings(selectedRoles) 
+
+            Role.delete_rol(user.roles, user) 
+            Role.insert_rol(roles, user)
+        else:
+            db.session.commit()
 
     @classmethod
     def insert_user(

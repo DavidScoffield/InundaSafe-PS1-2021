@@ -12,6 +12,7 @@ from app.models.user import User
 from app.models.role import Role
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
+from app.helpers.has_role import has_role
 
 user = Blueprint("user", __name__, url_prefix="/usuarios")
 
@@ -208,6 +209,45 @@ def update_my_profile():
 
     if not check_permission("usuario_update"):  # ojo con este permiso
         abort(401)
+    
+    params = request.form.to_dict()
+    first_name = params["first_name"]
+    last_name = params["last_name"]
+    email = params["email"]
+    password = params["password"]
+    state = request.form.get("state")
+    selectedRoles = request.form.getlist("rol")
+
+    user = User.find_user_by_id(session['user'])
+    isAdmin = has_role(user.roles, "rol_administrador")
+    if isAdmin:
+        if (
+            not first_name
+            or not last_name
+            or not email
+            or not password
+            or not state
+            or not len(selectedRoles)
+        ):
+            flash("Se deben completar todos los campos")
+            return redirect(url_for("user.edit_my_profile"))
+    else:
+        if (
+            not first_name
+            or not last_name
+            or not email
+            or not password
+        ):
+            flash("Se deben completar todos los campos")
+            return redirect(url_for("user.edit_my_profile"))
+    
+    user_email = User.check_existing_email_with_different_id(email, user.id)
+    if user_email:
+        if user_email.email == email:
+            flash("Ya existe un usuario con ese email")
+            return redirect(url_for("user.edit_my_profile"))
+    
+    User.update_profile(user, params, selectedRoles, isAdmin)
 
   
     return redirect(url_for("user.edit_my_profile"))

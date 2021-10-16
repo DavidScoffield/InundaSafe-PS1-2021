@@ -118,13 +118,16 @@ def create():
     return redirect(url_for("user.index", page_number=1))
 
 
-@user.route("/toggle_state/<int:user_id>/<state>", methods=["POST"])
-def toggle_state(user_id, state):
+@user.post("/toggle_state")
+def toggle_state():
     if not authenticated(session):
         abort(401)
 
     if not check_permission("usuario_update"):  # ojo con este permiso
         abort(401)
+
+    user_id = request.form["user_id"]
+    state = request.form["state"]
 
     # Si su estado era Activo (1), hay que ponerlo en 0 (Bloqueado). Si era Bloqueado hay que ponerlo en 1
     new_state = 0 if int(state) == 1 else 1

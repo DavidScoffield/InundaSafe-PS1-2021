@@ -44,6 +44,7 @@ INSERT INTO `permissions` VALUES
   -- Punto de encuentro 
   (1,'punto_encuentro_index'),
   (2,'punto_encuentro_new'),
+  (13,'punto_encuentro_create'),
   (3,'punto_encuentro_destroy'),
   (4,'punto_encuentro_update'),
   (5,'punto_encuentro_show'),
@@ -97,15 +98,17 @@ INSERT INTO `role_has_permissions` VALUES
   (1,10),
   (1,11),
   (1,12),
+  (1,13),
   -- OPERATOR
   (2,1),
   (2,2),
   (2,4),
   (2,5),
-  (2,6),
-  (2,7),
-  (2,9),
-  (2,10);
+  (2,13);
+  -- (2,6),
+  -- (2,7),
+  -- (2,9),
+  -- (2,10)
 /*!40000 ALTER TABLE `role_has_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -193,9 +196,14 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin@gmail.com','administrador','123123','Cosme','Fulanito',1,0,'2021-10-02 14:46:18','2021-10-02 14:46:18'),(2,'ron@gmail.com','operador1','123123','Ron','Perez',1,0,'2021-10-02 14:46:18','2021-10-02 14:46:18'),(3,'maca@gmail.com','macanain','123123','Macarena','Nain',1,0,'2021-10-02 14:46:18','2021-10-02 14:46:18');
+INSERT INTO `users` VALUES
+-- Las contraseñas de estos usuarios son "123123"
+  (1,'admin@gmail.com','administrador','$2a$12$UIGYVw44lvb2UUgIARqCTeNrjpVKaNzEy7dYdfCB8xlPpV5A66b0a','Cosme','Fulanito',1,0,'2021-10-02 14:46:18','2021-10-02 14:46:18'),
+  (2,'ron@gmail.com','operador1','$2a$12$UIGYVw44lvb2UUgIARqCTeNrjpVKaNzEy7dYdfCB8xlPpV5A66b0a','Ron','Perez',1,0,'2021-10-02 14:46:18','2021-10-02 14:46:18'),
+  (3,'maca@gmail.com','macanain','$2a$12$UIGYVw44lvb2UUgIARqCTeNrjpVKaNzEy7dYdfCB8xlPpV5A66b0a','Macarena','Nain',1,0,'2021-10-02 14:46:18','2021-10-02 14:46:18');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
 
 --
 -- Table structure for table `configuration`

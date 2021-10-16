@@ -59,6 +59,7 @@ class MeetingPoint(db.Model):
 
         return attributes
 
+    @classmethod
     def search(
         cls,
         page_number: int = 1,

@@ -45,6 +45,21 @@ class MeetingPoint(db.Model):
         db.session.commit()
 
     @classmethod
+    def find_by_id(cls, id):
+        "Retorna el meeting point correspondiente al id recibido por parámetro"
+
+        return MeetingPoint.query.get(id)
+
+    def get_attributes(self):
+        "Retorna un diccionario con los atributos del meeting point"
+
+        attributes = vars(self)
+        del attributes["_sa_instance_state"]
+        del attributes["id"]
+
+        return attributes
+
+    @classmethod
     def search(
         cls,
         page_number: int = 1,
@@ -59,7 +74,7 @@ class MeetingPoint(db.Model):
             MeetingPoint.query.filter(
                 MeetingPoint.name.contains(name)
             )
-            .filter(MeetingPoint.state.contains(state))
+            .filter(MeetingPoint.state.startswith(state))
             .order_by(eval(f"MeetingPoint.name.{order}()"))
         )
         paginated_meeting_points = MeetingPoint.paginate(
@@ -85,6 +100,17 @@ class MeetingPoint(db.Model):
         return paginated_meeting_points
 
     @classmethod
+    def exists_address(cls, address):
+        "Verifica si existe un punto de encuentro con la dirección recibida por parámetro"
+
+        return (
+            MeetingPoint.query.filter(
+                MeetingPoint.address.ilike(address)
+            ).first()
+            is not None
+        )
+
+    @classmethod
     def delete(cls, id):
         "Borra un punto de encuentro"
 
@@ -95,13 +121,10 @@ class MeetingPoint(db.Model):
         db.session.delete(meeting_point)
         db.session.commit()
 
-    @classmethod
-    def exists_address(cls, address):
-        "Verifica si existe un punto de encuentro con la dirección recibida por parámetro"
-
-        return (
-            MeetingPoint.query.filter(
-                MeetingPoint.address.ilike(address)
-            ).first()
-            is not None
-        )
+    def update(self, **args):
+        "Actualiza los datos del meeting point con los recibidos por parámetro"
+        
+        for attribute, value in args.items():
+            setattr(self, attribute, value)
+            
+        db.session.commit()

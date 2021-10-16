@@ -2,7 +2,10 @@
 from sqlalchemy import or_
 import datetime
 from app.db import db
-from app.helpers.bcrypt import check_password, generate_password_hash
+from app.helpers.bcrypt import (
+    check_password,
+    generate_password_hash,
+)
 from app.models.user_has_roles import user_has_roles
 from app.models.role import Role
 from app.helpers.config import actual_config
@@ -12,8 +15,12 @@ class User(db.Model):
 
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(150), nullable=False, unique=True)
-    username = db.Column(db.String(50), nullable=False, unique=True)
+    email = db.Column(
+        db.String(150), nullable=False, unique=True
+    )
+    username = db.Column(
+        db.String(50), nullable=False, unique=True
+    )
     password_hash = db.Column(db.String(), nullable=False)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
@@ -22,7 +29,9 @@ class User(db.Model):
     created_at = db.Column(
         db.DateTime, default=datetime.datetime.utcnow
     )  # se modifico para que se guarde la fecha en la bd
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime, default=datetime.datetime.utcnow
+    )
     roles = db.relationship(
         "Role",
         secondary="user_has_roles",
@@ -59,27 +68,39 @@ class User(db.Model):
         - Caso contrario retorna None
         """
 
-        user_find = User.query.filter(User.email == email).first()
+        user_find = User.query.filter(
+            User.email == email
+        ).first()
         return (
-            user_find if (user_find and user_find.verify_password(password)) else None
+            user_find
+            if (
+                user_find
+                and user_find.verify_password(password)
+            )
+            else None
         )
 
     @classmethod
     def update_state(cls, user_id, new_state):
-        user = User.query.filter(User.id==user_id).first()
+        user = User.query.filter(User.id == user_id).first()
         user.active = new_state
         db.session.commit()
 
     @classmethod
     def find_user_by_id(cls, user_id):
-        return User.query.filter(User.id==user_id).first()
-        
+        return User.query.filter(User.id == user_id).first()
+
     @classmethod
-    def check_existing_email_or_username(cls, email, username):
+    def check_existing_email_or_username(
+        cls, email, username
+    ):
         return User.query.filter(
-            or_(User.username == username, User.email == email)
+            or_(
+                User.username == username,
+                User.email == email,
+            )
         ).first()
-    
+
     @classmethod
     def check_existing_email_with_different_id(cls, email, id_user):
         return User.query.filter(User.email == email).filter(User.id != id_user).first()
@@ -96,9 +117,9 @@ class User(db.Model):
         else:
             user.active = 0
         db.session.commit()
-        roles = Role.find_roles_from_strings(selectedRoles) 
+        roles = Role.find_roles_from_strings(selectedRoles)
 
-        Role.delete_rol(user.roles, user) 
+        Role.delete_rol(user.roles, user)
         Role.insert_rol(roles, user)
     
     @classmethod
@@ -125,40 +146,102 @@ class User(db.Model):
 
     @classmethod
     def insert_user(
-        cls, email, username, password, first_name, last_name, state, selectedRoles
+        cls,
+        email,
+        username,
+        password,
+        first_name,
+        last_name,
+        state,
+        selectedRoles,
     ):
-        new_user = User(email, username, password, first_name, last_name, state)
+        new_user = User(
+            email,
+            username,
+            password,
+            first_name,
+            last_name,
+            state,
+        )
         db.session.add(new_user)
         db.session.commit()
 
         roles = Role.find_roles_from_strings(
             selectedRoles
         )  # lista con los roles que va a tener el nuevo usuario
-        Role.insert_rol(roles, new_user)  # inserto los roles en la tabla user_has_roles
+        Role.insert_rol(
+            roles, new_user
+        )  # inserto los roles en la tabla user_has_roles
 
     @classmethod
     def find_all_users(cls):
         return User.query.all()
 
     @classmethod
-    def paginate(cls, page_number):
-        "Retorna una lista con todos los usuarios, teniendo en cuenta el paginado"
-
-        elements_quantity = actual_config().elements_quantity
-        order = actual_config().order_by
-        ordered_users = User.query.filter(User.is_deleted==0).order_by(eval(f"User.first_name.{order}()"))
-        paginated_users = ordered_users.paginate(max_per_page = elements_quantity, per_page = elements_quantity, page=page_number, error_out = True)
-
+    def search_paginate(
+        cls,
+        page_number: int = 1,
+        name: str = "",
+        active: int = 1,
+        dont_use_active: bool = True,
+    ):
+        "Retorna una lista con todos los meeting points, teniendo en cuenta los filtros pasados por parametro, en caso que estos sean vacio retorna todos los usuarios. Pagina el resultado"
+        ordered_users = User.search(
+            name=name,
+            active=active,
+            dont_use_active=dont_use_active,
+        )
+        paginated_users = User.paginate(
+            ordered_users, page_number
+        )
         return paginated_users
 
+    @classmethod
+    def search(
+        cls,
+        name: str = "",
+        active: int = 1,
+        dont_use_active: bool = True,
+    ):
+        "Retorna una lista con todos los meeting points, teniendo en cuenta los filtros pasados por parametro, en caso que estos sean vacio retorna todos los usuarios."
 
-    #Baja logica
+        ac = actual_config()
+        order = ac.order_by
+        return (
+            User.query.filter(User.is_deleted == 0)
+            .filter(User.first_name.contains(name))
+            .filter(
+                or_(User.active == active, dont_use_active)
+            )
+            .order_by(eval(f"User.first_name.{order}()"))
+        )
+
+    @classmethod
+    def paginate(
+        cls,
+        users,
+        page_number: int = 1,
+    ):
+        "Retorna la lista de usuarios pasados por parametro paginados"
+        ac = actual_config()
+        elements_quantity = ac.elements_quantity
+        return users.paginate(
+            max_per_page=elements_quantity,
+            per_page=elements_quantity,
+            page=page_number,
+            error_out=False,
+        )
+
+    @classmethod
+    def exclude_user(cls, users, user_id):
+        return users.filter(User.id != user_id)
+
+    # Baja logica
     @classmethod
     def delete_user(cls, user_id):
-        user = User.query.filter(User.id==user_id).first()
+        user = User.query.filter(User.id == user_id).first()
         user.is_deleted = 1
         db.session.commit()
-
 
     @property
     def password(self):
@@ -168,7 +251,9 @@ class User(db.Model):
     @password.setter
     def password(self, password):
         "Setter para la password, y al momento de realizarla, crear la contraseña hasheada y almacenar esta en vez del string"
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(
+            password
+        )
 
     def verify_password(self, password: str):
         "Comprueba que la contraseña pasada sea la misma que la que tiene almacenada hasheada"

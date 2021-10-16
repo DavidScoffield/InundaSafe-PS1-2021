@@ -18,7 +18,7 @@
     <a href="{{url_for('meeting_point.index', page_number=1)}}" class="text-muted p-1 mr-3" style="cursor: pointer">
       <i class="fas fa-arrow-left fa-lg"></i>
     </a>
-    <h1 class="font-weight-bold">Alta de punto de encuentro</h1>
+    <h1 class="font-weight-bold">Modificación de punto de encuentro</h1>
   </div>
 
 {% with messages = get_flashed_messages() %}
@@ -29,7 +29,8 @@
 
 {% endwith %}
 
-<form method="POST" action="{{url_for('meeting_point.new')}}">    
+<form method="POST" action="{{url_for('meeting_point.update')}}">
+    <input name="id_meeting_point" type="hidden" value="{{id_meeting_point}}">
     {{ render_form(form) }}
 </form>
 

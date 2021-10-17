@@ -57,7 +57,6 @@ class MeetingPoint(db.Model):
 
         attributes = vars(self)
         del attributes["_sa_instance_state"]
-        del attributes["id"]
 
         return attributes
 

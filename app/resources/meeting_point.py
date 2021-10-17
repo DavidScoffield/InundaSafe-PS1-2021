@@ -56,6 +56,7 @@ def create():
         args = form.data
         del args["submit"]
         del args["csrf_token"]
+        del args["id"]
         if MeetingPoint.exists_address(args["address"]):
             flash(
                 "Ya existe un punto de encuentro con esa dirección"
@@ -153,18 +154,13 @@ def edit():
 
     id_meeting_point = request.form["id_meeting_point"]
 
-    meeting_point = MeetingPoint.find_by_id(
-        id_meeting_point
-    )  # meeting point que se quiere modificar
+    meeting_point = MeetingPoint.find_by_id(id_meeting_point)  # meeting point que se quiere modificar
 
-    form = MeetingPointForm(
-        **meeting_point.get_attributes()
-    )  # se inicializa el formulario con los datos originales del meeting point que se desea modificar
+    form = MeetingPointForm(**meeting_point.get_attributes())  # se inicializa el formulario con los datos originales del meeting point que se desea modificar
 
     return render_template(
         "meeting_point/edit.html",
         form=form,
-        id_meeting_point=id_meeting_point,
     )
 
 
@@ -177,25 +173,22 @@ def update():
     ):
         abort(401)
 
-    id_meeting_point = request.form["id_meeting_point"]
+    form = MeetingPointForm(request.form)
+    id_meeting_point = form.data["id"]
 
     meeting_point = MeetingPoint.find_by_id(
         id_meeting_point
     )  # meeting point que se quiere modificar
 
-    form = MeetingPointForm(request.form)
-
     if not form.validate_on_submit():
         flash("Por favor, corrija los errores")
     else:
         args = form.data
-        puede_editar = False
         del args["submit"]
         del args["csrf_token"]
+        del args["id"]
 
-        form_address = args[
-            "address"
-        ].lower()  # la dirección que quiere cargar el usuario
+        form_address = args["address"].lower()  # la dirección que quiere cargar el usuario
 
         if (
             MeetingPoint.exists_address(form_address)

@@ -75,7 +75,7 @@
                   </form>
                   <form action="{{url_for('meeting_point.destroy')}}" method="post" class="d-inline">
                     <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
-                    <button type="submit" onclick="confirm_destroy(event)" class="btn btn-primary button-gradient mx-1">Eliminar</button>
+                    <button type="submit" onclick="return confirm('¿Está seguro que desea borrar el punto de encuentro?')" class="btn btn-primary button-gradient mx-1">Eliminar</button>
                   </form>
               </td>
           </tr>
@@ -106,15 +106,7 @@
         {% endif %}
       </ul>
     </nav>
-
-    <script>
-      function confirm_destroy(e)
-      {
-          if(!confirm("¿Está seguro que desea borrar el punto de encuentro?")) {
-              e.preventDefault();
-          }
-      }
-      </script>
+    
 </div>
 
 {% endblock %}

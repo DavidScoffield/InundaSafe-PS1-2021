@@ -9,7 +9,14 @@
   {{ message }}
   {% endfor %}
 {% endif %} {% endwith %} 
-  <h1>Mi perfil:</h1>
+<div class="container mx-auto py-4">
+  <!-- TITULO -->
+  <div class="d-flex align-items-center mb-3">
+    <a href="{{url_for('home.index')}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Mi perfil:</h1>
+  </div>
   <form action="{{ url_for('user.update_my_profile') }}" method="POST">
     <p>
       <label>Nombre de usuario:<label></br>
@@ -57,8 +64,7 @@
     </p>
   </form>
 
-  <a href="{{url_for('home.index')}}" class="link">Volver</a>      
-
+</div>
   <script>
     function confirm_uncheck_admin(e)
     {

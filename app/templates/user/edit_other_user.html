@@ -9,7 +9,16 @@
   {{ message }}
   {% endfor %}
 {% endif %} {% endwith %} 
-  <h1>Editar datos de {{user.first_name}}:</h1>
+
+<div class="container mx-auto py-4">
+  <!-- TITULO -->
+  <div class="d-flex align-items-center mb-3">
+    <a href="{{url_for('user.index', page_number=1)}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Editar datos de {{user.first_name}}:</h1>
+  </div>
+
   <form action="{{ url_for('user.update', user_id=user.id) }}" method="POST">
     <p>
       <label>Nombre de usuario:<label></br>
@@ -59,10 +68,8 @@
       <input type="hidden" name="user_id" value="{{user.id}}">
       <button type="submit" onclick="confirm_destroy(event)" class="btn btn-danger mx-1 rounded">Eliminar Usuario</button>
     </form>
-  </div>
-
-  <a href="{{url_for('home.index')}}" class="link">Volver</a>      
-  
+  </div>    
+</div>
   
   <script>
     function confirm_destroy(e)

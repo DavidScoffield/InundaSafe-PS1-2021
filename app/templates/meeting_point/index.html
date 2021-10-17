@@ -71,18 +71,24 @@
               <td class="text-center">{{mp.address}}</td>
               <td class="text-center">{{translate_state(mp.state)}}</td>
               <td class="text-center">
+                  {% if helper_has_permission("punto_encuentro_show") %}
                   <form action="{{url_for('meeting_point.show')}}" method="post" class="d-inline">
                     <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
                     <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
                   </form>
+                  {% endif %}
+                  {% if helper_has_permission("punto_encuentro_edit") %}
                   <form action="{{url_for('meeting_point.edit')}}" method="post" class="d-inline">
                     <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
                     <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
                   </form>
-                  <form action="{{url_for('meeting_point.destroy')}}" method="post" class="d-inline">
-                    <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
-                    <button type="submit" onclick="return confirm('¿Está seguro que desea borrar el punto de encuentro?')" class="btn btn-primary button-gradient mx-1">Eliminar</button>
-                  </form>
+                  {% endif %}
+                  {% if helper_has_permission("punto_encuentro_destroy") %}
+                    <form action="{{url_for('meeting_point.destroy')}}" method="post" class="d-inline">
+                      <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
+                      <button type="submit" onclick="return confirm('¿Está seguro que desea borrar el punto de encuentro?')" class="btn btn-primary button-gradient mx-1">Eliminar</button>
+                    </form>
+                  {% endif %}
               </td>
           </tr>
           {% endfor %}

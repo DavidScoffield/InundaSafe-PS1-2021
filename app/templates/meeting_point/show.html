@@ -1,0 +1,60 @@
+{% from 'bootstrap/form.html' import render_form %}
+
+{% extends "private_app_layout.html" %} 
+
+{% block title %} InundaSafe | Ver punto de encuentro {% endblock %} 
+
+{% block head %} 
+
+{{ super() }}
+
+
+{% endblock %} 
+
+{% block content %}
+<br>
+<div class="container mx-auto py-4">
+<div class="d-flex align-items-center">
+    <a href="{{url_for('meeting_point.index', page_number=1)}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Ver información del punto de encuentro</h1>
+</div>
+<br>
+
+<table class="table table-striped">
+    <tbody>
+      <tr>
+        <th scope="row">Nombre</th>
+        <td>{{meeting_point.name}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Direccicón</th>
+        <td>{{meeting_point.address}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Estado</th>
+        <td>{{translate_state(meeting_point.state)}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Email</th>
+        <td>{{meeting_point.email}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Teléfono</th>
+        <td>{{meeting_point.telephone}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Coordenada X</th>
+        <td>{{meeting_point.coor_X}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Coordenada Y</th>
+        <td>{{meeting_point.coor_Y}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+</div>
+{% endblock %}

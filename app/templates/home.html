@@ -2,9 +2,12 @@
 {% block title %}InundaSafe | Home Privada{% endblock %} 
 {% block head %} 
 {{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css')}}"
 {% endblock head %}
 {% block content %}
-<h1>Inicio</h1>
-<p>Página de inicio de la aplicación</p>
-
+<div class="container mx-auto py-4 text-center">
+  <h1 class="text-center">Aplicación Privada</h1>
+  <p class="description">Bienvenido <strong>{{user.first_name}} {{user.last_name}}</strong></p>
+  <p class="description">Sistema para la gestión y manejo de los datos de la aplicación</p>
+</div>
 {% endblock %}

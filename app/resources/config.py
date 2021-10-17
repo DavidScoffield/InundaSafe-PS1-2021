@@ -1,14 +1,25 @@
-from flask import Blueprint, redirect, request, url_for, render_template, abort, session
+from flask import (
+    Blueprint,
+    redirect,
+    request,
+    url_for,
+    render_template,
+    abort,
+    session,
+)
 from app.models.colors import Color
 from app.models.configuration import Configuration
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
 
-config_routes = Blueprint("config_routes", __name__, url_prefix="/config")
+config_routes = Blueprint(
+    "config_routes", __name__, url_prefix="/config"
+)
 
 
 @config_routes.get("/")
 def index():
+    "Controller para mostrar el formulario para modificar los datos de configuracion de la aplicacion"
 
     if not authenticated(session):
         abort(401)
@@ -19,11 +30,17 @@ def index():
     colors = Color.all()
     config_actual = Configuration.actual()
 
-    return render_template("config/index.html", colors=colors, config=config_actual)
+    return render_template(
+        "config/index.html",
+        colors=colors,
+        config=config_actual,
+    )
 
 
 @config_routes.post("/", endpoint="update")
 def update():
+    "Controller para actualizar la configuracion de la aplicacion en base a los datos del formulario"
+
     if not authenticated(session):
         abort(401)
 

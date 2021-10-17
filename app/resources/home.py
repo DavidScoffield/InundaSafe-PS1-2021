@@ -13,6 +13,7 @@ home = Blueprint("home", __name__, url_prefix="/")
 
 @home.get("/")
 def index():
+    "Controller para mostrar la pagina de home de la aplicacion una vez logeado"
 
     if not authenticated(session):
         return redirect(url_for("auth_routes.auth_login"))

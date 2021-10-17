@@ -3,6 +3,7 @@ from app.db import db
 
 
 class Color(db.Model):
+    """Modelo para el manejo de la tabla Color de la base de datos"""
 
     __tablename__ = "colors"
     id = db.Column(db.Integer, primary_key=True)
@@ -23,6 +24,7 @@ class Color(db.Model):
         color_4: str = None,
         color_5: str = None,
     ):
+        """Contructor del modelo"""
         self.color_1 = color_1
         self.color_2 = color_2
         self.color_3 = color_3
@@ -31,4 +33,5 @@ class Color(db.Model):
 
     @classmethod
     def all(cls):
+        """Devuelve todos los colores de la base de datos"""
         return Color.query.all()

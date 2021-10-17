@@ -3,6 +3,7 @@ from app.db import db
 
 
 class Permission(db.Model):
+    """Modelo para el manejo de la tabla Permission de la base de datos"""
 
     __tablename__ = "permissions"
     id = db.Column(db.Integer, primary_key=True)
@@ -12,4 +13,5 @@ class Permission(db.Model):
         return "<Permission %r>" % self.name
 
     def __init__(self, name: str = None):
+        """Constructor del modelo"""
         self.name = name

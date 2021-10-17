@@ -12,6 +12,7 @@ from app.helpers.config import actual_config
 
 
 class User(db.Model):
+    """Modelo para el manejo de la tabla User de la base de datos"""
 
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -52,6 +53,7 @@ class User(db.Model):
         active: int = None,
         is_deleted: int = 0,
     ):
+        """Constructor del modelo"""
         self.email = email
         self.username = username
         self.password = password
@@ -82,18 +84,21 @@ class User(db.Model):
 
     @classmethod
     def update_state(cls, user_id, new_state):
+        """Actualizar estado del usuario"""
         user = User.query.filter(User.id == user_id).first()
         user.active = new_state
         db.session.commit()
 
     @classmethod
     def find_user_by_id(cls, user_id):
+        """Buscar usuario en la base de datos por id"""
         return User.query.filter(User.id == user_id).first()
 
     @classmethod
     def check_existing_email_or_username(
         cls, email, username
     ):
+        """Comprobar si algun usuario con determinado email o nombre de usuario"""
         return User.query.filter(
             or_(
                 User.username == username,
@@ -102,17 +107,27 @@ class User(db.Model):
         ).first()
 
     @classmethod
-    def check_existing_email_with_different_id(cls, email, id_user):
-        return User.query.filter(User.email == email).filter(User.id != id_user).first()
+    def check_existing_email_with_different_id(
+        cls, email, id_user
+    ):
+        """Comprobar si existe algun usuario con determinado email y que no sea el del usuario con id = id_user"""
+        return (
+            User.query.filter(User.email == email)
+            .filter(User.id != id_user)
+            .first()
+        )
 
     @classmethod
     def update_user(cls, user_id, data, selectedRoles):
+        """Actualizar usuario en la base de datos con los datos pasados por parametros"""
         user = User.find_user_by_id(user_id)
-        user.first_name = data['first_name']
-        user.last_name = data['last_name']
-        user.email = data['email']
-        user.password = data['password']
-        if (data['state'] == "activo"): # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
+        user.first_name = data["first_name"]
+        user.last_name = data["last_name"]
+        user.email = data["email"]
+        user.password = data["password"]
+        if (
+            data["state"] == "activo"
+        ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
             user.active = 1
         else:
             user.active = 0
@@ -121,25 +136,31 @@ class User(db.Model):
 
         Role.delete_rol(user.roles, user)
         Role.insert_rol(roles, user)
-    
+
     @classmethod
-    def update_profile(cls, user, data, selectedRoles, isAdmin):
-        user.first_name = data['first_name']
-        user.last_name = data['last_name']
-        user.email = data['email']
-        user.password = data['password']
-        
+    def update_profile(
+        cls, user, data, selectedRoles, isAdmin
+    ):
+        user.first_name = data["first_name"]
+        user.last_name = data["last_name"]
+        user.email = data["email"]
+        user.password = data["password"]
+
         if isAdmin:
-            if (data['state'] == "activo"): # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
+            if (
+                data["state"] == "activo"
+            ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
                 user.active = 1
             else:
                 user.active = 0
-            
-            db.session.commit()
-            
-            roles = Role.find_roles_from_strings(selectedRoles) 
 
-            Role.delete_rol(user.roles, user) 
+            db.session.commit()
+
+            roles = Role.find_roles_from_strings(
+                selectedRoles
+            )
+
+            Role.delete_rol(user.roles, user)
             Role.insert_rol(roles, user)
         else:
             db.session.commit()
@@ -155,6 +176,7 @@ class User(db.Model):
         state,
         selectedRoles,
     ):
+        """Insertar un nuevo usuario en la base de datos con los datos pasados por parametro"""
         new_user = User(
             email,
             username,
@@ -175,6 +197,7 @@ class User(db.Model):
 
     @classmethod
     def find_all_users(cls):
+        """Buscar todos los usuarios de la base de datos"""
         return User.query.all()
 
     @classmethod
@@ -234,11 +257,13 @@ class User(db.Model):
 
     @classmethod
     def exclude_user(cls, users, user_id):
+        """Filtrar de la lista de usuarios aquel con id = user_id"""
         return users.filter(User.id != user_id)
 
     # Baja logica
     @classmethod
     def delete_user(cls, user_id):
+        """Eliminar de la base de datos a un usuario en base al id"""
         user = User.query.filter(User.id == user_id).first()
         user.is_deleted = 1
         db.session.commit()

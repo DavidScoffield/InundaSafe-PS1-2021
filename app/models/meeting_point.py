@@ -4,6 +4,7 @@ from app.helpers.config import actual_config
 
 
 class MeetingPoint(db.Model):
+    """Modelo para el manejo de la tabla MeetingPoint de la base de datos"""
 
     __tablename__ = "meeting_point"
     id = db.Column(db.Integer, primary_key=True)
@@ -28,6 +29,7 @@ class MeetingPoint(db.Model):
         telephone: str = None,
         email: str = None,
     ):
+        """Constructor del modelo"""
         self.name = name
         self.address = address
         self.coor_X = coor_X
@@ -123,8 +125,8 @@ class MeetingPoint(db.Model):
 
     def update(self, **args):
         "Actualiza los datos del meeting point con los recibidos por parámetro"
-        
+
         for attribute, value in args.items():
             setattr(self, attribute, value)
-            
+
         db.session.commit()

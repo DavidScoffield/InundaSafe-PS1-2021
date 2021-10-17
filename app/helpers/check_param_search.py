@@ -1,4 +1,11 @@
 def check_param(param_name, param):
+    """
+    Formatea el parametro pasado dependiendo cual es y de que modelo
+    Recibe:
+     - param_name : string -> valor para recuperar la posicion del diccionario especifica
+     - param : string -> parametro a evaluar
+
+    """
     return {
         "@meeting_point/name": param
         if param is not None
@@ -14,6 +21,7 @@ def check_param(param_name, param):
 
 
 def active_dic(state):
+    """Formatea el parametro state para trabajar correctamente con el modelo"""
     return {
         "publicated": 1,
         "despublicated": 0,

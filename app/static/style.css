@@ -9,6 +9,7 @@ body {
   background-color: var(--color-5) !important;
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -32,7 +33,18 @@ body {
   border-bottom-right-radius: 15px;
 }
 
+/* CONTENT CENTER */
+.content-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(-25%);
+}
+
+/* FOOTER */
 .footer {
+  height: 90px;
   width: 100%;
   display: flex;
   flex-wrap: wrap;

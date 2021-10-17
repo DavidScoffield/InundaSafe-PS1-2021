@@ -180,7 +180,7 @@ def toggle_state():
 
     if not check_permission(
         "usuario_update"
-    ):  # ojo con este permiso
+    ):  
         abort(401)
 
     user_id = request.form["user_id"]
@@ -216,7 +216,7 @@ def edit(user_id):
 
     if not check_permission(
         "usuario_show"
-    ):  # es este permiso????????'
+    ):  
         abort(401)
 
     user = User.find_user_by_id(user_id)
@@ -234,7 +234,7 @@ def update(user_id):
 
     if not check_permission(
         "usuario_update"
-    ):  # ojo con este permiso
+    ):  
         abort(401)
 
     params = request.form.to_dict()
@@ -333,7 +333,7 @@ def update_my_profile():
 
     if not check_permission(
         "usuario_update"
-    ):  # ojo con este permiso
+    ):  
         abort(401)
 
     params = request.form.to_dict()

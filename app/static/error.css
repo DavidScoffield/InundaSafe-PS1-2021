@@ -51,3 +51,7 @@ a.more-link {
   margin-top: 50px;
   letter-spacing: 1px;
 }
+
+.container {
+  width: 100%;
+}

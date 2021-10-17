@@ -1,3 +1,4 @@
+
 {% from 'bootstrap/form.html' import render_form %}
 
 {% extends "private_app_layout.html" %} 
@@ -11,66 +12,109 @@
 {% endblock %} 
 
 {% block content %}
-
-<br>
+{% set argname = request.args.name %}
+{% set argstate = request.args.state %}
 
 <div class="container mx-auto py-4">
 
-<div class="w-100 d-flex justify-content-center">
-<a class="btn btn-primary button-gradient" role="button" href="{{url_for('meeting_point.new')}}">Agregar nuevo punto de encuentro</a>
-</div>
-<br>
-    
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col" class="text-center">Nombre</th>
-            <th scope="col" class="text-center">Dirección</th>
-            <th scope="col" class="text-center">Teléfono</th>
-            <th scope="col" class="text-center">Email</th>
-            <th scope="col" class="text-center">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for mp in meeting_points.items %}
-        <tr>
-            <td class="text-center">{{mp.name}}</td>
-            <td class="text-center">{{mp.address}}</td>
-            <td class="text-center">{{mp.telephone}}</td>
-            <td class="text-center">{{mp.email}}</td>
-            <td class="text-center"><a class="btn btn-primary button-gradient mx-1" role="button" href="#">Ver</a>
-                <a class="btn btn-primary button-gradient mx-1" role="button" href="#">Editar</a>
-                <a class="btn btn-primary button-gradient mx-1" role="button" href="#">Eliminar</a>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+  <!-- TITULO -->
+  <div class="d-flex align-items-center mb-3">
+    <a href="{{url_for('home.index')}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Puntos de encuentro</h1>
+  </div>
 
-<nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center">
-      {% if meeting_points.has_prev %}
-        <li class="page-item"></li>
-        <a class="page-link" href="{{url_for('meeting_point.index', page_number=meeting_points.prev_num)}}" tabindex="-1">Anterior</a>
-      {% else %}
-        <li class="page-item disabled">
-        <a class="page-link" href="#" tabindex="-1">Anterior</a>
-      {% endif %}
-      </li>
-        {% for page in meeting_points.iter_pages() %}
-            {% if page %}
-            <li class="page-item"><a class="page-link" href="{{url_for('meeting_point.index', page_number=page)}}">{{ page }}</a></li>
-            {% endif %}
-        {% endfor %}
-      {% if meeting_points.has_next %}
-        <li class="page-item"></li>
-        <a class="page-link" href="{{url_for('meeting_point.index', page_number=meeting_points.next_num)}}">Siguiente</a>
-      {% else %}
-        <li class="page-item disabled">
-        <a class="page-link" href="#">Siguiente</a>
-      {% endif %}
-    </ul>
-  </nav>
+<!-- <div class="w-100 d-flex justify-content-between align-items-center"> -->
+  <div class="w-100 row justify-content-center">
+    <div class="col d-flex justify-content-sm-center justify-content-md-start mb-sm-3 mb-md-0">
+      <a class="btn btn-primary button-gradient" role="button" href="{{url_for('meeting_point.new')}}">Nuevo</a>
+    </div>
+    <div class="col-sm-12 col-md-6 d-flex justify-content-sm-center justify-content-md-end">
+      <form method="GET" action="{{url_for('meeting_point.index', page_number=meeting_points.page)}}" class="d-flex justify-content-end align-content-center">
 
+        <input type="text" name="name" placeholder="Buscar por nombre..." class="mx-1 pl-2" 
+        {% if argname %} 
+          value="{{argname}}"
+        {% endif %}>
+        
+        <select type="range" class="rounded-sm mx-1" name="state" aria-label="seleccionador estado">
+          <option value="all" {{"selected" if argstate == "all"}}>Todos</option>
+          <option value="publicated" {{"selected" if argstate == "publicated"}}>Publicado</option>
+          <option value="despublicated" {{"selected" if argstate == "despublicated"}}>Despublicado</option>
+        </select>
+        <button class="btn btn-dark btn-sm" aria-label="button-search"><i class="fas fa-search fa-sm"></i></button>
+      </form>
+    </div>
+  </div>
+  <br>
+      
+  <table class="table">
+      <thead>
+          <tr>
+              <th scope="col" class="text-center">Nombre</th>
+              <th scope="col" class="text-center">Dirección</th>
+              <th scope="col" class="text-center">Estado</th>
+              <th scope="col" class="text-center">Acciones</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for mp in meeting_points.items %}
+          <tr>
+              <td class="text-center">{{mp.name}}</td>
+              <td class="text-center">{{mp.address}}</td>
+              <td class="text-center">{{translate_state(mp.state)}}</td>
+              <td class="text-center">
+                  <form action="{{url_for('meeting_point.show')}}" method="post" class="d-inline">
+                    <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
+                    <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
+                  </form>
+                  <form action="{{url_for('meeting_point.edit')}}" method="post" class="d-inline">
+                    <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
+                    <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
+                  </form>
+                  <form action="{{url_for('meeting_point.destroy')}}" method="post" class="d-inline">
+                    <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
+                    <button type="submit" onclick="confirm_destroy(event)" class="btn btn-primary button-gradient mx-1">Eliminar</button>
+                  </form>
+              </td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+  <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        {% if meeting_points.has_prev %}
+          <li class="page-item"></li>
+          <a class="page-link" href="{{url_for('meeting_point.index', page_number=meeting_points.prev_num)}}?{{request.query_string.decode()}}" tabindex="-1">Anterior</a>
+        {% else %}
+          <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1">Anterior</a>
+        {% endif %}
+        </li>
+          {% for page in meeting_points.iter_pages() %}
+              {% if page %}
+                <li class="page-item"><a class="page-link" href="{{url_for('meeting_point.index', page_number=page)}}?{{request.query_string.decode()}}">{{ page }}</a></li>
+              {% endif %}
+          {% endfor %}
+        {% if meeting_points.has_next %}
+          <li class="page-item"></li>
+          <a class="page-link" href="{{url_for('meeting_point.index', page_number=meeting_points.next_num)}}?{{request.query_string.decode()}}">Siguiente</a>
+        {% else %}
+          <li class="page-item disabled">
+          <a class="page-link" href="#">Siguiente</a>
+        {% endif %}
+      </ul>
+    </nav>
+
+    <script>
+      function confirm_destroy(e)
+      {
+          if(!confirm("¿Está seguro que desea borrar el punto de encuentro?")) {
+              e.preventDefault();
+          }
+      }
+      </script>
 </div>
 
 {% endblock %}

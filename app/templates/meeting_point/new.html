@@ -28,10 +28,8 @@
     {% endfor %}
 
 {% endwith %}
-
-<form method="POST" action="{{url_for('meeting_point.new')}}">    
-    {{ render_form(form) }}
-</form>
+ 
+{{ render_form(form, method='POST', action=url_for('meeting_point.new')) }}
 
 <br>
 <i>* Campos obligatorios</i>

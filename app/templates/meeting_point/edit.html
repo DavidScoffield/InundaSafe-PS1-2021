@@ -29,10 +29,7 @@
 
 {% endwith %}
 
-<form method="POST" action="{{url_for('meeting_point.update')}}">
-    <input name="id_meeting_point" type="hidden" value="{{id_meeting_point}}">
-    {{ render_form(form) }}
-</form>
+{{ render_form(form, method='POST', action=url_for('meeting_point.update')) }}
 
 <br>
 <i>* Campos obligatorios</i>

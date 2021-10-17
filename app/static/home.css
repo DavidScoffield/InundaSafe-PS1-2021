@@ -1,3 +1,7 @@
 .description {
   font-size: 1.3em;
 }
+
+.home-content {
+  transform: translateY(-50%);
+}

@@ -51,21 +51,17 @@ def create():
 
     form = MeetingPointForm(request.form)
     if not form.validate_on_submit():
-        flash("Por favor, corrija los errores")
+        flash("Por favor, corrija los errores", category="meeting_point_new")
     else:
         args = form.data
         del args["submit"]
         del args["csrf_token"]
         del args["id"]
         if MeetingPoint.exists_address(args["address"]):
-            flash(
-                "Ya existe un punto de encuentro con esa dirección"
-            )
+            flash("Ya existe un punto de encuentro con esa dirección", category="meeting_point_new")
         else:
             MeetingPoint.new(**args)
-            flash(
-                "Punto de encuentro agregado exitosamente"
-            )
+            flash("Punto de encuentro agregado exitosamente", category="meeting_point_new")
 
     return render_template(
         "meeting_point/new.html", form=form
@@ -136,7 +132,7 @@ def destroy():
 
     MeetingPoint.delete(request.form["id_meeting_point"])
 
-    flash("Punto de encuentro borrado exitosamente")
+    flash("Punto de encuentro borrado exitosamente", category="meeting_point_delete")
 
     return redirect(
         url_for("meeting_point.index", page_number=1)
@@ -181,7 +177,7 @@ def update():
     )  # meeting point que se quiere modificar
 
     if not form.validate_on_submit():
-        flash("Por favor, corrija los errores")
+        flash("Por favor, corrija los errores", category="meeting_point_update")
     else:
         args = form.data
         del args["submit"]
@@ -195,14 +191,10 @@ def update():
             and form_address
             != meeting_point.address.lower()
         ):  # quiere usar una dirección que ya existe
-            flash(
-                "Ya existe un punto de encuentro con esa dirección"
-            )
+            flash("Ya existe un punto de encuentro con esa dirección", category="meeting_point_update")
         else:  # quiere usar la misma dirección o alguna que no existe
             meeting_point.update(**args)
-            flash(
-                "Punto de encuentro modificado exitosamente"
-            )
+            flash("Punto de encuentro modificado exitosamente", category="meeting_point_update")
 
     return render_template(
         "meeting_point/edit.html",

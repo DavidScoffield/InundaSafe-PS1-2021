@@ -2,6 +2,15 @@
 
 Aplicación de ejemplo para la cátedra de Proyecto de Software de la Facultad de Informática de la U.N.L.P.
 
+## Usuarios para logearse
+
+- Usuario administrador:
+  - Email: admin@gmail.com
+  - Contraseña: Admin123
+- Usuario operador:
+  - Email: ron@gmail.com
+  - Contraseña: Operador123
+
 ## Iniciar ambiente
 
 ### Requisitos

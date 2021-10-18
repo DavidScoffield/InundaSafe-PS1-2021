@@ -1,6 +1,6 @@
-# Proyecto de Software - Aplicación de ejemplo
+# Proyecto de Software - Trabajo Integrador
 
-Aplicación de ejemplo para la cátedra de Proyecto de Software de la Facultad de Informática de la U.N.L.P.
+Aplicación para el trabajo integrador para la materia de Proyecto de Software de la Facultad de Informática de la UNLP.
 
 ## Usuarios para logearse
 
@@ -47,7 +47,3 @@ templates         # Módulo con los templates
 db.py             # Instancia de base de datos
 __init__.py       # Instancia de la aplicación y ruteo
 ```
-
-## TODO
-
-- [ ] Usar una hoja de estilos simple para que quede de ejemplo.

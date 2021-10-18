@@ -30,7 +30,7 @@
             value="{{argname}}"
           {% endif %}>
           
-          <select type="range" class="rounded-sm mx-1" name="active" aria-label="seleccionador estado">
+          <select class="rounded-sm mx-1" name="active" aria-label="seleccionador estado">
             <option value="all" {{"selected" if argactive == "all"}}>Todos</option>
             <option value="publicated" {{"selected" if argactive == "publicated"}}>Activo</option>
             <option value="despublicated" {{"selected" if argactive == "despublicated"}}>Bloqueado</option>

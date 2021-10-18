@@ -363,9 +363,7 @@ def update_my_profile():
             if (
                 lista.count("rol_administrador") <= 1
             ):  # si hay 1 admin entonces no es posible dejar de ser admin porque no puede dejar de haber
-                flash(
-                    "No puede dejar de ser administrador ya que usted es el único existente"
-                )
+                flash("No puede dejar de ser administrador ya que usted es el único existente", category="user_my_profile")
                 return redirect(
                     url_for("user.edit_my_profile")
                 )
@@ -378,7 +376,7 @@ def update_my_profile():
             or not state
             or not len(selectedRoles)
         ):
-            flash("Se deben completar todos los campos")
+            flash("Se deben completar todos los campos", category="user_my_profile")
             return redirect(url_for("user.edit_my_profile"))
     else:
         if (
@@ -387,7 +385,7 @@ def update_my_profile():
             or not email
             or not password
         ):
-            flash("Se deben completar todos los campos")
+            flash("Se deben completar todos los campos", category="user_my_profile")
             return redirect(url_for("user.edit_my_profile"))
 
     user_email = (
@@ -397,7 +395,7 @@ def update_my_profile():
     )
     if user_email:
         if user_email.email == email:
-            flash("Ya existe un usuario con ese email")
+            flash("Ya existe un usuario con ese email", category="user_my_profile")
             return redirect(url_for("user.edit_my_profile"))
 
     User.update_profile(

@@ -1,22 +1,23 @@
-from wtforms import SubmitField, validators, IntegerField, StringField, SelectField
+from wtforms import SubmitField, validators, IntegerField, StringField, SelectField, HiddenField
 from wtforms.fields.html5 import EmailField
+from wtforms.widgets import HiddenInput
 from flask_wtf import FlaskForm
 
 class MeetingPointForm(FlaskForm):
 
     "Crea el formulario para obtener datos de un meeting point"
 
+    id = HiddenField()
+
     name = StringField(
         "Nombre (*)",
         [
             validators.DataRequired(message="Este campo es obligatorio"),
-            validators.Regexp(
-                "^[a-z A-Z]+$", message="Por favor, ingrese un nombre válido"
-            ),
+            validators.Regexp("^[a-zA-Z0-9 ]+$", message="Por favor, ingrese un nombre válido. El nombre no puede tener caracteres especiales."),
         ],
         render_kw={
-            "pattern": "[a-z A-Z]+$",
-            "title": "El nombre no puede contener números",
+            "pattern": "^[a-zA-Z0-9 ]+$",
+            "title": "El nombre no puede tener caracteres especiales",
         },
     )
 
@@ -29,12 +30,12 @@ class MeetingPointForm(FlaskForm):
         [
             validators.Optional(),
             validators.Regexp(
-                "^[\d]+$", message="Por favor, ingrese una coordenada X válida"
+                "^-?[0-9]{1,10}(?:\.[0-9]+)?$", message="Por favor, ingrese una coordenada X válida"
             ),
         ],
         render_kw={
-            "pattern": "^[\d]+$",
-            "title": "La coordenada no puede contener letras",
+            "pattern": "^-?[0-9]{1,10}(?:\.[0-9]+)?$",
+            "title": "Por favor, ingrese una coordenada X válida",
         },
     )
 
@@ -43,12 +44,12 @@ class MeetingPointForm(FlaskForm):
         [
             validators.Optional(),
             validators.Regexp(
-                "^[\d]+$", message="Por favor, ingrese una coordenada Y válida"
+                "^-?[0-9]{1,10}(?:\.[0-9]+)?$", message="Por favor, ingrese una coordenada Y válida"
             ),
         ],
         render_kw={
-            "pattern": "^[\d]+$",
-            "title": "La coordenada no puede contener letras",
+            "pattern": "^-?[0-9]{1,10}(?:\.[0-9]+)?$",
+            "title": "Por favor, ingrese una coordenada Y válida",
         },
     )
 
@@ -57,12 +58,12 @@ class MeetingPointForm(FlaskForm):
         [
             validators.Optional(),
             validators.Regexp(
-                "^[\d]+$", message="Por favor, ingrese un número de teléfono válido"
+                "^[\d]+$", message="Por favor, ingrese un número de teléfono válido. El teléfono solo puede contener números."
             ),
         ],
         render_kw={
             "pattern": "^[\d]+$",
-            "title": "El teléfono no puede contener letras",
+            "title": "El teléfono solo puede contener números",
         },
     )
 

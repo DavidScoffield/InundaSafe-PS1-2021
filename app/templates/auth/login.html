@@ -1,13 +1,19 @@
+{% from 'bootstrap/form.html' import render_form %}
 {% extends "layout.html" %}
 {% block title %}Login{% endblock %}
 {% block head %}
   {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 {% endblock %}
 {% block content %}
-  <h1>Iniciar sesión</h1>
-  <form action="{{ url_for('auth_routes.auth_authenticate') }}" method="POST">
-    <input name="email" placeholder="Correo" required/>
-    <input type="password" name="password" placeholder="Clave" required/>
-    <input type="submit" value="Login">
-  </form>
+  <main class="container mx-auto login">
+    <h1>Iniciar sesión</h1>
+    {% with messages = get_flashed_messages(category_filter=["login_error"]) %}
+    <br>
+    {% for message in messages %}
+        <p>{{message}}</p>
+    {% endfor %}
+    {% endwith %}
+    {{render_form(form, action=url_for('auth_routes.auth_authenticate'), method="POST")}}
+  </main>
 {% endblock %}

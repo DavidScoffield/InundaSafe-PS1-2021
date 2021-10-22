@@ -208,7 +208,11 @@ class User(db.Model):
         active: int = 1,
         dont_use_active: bool = True,
     ):
-        "Retorna una lista con todos los meeting points, teniendo en cuenta los filtros pasados por parametro, en caso que estos sean vacio retorna todos los usuarios. Pagina el resultado"
+        """
+        Retorna una lista con todos los usuarios, teniendo en cuenta los filtros
+        pasados por parametro, en caso que estos sean vacio retorna todos los usuarios.
+        Pagina el resultado
+        """
         ordered_users = User.search(
             name=name,
             active=active,
@@ -226,7 +230,10 @@ class User(db.Model):
         active: int = 1,
         dont_use_active: bool = True,
     ):
-        "Retorna una lista con todos los meeting points, teniendo en cuenta los filtros pasados por parametro, en caso que estos sean vacio retorna todos los usuarios."
+        """
+        Retorna una lista con todos los usuarios, teniendo en cuenta los filtros
+        pasados por parametro, en caso que estos sean vacio retorna todos los usuarios.
+        """
 
         ac = actual_config()
         order = ac.order_by

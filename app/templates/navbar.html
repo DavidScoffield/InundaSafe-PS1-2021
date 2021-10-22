@@ -1,4 +1,4 @@
-{% set bp = request.blueprint %}
+{% set bp = request.blueprint %} {% set user = get_user_info() %}
 
 <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-gradient">
   <div>
@@ -52,7 +52,7 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        Perfil
+        <i class="fa fa-user pr-2"></i>{{user.first_name}} {{user.last_name}}
       </button>
       <div class="dropdown-menu dropdown-menu-lg-right">
         <a class="dropdown-item" href="{{url_for('user.edit_my_profile')}}">Mi Perfil</a>

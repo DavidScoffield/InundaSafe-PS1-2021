@@ -67,7 +67,11 @@ class MeetingPoint(db.Model):
         name: str = "",
         state: str = "",
     ):
-        "Retorna una lista con todos los meeting points, teniendo en cuenta los filtros pasados por parametro, en caso que estos sean vacio retorna todos los meeting points. Retorna el resultado paginado"
+        """
+        Retorna una lista con todos los meeting points, teniendo en cuenta los filtros pasados
+        por parametro, en caso que estos sean vacio retorna todos los meeting points.
+        Retorna el resultado paginado
+        """
 
         ac = actual_config()
         order = ac.order_by

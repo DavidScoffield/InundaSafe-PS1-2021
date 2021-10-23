@@ -66,7 +66,8 @@ class User(db.Model):
     def find_by_email_and_pass(cls, email, password):
         """
         - Busca en la base de datos a un usuario que tenga el mismo mail
-        - Si lo encuentra cumprueba que el que recupera tenga la misma contraseña que la que llega como parametro, y devuelve al usuario encontrado
+        - Si lo encuentra cumprueba que el que recupera tenga la misma contraseña
+        que la que llega como parametro, y devuelve al usuario encontrado
         - Caso contrario retorna None
         """
 
@@ -110,7 +111,8 @@ class User(db.Model):
     def check_existing_email_with_different_id(
         cls, email, id_user
     ):
-        """Comprobar si existe algun usuario con determinado email y que no sea el del usuario con id = id_user"""
+        """Comprobar si existe algun usuario con determinado email
+        y que no sea el del usuario con id = id_user"""
         return (
             User.query.filter(User.email == email)
             .filter(User.id != id_user)
@@ -282,7 +284,11 @@ class User(db.Model):
 
     @password.setter
     def password(self, password):
-        "Setter para la password, y al momento de realizarla, crear la contraseña hasheada y almacenar esta en vez del string"
+        """
+        Setter para la password, y al momento de realizarla,
+        crear la contraseña hasheada y almacenar esta en vez del string
+        """
+
         self.password_hash = generate_password_hash(
             password
         )

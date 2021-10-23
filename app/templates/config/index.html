@@ -1,7 +1,10 @@
-{% extends "private_app_layout.html" %} {% block title %}InundaSafe | Configuración{% endblock %} {%
-block head %} {{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='config.css') }}" />
-{% endblock %} {% block content %}
+{% extends "private_app_layout.html" %} 
+{% block title %}InundaSafe | Configuración{% endblock %} 
+{% block head %} 
+{{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='config.css') }}" />
+{% endblock %} 
+{% block content %}
 
 <div class="container mx-auto py-4">
   <!-- TITULO -->
@@ -41,7 +44,7 @@ block head %} {{ super() }}
               <option value="desc"  {% if config.order_by == 'desc' %} 
               selected 
               {% endif %}
-              >Descendiente</option>
+              >Descendente</option>
             </select>
           </div>
         <!-- 

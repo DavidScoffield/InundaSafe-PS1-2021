@@ -104,6 +104,9 @@ class MeetingPointForm(FlaskForm):
             ("publicated", "Publicado"),
             ("despublicated", "Despublicado"),
         ],
+        validators = [ validators.DataRequired(
+                        message="Este campo es obligatorio"
+                      ), ]
     )
 
     submit = SubmitField(

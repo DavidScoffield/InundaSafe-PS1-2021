@@ -115,15 +115,10 @@ class MeetingPoint(db.Model):
             is not None
         )
 
-    @classmethod
-    def delete(cls, id):
+    def delete(self):
         "Borra un punto de encuentro"
 
-        meeting_point = MeetingPoint.query.filter_by(
-            id=id
-        ).first()
-
-        db.session.delete(meeting_point)
+        db.session.delete(self)
         db.session.commit()
 
     def update(self, **args):

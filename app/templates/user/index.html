@@ -25,7 +25,7 @@
       <div class="col-sm-12 col-md-6 d-flex justify-content-sm-center justify-content-md-end">
         <form method="GET" action="{{url_for('user.index', page_number=users.page)}}" class="d-flex justify-content-end align-content-center">
   
-          <input type="text" name="name" placeholder="Buscar por nombre..." class="mx-1 pl-2" 
+          <input type="text" name="username" placeholder="Buscar por nombre usuario..." class="mx-1 pl-2" 
           {% if argname %} 
             value="{{argname}}"
           {% endif %}>

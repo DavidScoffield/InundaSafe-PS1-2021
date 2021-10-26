@@ -30,7 +30,7 @@ def index(page_number):
     Controller para mostrar el listado de usuarios
     Recibe como parametro el numero de la pagina a mostrar
     Puede recibir como argumentos:
-    - name : string -> campo de filtro para los nombres de usuarios
+    - username : string -> campo de filtro para los nombres de usuarios
     - active : string -> campo de filtro para los estados(activado, desactivado) de usuarios
     """
 
@@ -41,16 +41,16 @@ def index(page_number):
         abort(401)
 
     args = request.args
-    name = args.get("name")
+    username = args.get("username")
     active = args.get("active")
 
-    name = check_param("@user/name", name)
+    username = check_param("@user/username", username)
     active = check_param("@user/active", active_dic(active))
 
     # Busco los usuarios con sus filtros correspondientes
     users = User.search(
         active=active,
-        name=name,
+        username=username,
         dont_use_active=type(active) is not int,
     )
     # elimino al usuario del listado para que no se liste a él mismo

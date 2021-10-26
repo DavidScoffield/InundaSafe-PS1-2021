@@ -310,7 +310,7 @@ def edit_my_profile():
     if not authenticated(session):
         abort(401)
 
-    if not check_permission("usuario_show"):
+    if not check_permission("usuario_show_my_profile"):
         abort(401)
 
     user = User.find_user_by_id(session["user"])
@@ -327,7 +327,7 @@ def update_my_profile():
     if not authenticated(session):
         abort(401)
 
-    if not check_permission("usuario_update"):
+    if not check_permission("usuario_update_my_profile"):
         abort(401)
 
     params = request.form.to_dict()

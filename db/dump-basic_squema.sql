@@ -55,6 +55,8 @@ INSERT INTO `permissions` VALUES
   (8,'usuario_destroy'),
   (9,'usuario_update'),
   (10,'usuario_show'),
+  (15,'usuario_show_my_profile'),
+  (16,'usuario_update_my_profile'),
   -- CONFIG
   (11,'config_show'),
   (12,'config_update');
@@ -101,13 +103,17 @@ INSERT INTO `role_has_permissions` VALUES
   (1,12),
   (1,13),
   (1,14),
+  (1,15),
+  (1,16),
   -- OPERATOR
   (2,1),
   (2,2),
   (2,4),
   (2,5),
   (2,13),
-  (2,14);
+  (2,14),
+  (2,15),
+  (2,16);
   -- (2,6),
   -- (2,7),
   -- (2,9),

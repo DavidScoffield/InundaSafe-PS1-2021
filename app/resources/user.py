@@ -335,7 +335,6 @@ def update_my_profile():
     last_name = params["last_name"]
     email = params["email"]
     password = params["password"]
-    state = request.form.get("state")
     selectedRoles = request.form.getlist("rol")
 
     user = User.find_user_by_id(session["user"])
@@ -370,7 +369,6 @@ def update_my_profile():
             or not last_name
             or not email
             or not password
-            or not state
             or not len(selectedRoles)
         ):
             flash(
@@ -397,12 +395,11 @@ def update_my_profile():
         )
     )
     if user_email:
-        if user_email.email == email:
-            flash(
-                "Ya existe un usuario con ese email",
-                category="user_my_profile",
-            )
-            return redirect(url_for("user.edit_my_profile"))
+        flash(
+            "Ya existe un usuario con ese email",
+            category="user_my_profile",
+        )
+        return redirect(url_for("user.edit_my_profile"))
 
     User.update_profile(
         user, params, selectedRoles, isAdmin

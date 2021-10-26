@@ -48,15 +48,6 @@
             <input name="rol" type="checkbox" value="rol_operador"  {{"checked" if helper_has_role(user.roles, "rol_operador") }}/>Operador
             </label>
         </p>
-        <p>
-            <label>Estado:<label></br>
-            <label>
-                <input name="state" type="radio" value="activo" {{"checked" if user.active == 1}}/>Activo
-            </label>
-            <label>
-                <input name="state" type="radio" value="bloqueado" onclick="confirm_lock(event)" {{"checked" if user.active == 0}}/>Bloqueado
-            </label>
-        </p>
     {% endif %}
     
     <p>
@@ -73,15 +64,6 @@
         }
     }
     </script>
-
-  <script>
-    function confirm_lock(e)
-    {
-        if(!confirm("¿Está seguro que desea pasar a estado 'bloqueado'?")) {
-            e.preventDefault();
-        }
-    }
-    </script>  
 
 {% endblock %}
 

@@ -73,15 +73,15 @@
               {% set buttonText = 'Desbloquear' %}
               <td class="text-center">Bloqueado</td>  
             {% endif %}
-            <td class="text-center d-flex">
+            <td class="text-center d-flex justify-content-center">
                 {% if not helper_has_role(user.roles, "rol_administrador") %}
                   <form  action="{{ url_for('user.toggle_state') }}" method="POST">
                     <input name="user_id" type="hidden" value="{{user.id}}">
                     <input name="state" type="hidden" value="{{user.active}}">
-                    <button class="button-gradient" type="submit">{{buttonText}}</button>
+                    <button class="btn button-gradient" type="submit">{{buttonText}}</button>
                   </form>
                 {% endif %}
-                <a class="nav-link" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
+                <a class="btn button-gradient ml-2" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
             </td>
         </tr>
         {% endfor %}

@@ -20,12 +20,12 @@ class NewUserForm(FlaskForm):
                 message="Este campo es obligatorio"
             ),
             validators.Regexp(
-                "^[a-z A-Z]+$",
+                "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$",
                 message="Por favor, ingrese un nombre válido",
             ),
         ],
         render_kw={
-            "pattern": "[a-z A-Z]+$",
+            "pattern": "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$",
             "title": "El nombre solo puede contener letras",
         },
     )
@@ -37,12 +37,12 @@ class NewUserForm(FlaskForm):
                 message="Este campo es obligatorio"
             ),
             validators.Regexp(
-                "^[a-z A-Z]+$",
+                "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$",
                 message="Por favor, ingrese un apellido válido",
             ),
         ],
         render_kw={
-            "pattern": "[a-z A-Z]+$",
+            "pattern": "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$",
             "title": "El apellido solo puede contener letras",
         },
     )

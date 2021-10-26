@@ -120,7 +120,7 @@ def create():
     username = params["username"]
     email = params["email"]
     password = params["password"]
-    state = request.form.get("state")
+    state = request.form.get("active")
     # selectedRoles = request.form.getlist("rol")
 
     selectedRoles = []

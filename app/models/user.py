@@ -228,7 +228,7 @@ class User(db.Model):
     @classmethod
     def search(
         cls,
-        name: str = "",
+        username: str = "",
         active: int = 1,
         dont_use_active: bool = True,
     ):
@@ -241,7 +241,7 @@ class User(db.Model):
         order = ac.order_by
         return (
             User.query.filter(User.is_deleted == 0)
-            .filter(User.first_name.contains(name))
+            .filter(User.username.contains(username))
             .filter(
                 or_(User.active == active, dont_use_active)
             )

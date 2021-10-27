@@ -406,3 +406,30 @@ def update_my_profile():
     )
 
     return redirect(url_for("user.edit_my_profile"))
+
+
+@user.post("/show")
+def show():
+    "Controller para mostrar la información de un usuario"
+
+    if not authenticated(session) or not check_permission(
+        "usuario_show"
+    ):
+        abort(401)
+
+    id_user = request.form["id_user"]
+    user = User.find_user_by_id_not_deleted(id_user)
+    if not user:
+        # flash(
+        #     "No se encontró el usuario especificado",
+        #     category="user_show",
+        # )
+        # return redirect(
+        #     url_for("user.index", page_number=1)
+        # )
+        abort(404)
+
+    return render_template(
+        "user/show.html",
+        user=user,
+    )

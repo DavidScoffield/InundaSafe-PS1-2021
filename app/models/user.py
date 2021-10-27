@@ -96,6 +96,15 @@ class User(db.Model):
         return User.query.filter(User.id == user_id).first()
 
     @classmethod
+    def find_user_by_id_not_deleted(cls, user_id):
+        """Buscar usuario en la base de datos por id"""
+        return (
+            User.query.filter(User.id == user_id)
+            .filter(User.is_deleted == 0)
+            .first()
+        )
+
+    @classmethod
     def check_existing_email_or_username(
         cls, email, username
     ):
@@ -148,7 +157,6 @@ class User(db.Model):
         user.email = data["email"]
         user.password = data["password"]
         db.session.commit()
-
 
         if isAdmin:
             roles = Role.find_roles_from_strings(

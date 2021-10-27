@@ -75,13 +75,18 @@
             {% endif %}
             <td class="text-center d-flex justify-content-center">
                 {% if not helper_has_role(user.roles, "rol_administrador") %}
-                  <form  action="{{ url_for('user.toggle_state') }}" method="POST">
+                  <form  action="{{ url_for('user.toggle_state') }}" method="POST" class="d-inline">
                     <input name="user_id" type="hidden" value="{{user.id}}">
                     <input name="state" type="hidden" value="{{user.active}}">
                     <button class="btn button-gradient" type="submit">{{buttonText}}</button>
                   </form>
                 {% endif %}
-                <a class="btn button-gradient ml-2" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
+                <form action="{{url_for('user.show')}}" method="post" class="d-inline">
+                  <input name="id_user" type="hidden" value="{{user.id}}">
+                  <button type="submit" class="btn button-gradient mx-1">Ver</button>
+                </form>
+                <a class="btn button-gradient d-inline" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
+                
             </td>
         </tr>
         {% endfor %}

@@ -20,6 +20,7 @@ from app.helpers.check_param_search import (
 )
 
 from app.helpers.forms.new_user_form import NewUserForm
+from app.helpers.forms.edit_other_user_form import EditOtherUserForm
 
 user = Blueprint("user", __name__, url_prefix="/usuarios")
 
@@ -218,8 +219,14 @@ def edit(user_id):
         abort(401)
 
     user = User.find_user_by_id(user_id)
+
+    if(not user):
+        abort(404)
+
+    form = EditOtherUserForm(**user.get_attributes())
+
     return render_template(
-        "user/edit_other_user.html", user=user
+        "user/edit_other_user.html", user=user, form=form
     )
 
 
@@ -233,26 +240,22 @@ def update(user_id):
     if not check_permission("usuario_update"):
         abort(401)
 
-    params = request.form.to_dict()
-    first_name = params["first_name"]
-    last_name = params["last_name"]
-    email = params["email"]
-    password = params["password"]
-    state = request.form.get("state")
-    selectedRoles = request.form.getlist("rol")
+    form = EditOtherUserForm(request.form)
 
-    if (
-        not first_name
-        or not last_name
-        or not email
-        or not password
-        or not state
-        or not len(selectedRoles)
-    ):
-        flash("Se deben completar todos los campos")
-        return redirect(
-            url_for("user.edit", user_id=user_id)
-        )
+    params = form.data
+
+    email = params["email"]
+
+    selectedRoles = []
+    # genero una lista de strings con los roles seleccionados en el form
+    for rol in ["rol_administrador", "rol_operador"]:
+        if params[rol]:
+            selectedRoles += [rol]
+
+    user = User.find_user_by_id(user_id)
+    if not form.validate_on_submit():       #validaciones del back WTF
+        flash("Por favor, corrija los errores")
+        return render_template("user/edit_other_user.html", user=user, form=form)
 
     # este if está por si dos admins se intentan sacar el permiso de admin mutuamente al mismo tiempo
     roles = Role.find_roles_from_strings(selectedRoles)
@@ -262,6 +265,10 @@ def update(user_id):
     for rol in user.roles:
         if rol.name == "rol_administrador":
             user_was_admin = True
+
+    # Por si se deshabilita el chequeo del front e intenta bloquear a un Admin al editarlo
+    if(user_was_admin):
+        params["active"] = "activo"
 
     if (
         not has_role(roles, "rol_administrador")

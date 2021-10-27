@@ -9,7 +9,7 @@ from app.helpers.bcrypt import (
 from app.models.user_has_roles import user_has_roles
 from app.models.role import Role
 from app.helpers.config import actual_config
-
+from app.helpers.from_intState_to_stringState import active_dic
 
 class User(db.Model):
     """Modelo para el manejo de la tabla User de la base de datos"""
@@ -61,6 +61,22 @@ class User(db.Model):
         self.last_name = last_name
         self.active = active
         self.is_deleted = is_deleted
+
+    def get_attributes(self):
+        "Retorna un diccionario con los atributos del usuario"
+        
+        attributes = vars(self)
+        del attributes["_sa_instance_state"]
+
+        #Convierte de 1 a 'activo' o de 0 a 'bloqueado' para el WTF
+        attributes["active"] = active_dic(attributes["active"])
+
+        #Roles por defecto que tiene el user, los agrego para que matcheen con WTF
+        for rol in attributes["roles"]:
+            attributes[rol.name] = True
+
+        return attributes
+
 
     @classmethod
     def find_by_email_and_pass(cls, email, password):
@@ -128,7 +144,7 @@ class User(db.Model):
         user.email = data["email"]
         user.password = data["password"]
         if (
-            data["state"] == "activo"
+            data["active"] == "activo"
         ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
             user.active = 1
         else:

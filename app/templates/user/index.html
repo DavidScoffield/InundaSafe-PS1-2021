@@ -47,6 +47,7 @@
       <thead>
           <tr>
               <th scope="col" class="text-center">Roles</th>
+              <th scope="col" class="text-center">Nombre usuario</th>
               <th scope="col" class="text-center">email</th>
               <th scope="col" class="text-center">Nombre</th>
               <th scope="col" class="text-center">Apellido</th>
@@ -63,6 +64,7 @@
                 {{rol.name}}
               {% endfor %}
             </td>
+            <td class="text-center">{{user.username}}</td>
             <td class="text-center">{{user.email}}</td>
             <td class="text-center">{{user.first_name}}</td>
             <td class="text-center">{{user.last_name}}</td>
@@ -86,6 +88,10 @@
                   <button type="submit" class="btn button-gradient mx-1">Ver</button>
                 </form>
                 <a class="btn button-gradient d-inline" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
+                <form  action="{{ url_for('user.delete') }}" method="POST" class="d-inline">
+                  <input type="hidden" name="user_id" value="{{user.id}}">
+                  <button type="submit" onclick="confirm_destroy(event)" class="btn button-gradient rounded">Eliminar</button>
+                </form>
                 
             </td>
         </tr>
@@ -126,6 +132,14 @@
         {% endif %}
       </ul>
     </nav> 
-
 </div>
+
+<script>
+  function confirm_destroy(e)
+  {
+      if(!confirm("¿Está seguro que desea borrar a este usuario?")) {
+          e.preventDefault();
+      }
+  }
+  </script>
 {% endblock %}

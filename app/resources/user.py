@@ -57,6 +57,12 @@ def index(page_number):
     this_user_id = session["user"]
     users = User.exclude_user(users, this_user_id)
 
+    if not users.first():
+        flash("No se encontraron resultados", category="user_index")
+        found_users = False
+    else:
+        found_users = True
+
     paginated_users = User.paginate(
         page_number=page_number,
         users=users,
@@ -82,7 +88,7 @@ def index(page_number):
         )
 
     return render_template(
-        "user/index.html", users=paginated_users
+        "user/index.html", users=paginated_users, found_users=found_users
     )
 
 

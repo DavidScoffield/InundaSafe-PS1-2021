@@ -93,6 +93,15 @@
       </tbody>
     </table>
 
+    {% if not found_users %}
+      <br>
+      {% with messages = get_flashed_messages(category_filter=["user_index"]) %}
+          {% for message in messages %}
+              <p class="text-center">{{message}}</p>
+          {% endfor %}
+      {% endwith %}
+    {% endif %}
+
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
         {% if users.has_prev %}
@@ -117,5 +126,6 @@
         {% endif %}
       </ul>
     </nav> 
+
 </div>
 {% endblock %}

@@ -105,6 +105,12 @@ def index(page_number):
         name=name,
     )
 
+    if not meeting_points.pages:
+        found_meeting_points = False
+        flash("No se encontraron resultados", category="meeting_point_index")
+    else:
+        found_meeting_points = True
+
     # En caso que no encuentre ningun resultado resultado se redirige a la pagina 1 con los argumentos de busqueda
     if (
         meeting_points.page != 1
@@ -127,6 +133,7 @@ def index(page_number):
     return render_template(
         "meeting_point/index.html",
         meeting_points=meeting_points,
+        found_meeting_points=found_meeting_points
     )
 
 

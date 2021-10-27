@@ -145,13 +145,14 @@ class User(db.Model):
         )
 
     @classmethod
-    def update_user(cls, user_id, data, selectedRoles):
+    def update_user(cls, user_id, data, selectedRoles, update_password):
         """Actualizar usuario en la base de datos con los datos pasados por parametros"""
         user = User.find_user_by_id(user_id)
         user.first_name = data["first_name"]
         user.last_name = data["last_name"]
         user.email = data["email"]
-        user.password = data["password"]
+        if(update_password):
+            user.password = data["password"]
         if (
             data["active"] == "activo"
         ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd

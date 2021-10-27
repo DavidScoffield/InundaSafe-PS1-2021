@@ -224,8 +224,9 @@ def edit(user_id):
     if not check_permission("usuario_show"):
         abort(401)
 
-    user = User.find_user_by_id(user_id)
+    user = User.find_user_by_id_not_deleted(user_id)
 
+    # Si intenta acceder por URL con un id que no existe o que esta eliminado aborta.
     if(not user):
         abort(404)
 
@@ -260,7 +261,7 @@ def update(user_id):
 
     user = User.find_user_by_id(user_id)
     if not form.validate_on_submit():       #validaciones del back WTF
-        flash("Por favor, corrija los errores")
+        flash("Por favor, corrija los errores", category="update_user")
         return render_template("user/edit_other_user.html", user=user, form=form)
 
     # este if está por si dos admins se intentan sacar el permiso de admin mutuamente al mismo tiempo
@@ -275,6 +276,12 @@ def update(user_id):
     # Por si se deshabilita el chequeo del front e intenta bloquear a un Admin al editarlo
     if(user_was_admin):
         params["active"] = "activo"
+
+
+    update_password = True
+    # Si la contraseña se envia vacia, no la queria editar: La dejo como estaba en la BD
+    if(not params["password"]):
+        update_password = False
 
     if (
         not has_role(roles, "rol_administrador")
@@ -293,7 +300,7 @@ def update(user_id):
             lista.count("rol_administrador") <= 1
         ):  # si hay 1 admin entonces no es posible dejar de ser admin porque no puede dejar de haber
             flash(
-                "No puede dejar de ser administrador ya que usted es el único existente"
+                "No puede dejar de ser administrador ya que usted es el único existente", category="update_user"
             )
             return redirect(
                 url_for("user.edit", user_id=user_id)
@@ -306,12 +313,15 @@ def update(user_id):
     )
     if user_email:
         if user_email.email == email:
-            flash("Ya existe un usuario con ese email")
+            flash("Ya existe un usuario con ese email", category="update_user")
             return redirect(
                 url_for("user.edit", user_id=user_id)
             )
 
-    User.update_user(user_id, params, selectedRoles)
+    User.update_user(user_id, params, selectedRoles, update_password)
+    flash(
+        "Usuario editado correctamente", category="update_user"
+    )
 
     return redirect(url_for("user.edit", user_id=user_id))
 

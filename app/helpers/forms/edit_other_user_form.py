@@ -22,12 +22,12 @@ class EditOtherUserForm(FlaskForm):
                 message="Este campo es obligatorio"
             ),
             validators.Regexp(
-                "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$",
+                "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+([a-zA-ZÀ-ÿ\u00f1\u00d1 ])*$",
                 message="Por favor, ingrese un nombre válido",
             ),
         ],
         render_kw={
-            "pattern": "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$",
+            "pattern": "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+([a-zA-ZÀ-ÿ\u00f1\u00d1 ])*$",
             "title": "El nombre solo puede contener letras",
         },
     )
@@ -39,12 +39,12 @@ class EditOtherUserForm(FlaskForm):
                 message="Este campo es obligatorio"
             ),
             validators.Regexp(
-                "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$",
+                "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+([a-zA-ZÀ-ÿ\u00f1\u00d1 ])*$",
                 message="Por favor, ingrese un apellido válido",
             ),
         ],
         render_kw={
-            "pattern": "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$",
+            "pattern": "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+([a-zA-ZÀ-ÿ\u00f1\u00d1 ])*$",
             "title": "El apellido solo puede contener letras",
         },
     )
@@ -62,11 +62,9 @@ class EditOtherUserForm(FlaskForm):
     )
 
     password = PasswordField(
-        "Contraseña (*)",
+        "Contraseña",
         [
-            validators.DataRequired(
-                message="Este campo es obligatorio"
-            ),
+            validators.Optional(),
             validators.Regexp(
                 "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$",
                 message="La contraseña debe al menos 8 caracteres, una letra y un número",

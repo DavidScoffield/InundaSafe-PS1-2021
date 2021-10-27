@@ -94,6 +94,14 @@
           {% endfor %}
       </tbody>
   </table>
+  {% if not found_meeting_points %}
+      <br>
+      {% with messages = get_flashed_messages(category_filter=["meeting_point_index"]) %}
+          {% for message in messages %}
+              <p class="text-center">{{message}}</p>
+          {% endfor %}
+      {% endwith %}
+  {% endif %}
   <nav aria-label="Meeting points page navigation">
       <ul class="pagination justify-content-center">
         {% if meeting_points.has_prev %}

@@ -7,13 +7,15 @@ def check_param(param_name, param):
 
     """
     return {
-        "@meeting_point/name": param
+        "@meeting_point/name": param.strip()
         if param is not None
         else "",
         "@meeting_point/state": param
         if param != "all" and param is not None
         else "",
-        "@user/name": param if param is not None else "",
+        "@user/username": param.strip()
+        if param is not None
+        else "",
         "@user/active": param
         if type(param) is int and param is not None
         else "",

@@ -31,7 +31,7 @@ def index(page_number):
     Controller para mostrar el listado de usuarios
     Recibe como parametro el numero de la pagina a mostrar
     Puede recibir como argumentos:
-    - name : string -> campo de filtro para los nombres de usuarios
+    - username : string -> campo de filtro para los nombres de usuarios
     - active : string -> campo de filtro para los estados(activado, desactivado) de usuarios
     """
 
@@ -42,21 +42,27 @@ def index(page_number):
         abort(401)
 
     args = request.args
-    name = args.get("name")
+    username = args.get("username")
     active = args.get("active")
 
-    name = check_param("@user/name", name)
+    username = check_param("@user/username", username)
     active = check_param("@user/active", active_dic(active))
 
     # Busco los usuarios con sus filtros correspondientes
     users = User.search(
         active=active,
-        name=name,
+        username=username,
         dont_use_active=type(active) is not int,
     )
     # elimino al usuario del listado para que no se liste a él mismo
     this_user_id = session["user"]
     users = User.exclude_user(users, this_user_id)
+
+    if not users.first():
+        flash("No se encontraron resultados", category="user_index")
+        found_users = False
+    else:
+        found_users = True
 
     paginated_users = User.paginate(
         page_number=page_number,
@@ -83,7 +89,7 @@ def index(page_number):
         )
 
     return render_template(
-        "user/index.html", users=paginated_users
+        "user/index.html", users=paginated_users, found_users=found_users
     )
 
 
@@ -317,7 +323,7 @@ def edit_my_profile():
     if not authenticated(session):
         abort(401)
 
-    if not check_permission("usuario_show"):
+    if not check_permission("usuario_show_my_profile"):
         abort(401)
 
     user = User.find_user_by_id(session["user"])
@@ -334,7 +340,7 @@ def update_my_profile():
     if not authenticated(session):
         abort(401)
 
-    if not check_permission("usuario_update"):
+    if not check_permission("usuario_update_my_profile"):
         abort(401)
 
     params = request.form.to_dict()
@@ -342,7 +348,6 @@ def update_my_profile():
     last_name = params["last_name"]
     email = params["email"]
     password = params["password"]
-    state = request.form.get("state")
     selectedRoles = request.form.getlist("rol")
 
     user = User.find_user_by_id(session["user"])
@@ -377,7 +382,6 @@ def update_my_profile():
             or not last_name
             or not email
             or not password
-            or not state
             or not len(selectedRoles)
         ):
             flash(
@@ -404,15 +408,41 @@ def update_my_profile():
         )
     )
     if user_email:
-        if user_email.email == email:
-            flash(
-                "Ya existe un usuario con ese email",
-                category="user_my_profile",
-            )
-            return redirect(url_for("user.edit_my_profile"))
+        flash(
+            "Ya existe un usuario con ese email",
+            category="user_my_profile",
+        )
+        return redirect(url_for("user.edit_my_profile"))
 
     User.update_profile(
         user, params, selectedRoles, isAdmin
     )
 
     return redirect(url_for("user.edit_my_profile"))
+
+
+@user.post("/show")
+def show():
+    "Controller para mostrar la información de un usuario"
+
+    if not authenticated(session) or not check_permission(
+        "usuario_show"
+    ):
+        abort(401)
+
+    id_user = request.form["id_user"]
+    user = User.find_user_by_id_not_deleted(id_user)
+    if not user:
+        # flash(
+        #     "No se encontró el usuario especificado",
+        #     category="user_show",
+        # )
+        # return redirect(
+        #     url_for("user.index", page_number=1)
+        # )
+        abort(404)
+
+    return render_template(
+        "user/show.html",
+        user=user,
+    )

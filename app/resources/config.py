@@ -6,10 +6,12 @@ from flask import (
     render_template,
     abort,
     session,
+    flash
 )
 from app.models.colors import Color
 from app.models.configuration import Configuration
 from app.helpers.auth import authenticated
+from app.helpers.validators import is_empty
 from app.helpers.check_permission import check_permission
 
 config_routes = Blueprint(
@@ -48,6 +50,18 @@ def update():
         abort(401)
 
     data = request.form
+
+    if list(filter(lambda parametro: is_empty(parametro), list(data.values()))):
+        flash("Por favor, complete todos los campos", category="config")
+        return redirect(url_for("config_routes.index"))
+    
+    if not data["elements_quantity"].isnumeric():
+        flash("Por favor, ingrese una cantidad de elementos válida", category="config")
+        return redirect(url_for("config_routes.index"))
+
+    if not data["order_by"] in ("asc", "desc"):
+        flash("Por favor, ingrese un criterio de ordenamiento válido", category="config")
+        return redirect(url_for("config_routes.index"))
 
     Configuration.update(
         order_by=data["order_by"],

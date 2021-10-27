@@ -112,6 +112,15 @@ class User(db.Model):
         return User.query.filter(User.id == user_id).first()
 
     @classmethod
+    def find_user_by_id_not_deleted(cls, user_id):
+        """Buscar usuario en la base de datos por id"""
+        return (
+            User.query.filter(User.id == user_id)
+            .filter(User.is_deleted == 0)
+            .first()
+        )
+
+    @classmethod
     def check_existing_email_or_username(
         cls, email, username
     ):
@@ -163,25 +172,15 @@ class User(db.Model):
         user.last_name = data["last_name"]
         user.email = data["email"]
         user.password = data["password"]
+        db.session.commit()
 
         if isAdmin:
-            if (
-                data["state"] == "activo"
-            ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
-                user.active = 1
-            else:
-                user.active = 0
-
-            db.session.commit()
-
             roles = Role.find_roles_from_strings(
                 selectedRoles
             )
 
             Role.delete_rol(user.roles, user)
             Role.insert_rol(roles, user)
-        else:
-            db.session.commit()
 
     @classmethod
     def insert_user(
@@ -244,7 +243,7 @@ class User(db.Model):
     @classmethod
     def search(
         cls,
-        name: str = "",
+        username: str = "",
         active: int = 1,
         dont_use_active: bool = True,
     ):
@@ -257,7 +256,7 @@ class User(db.Model):
         order = ac.order_by
         return (
             User.query.filter(User.is_deleted == 0)
-            .filter(User.first_name.contains(name))
+            .filter(User.username.contains(username))
             .filter(
                 or_(User.active == active, dont_use_active)
             )

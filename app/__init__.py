@@ -54,6 +54,7 @@ def create_app(environment="development"):
     app.jinja_env.globals.update(get_actual_config=helper_config.actual_config)
     app.jinja_env.globals.update(get_user_info=helper_user.logged_user_info)
     app.jinja_env.globals.update(translate_state=lambda state: "Publicado" if state == "publicated" else "Despublicado")
+    app.jinja_env.globals.update(translate_users_active=lambda active: "Activo" if active == 1 else "Bloqueado")
     app.jinja_env.globals.update(
         helper_has_permission=helper_permissions.check_permission
     )

@@ -57,7 +57,12 @@ INSERT INTO `permissions` VALUES
   (10,'usuario_show'),
   -- CONFIG
   (11,'config_show'),
-  (12,'config_update');
+  (12,'config_update'),
+  -- Zonas Inundables
+  (15,'zonas_inundables_index'),
+  (16,'zonas_inundables_show'),
+  (17,'zonas_inundables_import'),
+  (18,'zonas_inundables_destroy');
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -101,6 +106,10 @@ INSERT INTO `role_has_permissions` VALUES
   (1,12),
   (1,13),
   (1,14),
+  (1,15),
+  (1,16),
+  (1,17),
+  (1,18),
   -- OPERATOR
   (2,1),
   (2,2),
@@ -108,6 +117,9 @@ INSERT INTO `role_has_permissions` VALUES
   (2,5),
   (2,13),
   (2,14);
+  (2,15),
+  (2,16),
+  (2,17),
   -- (2,6),
   -- (2,7),
   -- (2,9),
@@ -315,6 +327,46 @@ INSERT INTO `meeting_point` VALUES
   (10,'Centro Comunal Gorina','140 bis y 489','222', '303', 'despublicated', '992231', 'gorina@hotmail.com');
 /*!40000 ALTER TABLE `meeting_point` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+
+--
+-- Table structure for table `flood_zones`
+--
+
+DROP TABLE IF EXISTS `flood_zones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `flood_zones` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL ,
+  `state` varchar(100),
+  `color` varchar(15) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Table structure for table `coordinate`
+--
+
+DROP TABLE IF EXISTS `coordinate`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `coordinate` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `latitude` varchar(100) NOT NULL,
+  `longitude` varchar(100) NOT NULL,
+  `flood_zone_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `latitude_longitude` (`latitude`,`longitude`) USING BTREE,
+  KEY `flood_zone_id` (`flood_zone_id`)
+  CONSTRAINT `coordinate_ibfk_1` FOREIGN KEY (`flood_zone_id`) REFERENCES `flood_zones` (`id`);
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 
 --
 -- Dumping routines for database 'pruebabd'

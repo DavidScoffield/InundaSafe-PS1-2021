@@ -12,7 +12,6 @@ from flask import (
     session,
     abort,
 )
-from app.db import db
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
 from app.helpers.check_param_search import (
@@ -140,17 +139,25 @@ def destroy():
         abort(401)
 
     id_meeting_point = request.form["id_meeting_point"]
-    meeting_point = MeetingPoint.find_by_id(id_meeting_point)
+    meeting_point = MeetingPoint.find_by_id(
+        id_meeting_point
+    )
 
     if not meeting_point:
-        flash("No se encontró el punto de encuentro",
-               category="meeting_point_delete")
+        flash(
+            "No se encontró el punto de encuentro",
+            category="meeting_point_delete",
+        )
     else:
         meeting_point.delete()
-        flash("Punto de encuentro borrado exitosamente",
-               category="meeting_point_delete")
+        flash(
+            "Punto de encuentro borrado exitosamente",
+            category="meeting_point_delete",
+        )
 
-    return redirect(url_for("meeting_point.index", page_number=1))
+    return redirect(
+        url_for("meeting_point.index", page_number=1)
+    )
 
 
 @meeting_point.post("/edit")
@@ -165,19 +172,26 @@ def edit():
     id_meeting_point = request.form["id_meeting_point"]
 
     # meeting point que se quiere modificar
-    meeting_point = MeetingPoint.find_by_id(id_meeting_point)
+    meeting_point = MeetingPoint.find_by_id(
+        id_meeting_point
+    )
 
     if not meeting_point:
-        flash("No se encontró el punto de encuentro",
-               category="meeting_point_update")
-        return redirect(url_for("meeting_point.index", page_number=1))
-    
+        flash(
+            "No se encontró el punto de encuentro",
+            category="meeting_point_update",
+        )
+        return redirect(
+            url_for("meeting_point.index", page_number=1)
+        )
+
     # se inicializa el formulario con los datos originales del meeting point que se desea modificar
-    form = MeetingPointForm(**meeting_point.get_attributes())
+    form = MeetingPointForm(
+        **meeting_point.get_attributes()
+    )
 
     return render_template(
-        "meeting_point/edit.html",
-        form=form
+        "meeting_point/edit.html", form=form
     )
 
 
@@ -194,11 +208,17 @@ def update():
     id_meeting_point = form.data["id"]
 
     # meeting point que se quiere modificar
-    meeting_point = MeetingPoint.find_by_id(id_meeting_point)  
+    meeting_point = MeetingPoint.find_by_id(
+        id_meeting_point
+    )
     if not meeting_point:
-        flash("No se encontró el punto de encuentro",
-               category="meeting_point_update")
-        return redirect(url_for("meeting_point.index", page_number=1))
+        flash(
+            "No se encontró el punto de encuentro",
+            category="meeting_point_update",
+        )
+        return redirect(
+            url_for("meeting_point.index", page_number=1)
+        )
 
     if not form.validate_on_submit():
         flash(
@@ -212,7 +232,7 @@ def update():
         del args["id"]
 
         # la dirección que quiere cargar el usuario
-        form_address = args["address"].lower()  
+        form_address = args["address"].lower()
 
         if (
             MeetingPoint.exists_address(form_address)
@@ -247,11 +267,17 @@ def show():
         abort(401)
 
     id_meeting_point = request.form["id_meeting_point"]
-    meeting_point = MeetingPoint.find_by_id(id_meeting_point)
+    meeting_point = MeetingPoint.find_by_id(
+        id_meeting_point
+    )
     if not meeting_point:
-        flash("No se encontró el punto de encuentro",
-               category="meeting_point_show")
-        return redirect(url_for("meeting_point.index", page_number=1))
+        flash(
+            "No se encontró el punto de encuentro",
+            category="meeting_point_show",
+        )
+        return redirect(
+            url_for("meeting_point.index", page_number=1)
+        )
 
     return render_template(
         "meeting_point/show.html",

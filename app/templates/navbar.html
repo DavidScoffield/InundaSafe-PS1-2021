@@ -42,6 +42,12 @@
           >Puntos de encuentro</a
         >
       </li>
+      {% endif %} {% if helper_has_permission("zonas_inundables_show") %}
+      <li class="nav-item {% if bp == 'flood_zones' %} active {% endif %}">
+        <a class="nav-link" href="{{url_for('flood_zones.index', page_number=1)}}"
+          >Zonas inundables</a
+        >
+      </li>
       {% endif %}
     </ul>
     <div class="btn-group">

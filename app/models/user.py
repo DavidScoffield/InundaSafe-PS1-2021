@@ -22,7 +22,7 @@ class User(db.Model):
     username = db.Column(
         db.String(50), nullable=False, unique=True
     )
-    password_hash = db.Column(db.String(), nullable=False)
+    password_hash = db.Column(db.Text, nullable=False)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Integer, nullable=False)

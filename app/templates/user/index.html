@@ -61,7 +61,7 @@
         <tr>
             <td class="text-center">
               {% for rol in user.roles %}
-                {{rol.name}}
+                {{format_role(rol.name)}}
               {% endfor %}
             </td>
             <td class="text-center">{{user.username}}</td>

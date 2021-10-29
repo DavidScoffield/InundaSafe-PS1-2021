@@ -1,15 +1,14 @@
-
 {% from 'bootstrap/form.html' import render_form %}
 
-{% extends "private_app_layout.html" %} 
+{% extends "private_app_layout.html" %}
 
-{% block title %} InundaSafe | Listado de zonas inundables {% endblock %} 
+{% block title %} InundaSafe | Listado de zonas inundables {% endblock %}
 
-{% block head %} 
+{% block head %}
 
 {{ super() }}
 
-{% endblock %} 
+{% endblock %}
 
 {% block content %}
 {% set argname = request.args.name %}
@@ -25,23 +24,41 @@
     <h1 class="font-weight-bold">Zonas inundables</h1>
   </div>
 
-<!-- <div class="w-100 d-flex justify-content-between align-items-center"> -->
+  <!-- <div class="w-100 d-flex justify-content-between align-items-center"> -->
   <div class="w-100 row justify-content-center">
-    <div class="col d-flex justify-content-sm-center justify-content-md-start mb-sm-3 mb-md-0">
-      <a class="btn btn-primary button-gradient" role="button" href="{{url_for('meeting_point.new')}}">Nuevo</a>
+    <!-- FORMULARIO DE IMPORTACION -->
+    <div class="col col-md-12 col-lg-6 d-flex justify-content-center justify-content-lg-start mb-3 mb-lg-0">
+      <form method="POST" action="{{url_for('flood_zones.upload')}}" enctype="multipart/form-data">
+        <div class="input-group is-invalid">
+          <div class="custom-file">
+            <input type="file" accept=".csv" class="custom-file-input" name="csv_file" id="csv_input_file" required
+              lang="es">
+            <label class="custom-file-label" id="csv_label" for="csv_input_file" data-browse="Seleccionar">Seleccionar
+              archivo...</label>
+          </div>
+          <div class="input-group-append">
+            <button class="btn button-gradient"
+              style="border-bottom-left-radius: 0 !important; border-top-left-radius: 0 !important;"
+              type="submit">Cargar</button>
+          </div>
+        </div>
+      </form>
+      {#
+      <!-- <a class="btn btn-primary button-gradient" role="button" href="{{url_for('flood_zones.show_upload')}}">
+        Cargar</a> --> #}
     </div>
-    <div class="col-sm-12 col-md-6 d-flex justify-content-sm-center justify-content-md-end">
-      <form method="GET" action="{{url_for('meeting_point.index', page_number=1)}}" class="d-flex justify-content-end align-content-center">
 
-        <input type="text" name="name" placeholder="Buscar por nombre..." class="mx-1 pl-2" 
-        {% if argname %} 
-          value="{{argname}}"
-        {% endif %}>
-        
+    <div class="col-sm-12 col-lg-6 d-flex justify-content-center justify-content-lg-end">
+      <form method="GET" action="{{url_for('meeting_point.index', page_number=1)}}"
+        class="d-flex justify-content-end align-content-center">
+
+        <input type="text" name="name" placeholder="Buscar por nombre..." class="mx-1 pl-2" {% if argname %}
+          value="{{argname}}" {% endif %}>
+
         <select class="rounded-sm mx-1" name="state" aria-label="seleccionador estado">
-          <option value="all" {{"selected" if argstate == "all"}}>Todos</option>
-          <option value="publicated" {{"selected" if argstate == "publicated"}}>Publicado</option>
-          <option value="despublicated" {{"selected" if argstate == "despublicated"}}>Despublicado</option>
+          <option value="all" {{"selected" if argstate=="all" }}>Todos</option>
+          <option value="publicated" {{"selected" if argstate=="publicated" }}>Publicado</option>
+          <option value="despublicated" {{"selected" if argstate=="despublicated" }}>Despublicado</option>
         </select>
         <button class="btn btn-dark btn-sm" aria-label="button-search"><i class="fas fa-search fa-sm"></i></button>
       </form>
@@ -49,76 +66,91 @@
   </div>
   <br>
 
-  {% with messages = get_flashed_messages(category_filter=["meeting_point_delete", "meeting_point_update", "meeting_point_show"]) %}
-      {% for message in messages %}
-          <p>{{message}}</p>
-      {% endfor %}
+  {% with messages = get_flashed_messages(category_filter=["flood_zones_import"]) %}
+  {% for message in messages %}
+  <p>{{message}}</p>
+  {% endfor %}
   {% endwith %}
-      
+
   <table class="table">
-      <thead>
-          <tr>
-              <th scope="col" class="text-center">Nombre</th>
-              <th scope="col" class="text-center">Estado</th>
-              <th scope="col" class="text-center">Color</th>
-              <th scope="col" class="text-center">Acciones</th>
-          </tr>
-      </thead>
-      <tbody>
-          {% for fz in flood_zones.items %}
-          <tr>
-              <td class="text-center">{{fz.name}}</td>
-              <td class="text-center">{{fz.state}}</td>
-              <td class="text-center">{{translate_state(fz.state)}}</td>
-              <td class="text-center">
-                  {% if helper_has_permission("zonas_inundables_show") %}
-                  <form action="{{url_for('meeting_point.show')}}" method="post" class="d-inline">
-                    <input name="id_meeting_point" type="hidden" value="{{fz.id}}">
-                    <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
-                  </form>
-                  {% endif %}
-                  {% if helper_has_permission("zonas_inundables_destroy") %}
-                    <form action="{{url_for('meeting_point.destroy')}}" method="post" class="d-inline">
-                      <input name="id_meeting_point" type="hidden" value="{{fz.id}}">
-                      <button type="submit" onclick="return confirm('¿Está seguro que desea borrar el punto de encuentro?')" class="btn btn-primary button-gradient mx-1">Eliminar</button>
-                    </form>
-                  {% endif %}
-              </td>
-          </tr>
-          {% endfor %}
-      </tbody>
+    <thead>
+      <tr>
+        <th scope="col" class="text-center">Nombre</th>
+        <th scope="col" class="text-center">Estado</th>
+        <th scope="col" class="text-center">Color</th>
+        <th scope="col" class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for fz in flood_zones.items %}
+      <tr>
+        <td class="text-center">{{fz.name}}</td>
+        <td class="text-center">{{fz.state}}</td>
+        <td class="text-center">{{translate_state(fz.state)}}</td>
+        <td class="text-center">
+          {% if helper_has_permission("zonas_inundables_show") %}
+          <form action="{{url_for('meeting_point.show')}}" method="post" class="d-inline">
+            <input name="id_meeting_point" type="hidden" value="{{fz.id}}">
+            <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
+          </form>
+          {% endif %}
+          {% if helper_has_permission("zonas_inundables_destroy") %}
+          <form action="{{url_for('meeting_point.destroy')}}" method="post" class="d-inline">
+            <input name="id_meeting_point" type="hidden" value="{{fz.id}}">
+            <button type="submit" onclick="return confirm('¿Está seguro que desea borrar el punto de encuentro?')"
+              class="btn btn-primary button-gradient mx-1">Eliminar</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
-  {# 
-    <nav aria-label="Apartado de navegacion de zonas inundables">
-      <ul class="pagination justify-content-center">
-        {% if flood_zones.has_prev %}
-          <li class="page-item">
-            <a class="page-link" href="{{url_for('flood_zones.index', page_number=flood_zones.prev_num)}}?{{request.query_string.decode()}}" tabindex="-1">Anterior</a>
-          </li>
-        {% else %}
-          <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1">Anterior</a>
-          <li>
+  {#
+  <nav aria-label="Apartado de navegacion de zonas inundables">
+    <ul class="pagination justify-content-center">
+      {% if flood_zones.has_prev %}
+      <li class="page-item">
+        <a class="page-link"
+          href="{{url_for('flood_zones.index', page_number=flood_zones.prev_num)}}?{{request.query_string.decode()}}"
+          tabindex="-1">Anterior</a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1">Anterior</a>
+      <li>
         {% endif %}
         {% for page in flood_zones.iter_pages() %}
-          {% if page %}
-            <li class="page-item"><a class="page-link" href="{{url_for('flood_zones.index', page_number=page)}}?{{request.query_string.decode()}}">{{ page }}</a></li>
-          {% endif %}
-        {% endfor %}
-        {% if flood_zones.has_next %}
-          <li class="page-item">
-            <a class="page-link" href="{{url_for('flood_zones.index', page_number=flood_zones.next_num)}}?{{request.query_string.decode()}}">Siguiente</a>
-          </li>
-        {% else %}
-          <li class="page-item disabled">
-            <a class="page-link" href="#">Siguiente</a>
-          </li>
-        {% endif %}
-      </ul>
-    </nav> 
-    #}
-    
+        {% if page %}
+      <li class="page-item"><a class="page-link"
+          href="{{url_for('flood_zones.index', page_number=page)}}?{{request.query_string.decode()}}">{{ page }}</a>
+      </li>
+      {% endif %}
+      {% endfor %}
+      {% if flood_zones.has_next %}
+      <li class="page-item">
+        <a class="page-link"
+          href="{{url_for('flood_zones.index', page_number=flood_zones.next_num)}}?{{request.query_string.decode()}}">Siguiente</a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#">Siguiente</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  #}
+
 </div>
+
+<script>
+
+  document.getElementById('csv_input_file').addEventListener('change', (e) => {
+    file_name = e.target.files[0].name
+    document.getElementById('csv_label').innerHTML = file_name
+  })
+
+</script>
 
 {% endblock %}
 

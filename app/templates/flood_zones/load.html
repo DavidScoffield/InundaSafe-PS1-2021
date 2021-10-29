@@ -1,0 +1,65 @@
+{% from 'bootstrap/form.html' import render_form %}
+
+{% extends "private_app_layout.html" %}
+
+{% block title %} InundaSafe | Importacion Zonas Inundables {% endblock %}
+
+{% block head %}
+
+{{ super() }}
+
+
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container mx-auto py-4">
+  <div class="d-flex align-items-center">
+    <a href="{{url_for('flood_zones.index', page_number=1)}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Importación</h1>
+  </div>
+
+  {% with messages = get_flashed_messages(category_filter=["flood_zones_load"]) %}
+  <br>
+  {% for message in messages %}
+  <p>{{message}}</p>
+  {% endfor %}
+
+  {% endwith %}
+
+  <form method="POST" action="{{url_for('flood_zones.upload')}}" enctype="multipart/form-data">
+
+    <div class="input-group is-invalid">
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" name="csv_file" id="csv_input_file" required lang="es">
+        <label class="custom-file-label" id="csv_label" for="csv_input_file" data-browse="Seleccionar">Seleccionar
+          archivo...</label>
+      </div>
+      <div class="input-group-append">
+        <button class="btn button-gradient"
+          style="border-bottom-left-radius: 0 !important; border-top-left-radius: 0 !important;"
+          type="submit">Cargar</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- <div class="invalid-feedback">
+    Example invalid input group feedback
+  </div> -->
+
+  <!-- <br>
+<i>* Campos obligatorios</i> -->
+
+  <script>
+
+    document.getElementById('csv_input_file').addEventListener('change', (e) => {
+      file_name = e.target.files[0].name
+      document.getElementById('csv_label').innerHTML = file_name
+    })
+
+  </script>
+
+</div>
+{% endblock %}

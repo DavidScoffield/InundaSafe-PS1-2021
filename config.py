@@ -9,6 +9,8 @@ class Config(object):
     DB_PASS = "db_pass"
     DB_NAME = "db_name"
     SECRET_KEY = "secret"
+    UPLOAD_EXTENSIONS = [".csv"]
+    UPLOAD_FOLDER = "upload_folder"
 
     @staticmethod
     def configure(app):
@@ -37,9 +39,7 @@ class DevelopmentConfig(Config):
     DB_PORT = environ.get("DB_PORT", "3306")
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = (
-        f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    )
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 
 class TestingConfig(Config):
@@ -53,7 +53,9 @@ class TestingConfig(Config):
 
 
 config = dict(
-    development=DevelopmentConfig, test=TestingConfig, production=ProductionConfig
+    development=DevelopmentConfig,
+    test=TestingConfig,
+    production=ProductionConfig,
 )
 
 # More information

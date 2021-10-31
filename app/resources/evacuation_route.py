@@ -81,8 +81,8 @@ def index(page_number):
     Controller para mostrar el listado de recorridos de evacuación
     Recibe como parametro el numero de la pagina a mostrar
     Puede recibir como argumentos:
-    - name : string -> campo de filtro para los nombres de puntos de encuentro
-    - state : string -> campo de filtro para los estados(publicado, despublicado) de puntos de encuentro
+    - name : string -> campo de filtro para los nombres de recorridos de evacuación
+    - state : string -> campo de filtro para los estados (publicado, despublicado) de recorridos de evacuación
     """
 
     if not authenticated(session) or not check_permission(
@@ -129,7 +129,25 @@ def index(page_number):
 
 @evacuation_route.post("/delete")
 def destroy():
-    pass
+    "Controller para eliminar un recorrido de evacuación"
+
+    if not authenticated(session) or not check_permission(
+        "evacuation_route_destroy"
+    ):
+        abort(401)
+
+    id_evacuation_route = request.form["id_evacuation_route"]
+    evacuation_route = EvacuationRoute.find_by_id(id_evacuation_route)
+
+    if not evacuation_route:
+        flash("No se encontró el recorrido de evacuación",
+               category="evacuation_route_delete")
+    else:
+        evacuation_route.delete()
+        flash("Recorrido de evacuación borrado exitosamente",
+               category="evacuation_route_delete")
+
+    return redirect(url_for("evacuation_route.index", page_number=1))
 
 
 @evacuation_route.post("/edit")

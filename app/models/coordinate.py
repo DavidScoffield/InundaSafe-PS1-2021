@@ -12,7 +12,7 @@ class Coordinate(db.Model):
     longitude = db.Column(db.String(100), nullable=False)
     flood_zone_id = db.Column(
         db.Integer,
-        db.ForeignKey("flood_zones.id"),
+        db.ForeignKey("flood_zones.id", ondelete="CASCADE"),
         nullable=True,
     )
 
@@ -33,3 +33,20 @@ class Coordinate(db.Model):
         """Constructor del modelo"""
         self.latitude = latitude
         self.longitude = longitude
+
+    @classmethod
+    def new(
+        cls,
+        latitude: str = None,
+        longitude: str = None,
+    ):
+        """
+        Recibe los parámetros para crear la Coordenada.
+        La guarda en la base de datos.
+        Devuelve la coordenada creada
+        """
+
+        coordinate = Coordinate(latitude, longitude)
+        db.session.add(coordinate)
+        db.session.commit()
+        return coordinate

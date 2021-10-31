@@ -1,16 +1,17 @@
-def check_param(param_name, param):
+def check_param(param_name, param, object_name = "meeting_point"):
     """
     Formatea el parametro pasado dependiendo cual es y de que modelo
     Recibe:
      - param_name : string -> valor para recuperar la posicion del diccionario especifica
      - param : string -> parametro a evaluar
+     - object_name: string -> objeto al cual corresponde el parámetro ('meeting_point' o 'evacuation_route')
 
     """
     return {
-        "@meeting_point/name": param
+        f"@{object_name}/name": param
         if param is not None
         else "",
-        "@meeting_point/state": param
+        f"@{object_name}/state": param
         if param != "all" and param is not None
         else "",
         "@user/name": param if param is not None else "",

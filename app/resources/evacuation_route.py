@@ -73,3 +73,75 @@ def create():
                    category="evacuation_route_new")
 
     return render_template("evacuation_route/new.html", form=form)
+
+
+@evacuation_route.get("/<int:page_number>")
+def index(page_number):
+    """
+    Controller para mostrar el listado de recorridos de evacuación
+    Recibe como parametro el numero de la pagina a mostrar
+    Puede recibir como argumentos:
+    - name : string -> campo de filtro para los nombres de puntos de encuentro
+    - state : string -> campo de filtro para los estados(publicado, despublicado) de puntos de encuentro
+    """
+
+    if not authenticated(session) or not check_permission(
+        "evacuation_route_index"
+    ):
+        abort(401)
+
+    args = request.args
+    name = args.get("name")
+    state = args.get("state")
+
+    name = check_param("@evacuation_route/name", name, "evacuation_route")
+    state = check_param("@evacuation_route/state", state, "evacuation_route")
+
+    evacuation_routes = EvacuationRoute.search(
+        page_number=page_number,
+        state=state,
+        name=name,
+    )
+
+    # En caso que no encuentre ningun resultado resultado se redirige a la pagina 1 con los argumentos de busqueda
+    if (
+        evacuation_routes.page != 1
+        and evacuation_routes.page > evacuation_routes.pages
+    ):
+        # Si la cantidad de paginas es 0, se redirigira a la pagina 1
+        if evacuation_routes.pages > 0:
+            page = evacuation_routes.pages
+        else:
+            page = 1
+
+        return redirect(
+            url_for(
+                "evacuation_route.index",
+                page_number=page,
+                **request.args
+            )
+        )
+
+    return render_template(
+        "evacuation_route/index.html",
+        evacuation_routes=evacuation_routes,
+    )
+
+@evacuation_route.post("/delete")
+def destroy():
+    pass
+
+
+@evacuation_route.post("/edit")
+def edit():
+    pass
+
+
+@evacuation_route.post("/update")
+def update():
+    pass
+
+
+@evacuation_route.post("/show")
+def show():
+    pass

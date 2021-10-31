@@ -340,8 +340,8 @@ DROP TABLE IF EXISTS `flood_zones`;
 CREATE TABLE `flood_zones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL ,
-  `state` varchar(100),
-  `color` varchar(15) NOT NULL,
+  `state` varchar(100) DEFAULT 'publicated',
+  `color` varchar(15),
   PRIMARY KEY (`id`),
   KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;

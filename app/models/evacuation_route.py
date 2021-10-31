@@ -93,3 +93,17 @@ class EvacuationRoute(db.Model):
         )
 
         return paginated_evacuation_routes
+
+
+    @classmethod
+    def find_by_id(cls, id):
+        "Retorna el recorrido de evacuación correspondiente al id recibido por parámetro"
+
+        return EvacuationRoute.query.get(id)
+
+
+    def delete(self):
+        "Borra un recorrido de evacuación"
+
+        db.session.delete(self)
+        db.session.commit()

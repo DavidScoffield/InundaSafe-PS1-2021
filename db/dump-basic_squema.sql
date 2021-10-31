@@ -49,6 +49,14 @@ INSERT INTO `permissions` VALUES
   (14,'punto_encuentro_edit'),
   (4,'punto_encuentro_update'),
   (5,'punto_encuentro_show'),
+  -- Recorridos de evacuación 
+  (19,'evacuation_route_index'),
+  (20,'evacuation_route_new'),
+  (21,'evacuation_route_create'),
+  (22,'evacuation_route_destroy'),
+  (23,'evacuation_route_edit'),
+  (24,'evacuation_route_update'),
+  (25,'evacuation_route_show'),
   -- USER
   (6,'usuario_index'),
   (7,'usuario_new'),
@@ -101,13 +109,26 @@ INSERT INTO `role_has_permissions` VALUES
   (1,12),
   (1,13),
   (1,14),
+  (1,19),
+  (1,20),
+  (1,21),
+  (1,22),
+  (1,23),
+  (1,24),
+  (1,25),
   -- OPERATOR
   (2,1),
   (2,2),
   (2,4),
   (2,5),
   (2,13),
-  (2,14);
+  (2,14),
+  (2,19),
+  (2,20),
+  (2,21),
+  (2,23),
+  (2,24),
+  (2,25);
   -- (2,6),
   -- (2,7),
   -- (2,9),
@@ -315,6 +336,48 @@ INSERT INTO `meeting_point` VALUES
   (10,'Centro Comunal Gorina','140 bis y 489','222', '303', 'despublicated', '992231', 'gorina@hotmail.com');
 /*!40000 ALTER TABLE `meeting_point` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+--
+-- Table structure for table `evacuation_route`
+--
+
+DROP TABLE IF EXISTS `evacuation_route`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `evacuation_route` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(500) NOT NULL,
+  `state` varchar(100),
+  PRIMARY KEY (`id`),
+  KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Table structure for table `coordinate`
+--
+
+DROP TABLE IF EXISTS `coordinate`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `coordinate` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `latitude` varchar(100) NOT NULL,
+  `longitude` varchar(100) NOT NULL,
+  `evacuation_route_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `latitude_longitude` (`latitude`,`longitude`) USING BTREE,
+  KEY `evacuation_route_id` (`evacuation_route_id`),
+  CONSTRAINT `coordinate_ibfk_1` FOREIGN KEY (`evacuation_route_id`) REFERENCES `evacuation_route` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+
 
 --
 -- Dumping routines for database 'pruebabd'

@@ -1,5 +1,4 @@
 import os
-from werkzeug.utils import secure_filename
 from app.models.flood_zones import FloodZones
 from flask import (
     render_template,
@@ -14,14 +13,21 @@ from flask import (
 )
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
+from app.helpers.upload_flood_zones import (
+    allowed_file,
+    read_file,
+    remove_file_filesystem,
+    save_data,
+    save_file_filesystem,
+    validate_coor_quantity,
+)
+
+from app.helpers.logger import looger_error
+
 
 flood_zones = Blueprint(
     "flood_zones", __name__, url_prefix="/flood-zones"
 )
-
-
-# class PhotoForm(FlaskForm):
-#     photo = FileField(validators=[FileRequired()])
 
 
 @flood_zones.get("/<int:page_number>")
@@ -98,12 +104,6 @@ def upload_flood_zones():
     ):
         abort(401)
 
-    print(request.files)
-    # if True:
-    #     return redirect(
-    #         url_for("flood_zones.index", page_number=1)
-    #     )
-
     # check if the post request has the file part
     if "csv_file" not in request.files:
         flash(
@@ -122,51 +122,43 @@ def upload_flood_zones():
             url_for("flood_zones.index", page_number=1)
         )
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(
-            os.path.join(
-                current_app.config["UPLOAD_FOLDER"],
-                filename,
+        try:
+            # Save
+            file_path = save_file_filesystem(
+                file, current_app
             )
-        )
-        # TODO: Trabajar con el archivo
+
+            # Read file
+            (data, error) = read_file(file_path)
+
+            # TODO: Chequear que se ingrasan la cantidad de paraemtros requeridos -- es necesario?
+
+            # Validate quantity of coordinate in witch of one zone
+            (data, error) = validate_coor_quantity(
+                data=data, error=error
+            )
+
+            # TODO: Guardar o actualizar los datos validos en la BD
+            save_data(data)
+
+            #! TODO: cuando ocurre un problema el remove nunda se ejecuta, solucionar. Quizas pasarlo a un `finally` o algo asi
+            # Remove file
+            remove_file_filesystem(file_path)
+        except Exception as err:
+            looger_error(f" - ERROR: {err}")
+            flash(
+                "Ocurrio un error al cargar el archivo, compruebe que el formato del archivo sea valido",
+                category="flood_zones_import",
+            )
+            return redirect(
+                url_for("flood_zones.index", page_number=1)
+            )
+
         flash(
-            "Archivo guardado en el sistema",
+            f"{len(data)} datos guardados en el sistema. {len(error)} datos descartados por errores.",
             category="flood_zones_import",
         )
-        return redirect(
-            url_for("flood_zones.index", page_number=1)
-        )
 
-    return redirect(url_for("flood_zones.show"))
-
-
-ALLOWED_EXTENSIONS = {"csv"}
-
-
-def allowed_file(filename):
-    return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower()
-        in ALLOWED_EXTENSIONS
+    return redirect(
+        url_for("flood_zones.index", page_number=1)
     )
-
-
-# @app.route('/', methods=['GET', 'POST'])
-# def upload_file():
-#     if request.method == 'POST':
-#         # check if the post request has the file part
-#         if 'file' not in request.files:
-#             flash('No file part')
-#             return redirect(request.url)
-#         file = request.files['file']
-#         # If the user does not select a file, the browser submits an
-#         # empty file without a filename.
-#         if file.filename == '':
-#             flash('No selected file')
-#             return redirect(request.url)
-#         if file and allowed_file(file.filename):
-#             filename = secure_filename(file.filename)
-#             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-#             return redirect(url_for('download_file', name=filename))
-#     return '''

@@ -43,3 +43,53 @@ class EvacuationRoute(db.Model):
             ).first()
             is not None
         )
+
+    @classmethod
+    def search(
+        cls,
+        page_number: int = 1,
+        name: str = "",
+        state: str = "",
+    ):
+        """
+        Retorna una lista con todos los recorridos de evacuación, teniendo en cuenta los filtros pasados
+        por parametro, en caso que estos sean vacíos retorna todos los recorridos de evacuación.
+        Retorna el resultado paginado.
+        """
+
+        ac = actual_config()
+        order = ac.order_by
+
+        ordered_evacuation_routes = (
+            EvacuationRoute.query.filter(
+                EvacuationRoute.name.contains(name)
+            )
+            .filter(EvacuationRoute.state.startswith(state))
+            .order_by(eval(f"EvacuationRoute.name.{order}()"))
+        )
+
+        paginated_evacuation_routes = EvacuationRoute.paginate(
+            ordered_evacuation_routes, page_number
+        )
+
+        return paginated_evacuation_routes
+
+    @classmethod
+    def paginate(
+        cls,
+        evacuation_routes,
+        page_number: int = 1,
+    ):
+        "Retorna la lista de recorridos de evacuación pasados por parametro paginados"
+
+        ac = actual_config()
+        elements_quantity = ac.elements_quantity
+        
+        paginated_evacuation_routes = evacuation_routes.paginate(
+            max_per_page=elements_quantity,
+            per_page=elements_quantity,
+            page=page_number,
+            error_out=False,
+        )
+
+        return paginated_evacuation_routes

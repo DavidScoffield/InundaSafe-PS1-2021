@@ -364,7 +364,7 @@ CREATE TABLE `coordinate` (
   PRIMARY KEY (`id`),
   KEY `latitude_longitude` (`latitude`,`longitude`) USING BTREE,
   KEY `flood_zone_id` (`flood_zone_id`),
-  CONSTRAINT `coordinate_ibfk_1` FOREIGN KEY (`flood_zone_id`) REFERENCES `flood_zones` (`id`)
+  CONSTRAINT `coordinate_ibfk_1` FOREIGN KEY (`flood_zone_id`) REFERENCES `flood_zones` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

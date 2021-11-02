@@ -10,7 +10,7 @@ class FloodZones(db.Model):
 
     __tablename__ = "flood_zones"
     id = db.Column(db.Integer, primary_key=True)
-    cipher = db.Column(db.String(255)), nullable=False)
+    cipher = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     state = db.Column(
         db.String(100), default="publicated", nullable=True

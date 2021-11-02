@@ -66,7 +66,7 @@ class User(db.Model):
         "Retorna un diccionario con los atributos del usuario"
         
         attributes = vars(self)
-        del attributes["_sa_instance_state"]
+        #del attributes["_sa_instance_state"]
 
         #Convierte de 1 a 'activo' o de 0 a 'bloqueado' para el WTF
         attributes["active"] = active_dic(attributes["active"])
@@ -167,12 +167,13 @@ class User(db.Model):
 
     @classmethod
     def update_profile(
-        cls, user, data, selectedRoles, isAdmin
+        cls, user, data, selectedRoles, isAdmin, update_password
     ):
         user.first_name = data["first_name"]
         user.last_name = data["last_name"]
         user.email = data["email"]
-        user.password = data["password"]
+        if(update_password):
+            user.password = data["password"]
         db.session.commit()
 
         if isAdmin:

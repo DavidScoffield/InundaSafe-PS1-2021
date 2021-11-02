@@ -1,14 +1,16 @@
+{% from 'bootstrap/form.html' import render_form %}
 {% extends "private_app_layout.html" %}
 {% block title %}Perfil{% endblock %}
 {% block head %}
+  <style>
+    .hide{
+      display: none;
+    }
+  </style>
   {{ super() }}
 {% endblock %}
 {% block content %}
-{% with messages = get_flashed_messages(category_filter=["user_my_profile"]) %} {% if messages %}
-  {% for message in messages %}
-  {{ message }}
-  {% endfor %}
-{% endif %} {% endwith %} 
+
 <div class="container mx-auto py-4">
   <!-- TITULO -->
   <div class="d-flex align-items-center mb-3">
@@ -17,43 +19,37 @@
     </a>
     <h1 class="font-weight-bold">Mi perfil:</h1>
   </div>
-  <form action="{{ url_for('user.update_my_profile') }}" method="POST">
-    <p>
-      <label>Nombre de usuario:<label></br>
-      <p>{{user.username}}</p>
-    </p>
-    <p>
-      <label>Nombre:<label></br>
-      <input name="first_name" value={{user.first_name}} placeholder="Ingrese un nombre"/>
-    </p>
-    <p>
-      <label>Apellido:<label></br>
-      <input name="last_name" value={{user.last_name}} placeholder="Ingrese un apellido"/>
-    </p>
-    <p>
-      <label>Email:<label></br>
-      <input name="email" value={{user.email}} placeholder="Ingrese un email"/>
-    </p>
-    <p>
-      <label>Contraseña:<label></br>
-      <input type="password" name="password" value={{user.password}} placeholder="Ingrese una contraseña"/>
-    </p>
-    {% if helper_has_role(user.roles, "rol_administrador") %}                
-        <p>
-            <label>Roles:<label></br>
-            <label>  
-            <input name="rol" type="checkbox" value="rol_administrador" onclick="confirm_uncheck_admin(event)" {{ "checked" if helper_has_role(user.roles, "rol_administrador") }}/>Administrador
-            </label>
-            <label>
-            <input name="rol" type="checkbox" value="rol_operador"  {{"checked" if helper_has_role(user.roles, "rol_operador") }}/>Operador
-            </label>
-        </p>
-    {% endif %}
+
+  {% with messages = get_flashed_messages(category_filter=["user_my_profile"]) %} {% if messages %}
+  {% for message in messages %}
+    {{ message }}
+  {% endfor %}
+  {% endif %} {% endwith %} 
+ 
+  <div>
+    <p>Nombre de usuario: <b>{{user.username}}</b></p>
+  </div>
+
+  <form action={{url_for("user.update_my_profile")}} method="post">
+    {{ form.csrf_token }}
+    {{form.first_name.label() }}{{form.first_name(size=150)}}<br/>
+    {{form.last_name.label() }}{{form.last_name(size=150)}}<br/>
+    {{form.email.label() }}{{form.email(size=150)}}<br/>
+    {{form.password.label() }}{{form.password(size=150)}}<br/>
+
+  <div {% if not helper_has_role(user.roles, "rol_administrador") %} class="hide" {% endif %}>
+      {{form.rol_label.label() }}{{form.rol_label()}}<br/>
+      {{form.rol_administrador.label() }}{{form.rol_administrador()}}<br/>
+      {{form.rol_operador.label() }}{{form.rol_operador()}}<br/>
+  </div>
+   
     
-    <p>
-      <input type="submit" value="Editar" class="btn button-gradient">
-    </p>
-  </form>
+        <br/>
+        {{form.submit()}}
+</form>
+
+  <i>* Campos obligatorios</i>
+
 
 </div>
   <script>
@@ -64,6 +60,38 @@
         }
     }
     </script>
+
+    <script>
+      function validate_roles(e) {
+        // Chequeo del front que no esten vacios los Roles.
+        // Si hay alguno vacio convierto el Input role_label (input hidden que actua de label "Roles(*)") en un parrafo con clase danger.
+        
+        let rol_label = document.getElementById("rol_label")
+        let adminCheckbox = document.getElementById("rol_administrador")
+        let operatorCheckbox = document.getElementById("rol_operador")
+    
+        if (!adminCheckbox.checked && !operatorCheckbox.checked) { 
+            e.preventDefault()
+            parragraph = document.createElement("p")
+            parragraph.innerHTML = "Seleccione al menos un rol"
+            parragraph.className += "text-danger"
+            rol_label.replaceWith(parragraph)
+        }
+    }
+    </script>
+
+  {% if not (helper_has_role(user.roles, "rol_administrador")) %}
+    <script>
+      // Bloquea los checkbox
+      window.addEventListener("load", function(){
+        console.log("{{user.first_name}}")
+        let rol_operadorCheckbox = document.getElementById("rol_operador")
+        let rol_administradorCheckbox = document.getElementById("rol_administrador")
+        //rol_operadorCheckbox.disabled = true
+        //rol_administradorCheckbox.disabled = true
+      });
+    </script>
+  {% endif %}
 
 {% endblock %}
 

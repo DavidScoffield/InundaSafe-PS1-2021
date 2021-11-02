@@ -21,6 +21,7 @@ from app.helpers.check_param_search import (
 
 from app.helpers.forms.new_user_form import NewUserForm
 from app.helpers.forms.edit_other_user_form import EditOtherUserForm
+from app.helpers.forms.edit_my_profile_form import EditMyProfileForm
 
 user = Blueprint("user", __name__, url_prefix="/usuarios")
 
@@ -338,8 +339,10 @@ def edit_my_profile():
 
     user = User.find_user_by_id(session["user"])
 
+    form = EditMyProfileForm(**user.get_attributes())
+
     return render_template(
-        "user/my_profile.html", user=user
+        "user/my_profile.html", user=user, form=form
     )
 
 
@@ -353,14 +356,29 @@ def update_my_profile():
     if not check_permission("usuario_update_my_profile"):
         abort(401)
 
-    params = request.form.to_dict()
-    first_name = params["first_name"]
-    last_name = params["last_name"]
-    email = params["email"]
-    password = params["password"]
-    selectedRoles = request.form.getlist("rol")
+    form = EditMyProfileForm(request.form)
+   
+    params = form.data
 
+    selectedRoles = []
+    # genero una lista de strings con los roles seleccionados en el form
+    for rol in ["rol_administrador", "rol_operador"]:
+        if params[rol]:
+            selectedRoles += [rol]
+    
     user = User.find_user_by_id(session["user"])
+
+    if not form.validate_on_submit():       #validaciones del back WTF
+        flash("Por favor, corrija los errores", category="user_my_profile")
+        return render_template("user/my_profile.html", user=user, form=form)
+
+    email = params["email"]
+
+    update_password = True
+    # Si la contraseña se envia vacia, no la queria editar: La dejo como estaba en la BD
+    if(not params["password"]):
+        update_password = False
+
     isAdmin = has_role(user.roles, "rol_administrador")
     if isAdmin:
         roles = Role.find_roles_from_strings(selectedRoles)
@@ -387,31 +405,6 @@ def update_my_profile():
                     url_for("user.edit_my_profile")
                 )
 
-        if (
-            not first_name
-            or not last_name
-            or not email
-            or not password
-            or not len(selectedRoles)
-        ):
-            flash(
-                "Se deben completar todos los campos",
-                category="user_my_profile",
-            )
-            return redirect(url_for("user.edit_my_profile"))
-    else:
-        if (
-            not first_name
-            or not last_name
-            or not email
-            or not password
-        ):
-            flash(
-                "Se deben completar todos los campos",
-                category="user_my_profile",
-            )
-            return redirect(url_for("user.edit_my_profile"))
-
     user_email = (
         User.check_existing_email_with_different_id(
             email, user.id
@@ -425,7 +418,10 @@ def update_my_profile():
         return redirect(url_for("user.edit_my_profile"))
 
     User.update_profile(
-        user, params, selectedRoles, isAdmin
+        user, params, selectedRoles, isAdmin, update_password
+    )
+    flash(
+        "Perfil actualizado correctamente", category="user_my_profile"
     )
 
     return redirect(url_for("user.edit_my_profile"))

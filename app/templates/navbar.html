@@ -42,6 +42,10 @@
           >Puntos de encuentro</a
         >
       </li>
+      {% endif %} {% if helper_has_permission("evacuation_route_index") %}
+      <li class="nav-item {% if bp == 'evacuation_route' %} active {% endif %}">
+        <a class="nav-link" href="{{url_for('evacuation_route.index', page_number=1)}}">Recorridos de evacuación</a>
+      </li>
       {% endif %}
     </ul>
     <div class="btn-group">

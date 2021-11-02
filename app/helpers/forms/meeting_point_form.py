@@ -43,34 +43,28 @@ class MeetingPointForm(FlaskForm):
         ],
     )
 
-    coor_X = StringField(
-        "Coordenada X",
+    coor_X = HiddenField(
         [
-            validators.Optional(),
+            validators.DataRequired(
+                message="Este campo es obligatorio"
+            ),
             validators.Regexp(
-                "^-?[0-9]{1,10}(?:\.[0-9]+)?$",
+                "^-?[0-9]{1,100}(?:\.[0-9]+)?$",
                 message="Por favor, ingrese una coordenada X válida",
             ),
         ],
-        render_kw={
-            "pattern": "^-?[0-9]{1,10}(?:\.[0-9]+)?$",
-            "title": "Por favor, ingrese una coordenada X válida",
-        },
     )
 
-    coor_Y = StringField(
-        "Coordenada Y",
+    coor_Y = HiddenField(
         [
-            validators.Optional(),
+            validators.DataRequired(
+                message="Este campo es obligatorio"
+            ),
             validators.Regexp(
-                "^-?[0-9]{1,10}(?:\.[0-9]+)?$",
+                "^-?[0-9]{1,100}(?:\.[0-9]+)?$",
                 message="Por favor, ingrese una coordenada Y válida",
             ),
         ],
-        render_kw={
-            "pattern": "^-?[0-9]{1,10}(?:\.[0-9]+)?$",
-            "title": "Por favor, ingrese una coordenada Y válida",
-        },
     )
 
     telephone = StringField(

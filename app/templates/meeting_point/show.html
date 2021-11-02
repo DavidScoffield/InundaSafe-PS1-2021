@@ -6,8 +6,15 @@
 
 {% block head %} 
 
-{{ super() }}
+  {{ super() }}
 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+  <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
+  <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css">
+
+  <script type="module" src="{{url_for('static', filename='js/meeting_point/meeting-point-show-map.js')}}"></script>
 
 {% endblock %} 
 
@@ -46,18 +53,18 @@
       </tr>
       <tr>
         <th scope="row">Coordenada X</th>
-        <td>{{meeting_point.coor_X}}</td>
+        <td id="coor_X">{{meeting_point.coor_X}}</td>
       </tr>
       <tr>
         <th scope="row">Coordenada Y</th>
-        <td>{{meeting_point.coor_Y}}</td>
+        <td id="coor_Y">{{meeting_point.coor_Y}}</td>
       </tr>
     </tbody>
   </table>
-  <form action="{{url_for('meeting_point.edit')}}" method="post" class="d-inline">
-    <input name="id_meeting_point" type="hidden" value="{{meeting_point.id}}">
-    <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
-  </form>
+
+  <div class="map-container">
+    <div id="mapid" style="height:400px"></div>
+  </div>
 
 </div>
 {% endblock %}

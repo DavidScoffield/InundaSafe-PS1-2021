@@ -143,7 +143,7 @@ def create():
     # custom validate_rol_label() definido en la clase que chequea que se haya clickeado
     # al menos un checkbox.
     if not form.validate_on_submit():
-        flash("Por favor, corrija los errores")
+        flash("Por favor, corrija los errores", category="user_create")
         return render_template("user/new.html", form=form)
     else:
         user = User.check_existing_email_or_username(
@@ -152,12 +152,13 @@ def create():
 
         if user:
             if user.email == email:
-                flash("Ya existe un usuario con ese email")
+                flash("Ya existe un usuario con ese email", category="user_create")
                 return redirect(url_for("user.new"))
 
             if user.username == username:
                 flash(
-                    "Ya existe un usuario con ese nombre de usuario"
+                    "Ya existe un usuario con ese nombre de usuario",
+                    category="user_create"
                 )
                 return redirect(url_for("user.new"))
         if (
@@ -166,6 +167,10 @@ def create():
             state = 1
         else:
             state = 0
+
+        # Si esta creando a un admin, lo seteo como Activo, para que no pueda crearlo Bloqueado
+        if("rol_administrador" in selectedRoles):
+            state = 1
 
         User.insert_user(
             email,
@@ -177,7 +182,7 @@ def create():
             selectedRoles,
         )  # inserto al usuario en la bd
 
-    flash("Usuario creado correctamente")
+    flash("Usuario creado correctamente", category="user_create")
     return redirect(url_for("user.index", page_number=1))
 
 

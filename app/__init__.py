@@ -3,6 +3,7 @@ from flask import Flask, render_template
 from flask_session import Session
 from flask_bootstrap import Bootstrap
 from dotenv import load_dotenv
+from app.helpers.format_role import format_role as helper_format_role
 from config import config
 from app import db
 from app.resources import auth
@@ -53,6 +54,7 @@ def create_app(environment="development"):
     app.jinja_env.globals.update(helper_has_role=helper_has_role.has_role)
     app.jinja_env.globals.update(get_actual_config=helper_config.actual_config)
     app.jinja_env.globals.update(get_user_info=helper_user.logged_user_info)
+    app.jinja_env.globals.update(format_role=helper_format_role)
     app.jinja_env.globals.update(translate_state=lambda state: "Publicado" if state == "publicated" else "Despublicado")
     app.jinja_env.globals.update(translate_users_active=lambda active: "Activo" if active == 1 else "Bloqueado")
     app.jinja_env.globals.update(

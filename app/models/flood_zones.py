@@ -2,6 +2,7 @@
 from sqlalchemy.orm import relationship
 from app.db import db
 from app.models.coordinate import Coordinate
+from app.helpers.uuid import generate_unique_uuid
 
 
 class FloodZones(db.Model):
@@ -9,6 +10,7 @@ class FloodZones(db.Model):
 
     __tablename__ = "flood_zones"
     id = db.Column(db.Integer, primary_key=True)
+    cipher = db.Column(db.String(255)), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     state = db.Column(
         db.String(100), default="publicated", nullable=True
@@ -28,10 +30,11 @@ class FloodZones(db.Model):
         color: str = None,
         coordinates: list = None,
     ):
-        """Constructor del modelo"""
+        """Constructor del modelo FloodZones"""
         self.name = name
         self.state = state
         self.color = color
+        self.cipher = generate_unique_uuid()
         self.add_coordinates(coordinates)
 
     @classmethod
@@ -66,6 +69,10 @@ class FloodZones(db.Model):
         color: str = None,
         coordinates: list = None,
     ):
+        """
+        Metodo para actializar una zona inundable.
+        Actualizaro solo aquellos parametros que sean pasados en la invocacion
+        """
         self.state = (
             state if state is not None else self.state
         )
@@ -79,11 +86,16 @@ class FloodZones(db.Model):
         db.session.commit()
 
     def delete_coordinates(self):
-        # TODO: SOLUCIONAR ELIMINACION
-        for coordinate in self.coordinates:
-            self.coordinates.delete(coordinate)
+        """
+        Elimina todas sus coordenadas
+        """
+        self.coordinates.clear()
+        db.session.commit()
 
     def add_coordinates(self, list_coordinates: list):
+        """
+        Agrega las coordenadas pasados por parametro
+        """
         for coordinate in list_coordinates:
             c = Coordinate.new(
                 latitude=str(coordinate[0]),

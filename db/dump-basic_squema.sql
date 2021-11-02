@@ -339,6 +339,7 @@ DROP TABLE IF EXISTS `flood_zones`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `flood_zones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cipher` varchar(255) NOT NULL ,
   `name` varchar(255) NOT NULL ,
   `state` varchar(100) DEFAULT 'publicated',
   `color` varchar(15),

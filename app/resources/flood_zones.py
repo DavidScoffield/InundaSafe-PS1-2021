@@ -19,10 +19,11 @@ from app.helpers.upload_flood_zones import (
     remove_file_filesystem,
     save_data,
     save_file_filesystem,
-    validate_coor_quantity,
+    validate_data,
 )
 
-from app.helpers.logger import looger_error
+from app.helpers.logger import logger_error
+from app.helpers.check_param_search import check_param
 
 
 flood_zones = Blueprint(
@@ -45,37 +46,37 @@ def index(page_number: int = 1):
     ):
         abort(401)
 
-    # args = request.args
-    # name = args.get("name")
-    # state = args.get("state")
+    args = request.args
+    name = args.get("name")
+    state = args.get("state")
 
-    # name = check_param("@meeting_point/name", name)
-    # state = check_param("@meeting_point/state", state)
+    name = check_param("@flood_zones/name", name)
+    state = check_param("@flood_zones/state", state)
 
-    # meeting_points = MeetingPoint.search(
-    #     page_number=page_number,
-    #     state=state,
-    #     name=name,
-    # )
+    flood_zones = FloodZones.search(
+        page_number=page_number,
+        state=state,
+        name=name,
+    )
 
-    # # En caso que no encuentre ningun resultado resultado se redirige a la pagina 1 con los argumentos de busqueda
-    # if (
-    #     meeting_points.page != 1
-    #     and meeting_points.page > meeting_points.pages
-    # ):
-    #     # Si la cantidad de paginas es 0, se redirigira a la pagina 1
-    #     if meeting_points.pages > 0:
-    #         page = meeting_points.pages
-    #     else:
-    #         page = 1
+    # En caso que no encuentre ningun resultado resultado se redirige a la pagina 1 con los argumentos de busqueda
+    if (
+        flood_zones.page != 1
+        and flood_zones.page > flood_zones.pages
+    ):
+        # Si la cantidad de paginas es 0, se redirigira a la pagina 1
+        if flood_zones.pages > 0:
+            page = flood_zones.pages
+        else:
+            page = 1
 
-    #     return redirect(
-    #         url_for(
-    #             "meeting_point.index",
-    #             page_number=page,
-    #             **request.args
-    #         )
-    #     )
+        return redirect(
+            url_for(
+                "flood_zones.index",
+                page_number=page,
+                **request.args,
+            )
+        )
 
     return render_template(
         "flood_zones/index.html",
@@ -133,30 +134,90 @@ def upload_flood_zones():
 
             # TODO: Chequear que se ingrasan la cantidad de paraemtros requeridos -- es necesario?
 
-            # Validate quantity of coordinate in witch of one zone
-            (data, error) = validate_coor_quantity(
+            # Validate data of the file
+            #  TODO: validar cada coordenada
+            (data, error) = validate_data(
                 data=data, error=error
             )
 
             # TODO: Guardar o actualizar los datos validos en la BD
             save_data(data)
 
-            #! TODO: cuando ocurre un problema el remove nunda se ejecuta, solucionar. Quizas pasarlo a un `finally` o algo asi
-            # Remove file
-            remove_file_filesystem(file_path)
         except Exception as err:
-            looger_error(f" - ERROR: {err}")
+            logger_error(f" - ERROR: {err}")
             flash(
-                "Ocurrio un error al cargar el archivo, compruebe que el formato del archivo sea valido",
+                "Ocurrio un error al cargar el archivo, compruebe que el formato del archivo sea valido y vuelva a intentarlo",
                 category="flood_zones_import",
             )
             return redirect(
                 url_for("flood_zones.index", page_number=1)
             )
+        finally:
+            try:
+                #! TODO: cuando ocurre un problema el remove nunda se ejecuta, solucionar. Quizas pasarlo a un `finally` o algo asi
+                # Remove file
+                remove_file_filesystem(file_path)
+            except Exception as err:
+                logger_error(f" - ERROR: {err}")
 
         flash(
             f"{len(data)} datos guardados en el sistema. {len(error)} datos descartados por errores.",
             category="flood_zones_import",
+        )
+
+    return redirect(
+        url_for("flood_zones.index", page_number=1)
+    )
+
+
+@flood_zones.post("/show")
+def show():
+    "Controller para mostrar la información de una zona inundable"
+
+    if not authenticated(session) or not check_permission(
+        "zonas_inundables_show"
+    ):
+        abort(401)
+
+    id_flood_zone = request.form["id_flood_zone"]
+    flood_zone = FloodZones.find_by_id(id_flood_zone)
+    if not flood_zone:
+        flash(
+            "No se encontró la zona de inundación",
+            category="flood_zone_show",
+        )
+        return redirect(
+            url_for("flood_zones.index", page_number=1)
+        )
+
+    return render_template(
+        "flood_zones/show.html",
+        flood_zone=flood_zone,
+    )
+
+
+@flood_zones.post("/delete")
+def destroy():
+    "Controller para eliminar una zona inundable"
+
+    if not authenticated(session) or not check_permission(
+        "zonas_inundables_destroy"
+    ):
+        abort(401)
+
+    id_flood_zone = request.form["id_flood_zone"]
+    flood_zone = FloodZones.find_by_id(id_flood_zone)
+
+    if not flood_zone:
+        flash(
+            "No se encontró la zona inundable",
+            category="flood_zone_delete",
+        )
+    else:
+        flood_zone.delete()
+        flash(
+            "Zona inundable borrada exitosamente",
+            category="flood_zone_delete",
         )
 
     return redirect(

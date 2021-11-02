@@ -13,6 +13,12 @@ def check_param(param_name, param):
         "@meeting_point/state": param
         if param != "all" and param is not None
         else "",
+        "@flood_zones/name": param
+        if param is not None
+        else "",
+        "@flood_zones/state": param
+        if param != "all" and param is not None
+        else "",
         "@user/name": param if param is not None else "",
         "@user/active": param
         if type(param) is int and param is not None

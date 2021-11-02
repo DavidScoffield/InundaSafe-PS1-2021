@@ -2,6 +2,10 @@ import csv
 import json
 import os
 from werkzeug.utils import secure_filename
+from app.helpers.logger import logger_info
+from app.helpers.validate_coordinates import (
+    validate_coordinates as validate_coor,
+)
 
 from app.models.flood_zones import FloodZones
 
@@ -102,16 +106,35 @@ def save_data(data: list):
 
 
 # Validations
-def validate_coor_quantity(data: list, error: list):
+def validate_data(data: list, error: list):
     """
     Valida los campos en los datos de `data`, en caso que alguno no cumple,
     los saca de `data` y los guarda en `error`
     """
+    # TODO: Validar que posee el campo Title obligatorio. Y asi para los demas
     validated_data = list()
     for item in data:
-        if len(item["area"]) < 3:
+        if len(
+            item["area"]
+        ) < 3 or not validate_coordinates(item["area"]):
             error.append(item)
         else:
             validated_data.append(item)
 
     return (validated_data, error)
+
+
+def validate_coordinates(list_coordinates: list):
+    """
+    Valida que le llegue una lista de pares de coordenadas.
+    Comprueba que todos las coordenadas de la lista de pares de coordenadas
+    posean un formato válido.
+    """
+    for peer_coordinates in list_coordinates:
+        if (
+            type(peer_coordinates) is not list
+            or len(peer_coordinates) != 2
+            or not validate_coor(peer_coordinates)
+        ):
+            return False
+    return True

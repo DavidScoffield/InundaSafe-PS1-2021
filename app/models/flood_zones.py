@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from sqlalchemy.orm import relationship
 from app.db import db
+from app.helpers.config import actual_config
 from app.models.coordinate import Coordinate
 from app.helpers.uuid import generate_unique_uuid
 
@@ -15,7 +16,9 @@ class FloodZones(db.Model):
     state = db.Column(
         db.String(100), default="publicated", nullable=True
     )
-    color = db.Column(db.String(15), nullable=True)
+    color = db.Column(
+        db.String(15), default="#78849D", nullable=True
+    )
     coordinates = relationship(
         "Coordinate", cascade="all,delete-orphan"
     )
@@ -57,11 +60,62 @@ class FloodZones(db.Model):
         return flood_zone
 
     @classmethod
+    def find_by_id(cls, id):
+        "Retorna la zona inundable correspondiente al id recibido por parámetro"
+
+        return FloodZones.query.get(id)
+
+    @classmethod
     def find_by_name(cls, name: str):
         """Busca una zona inundable por nombre"""
         return FloodZones.query.filter(
             FloodZones.name == name
         ).first()
+
+    @classmethod
+    def search(
+        cls,
+        page_number: int = 1,
+        name: str = "",
+        state: str = "",
+    ):
+        """
+        Retorna una lista con todas las zones inundables, teniendo
+        en cuenta los filtros pasados por parametro, en caso que estos
+        sean vacio retorna todas las zonas inundables.
+        Retorna el resultado paginado
+        """
+
+        ac = actual_config()
+        order = ac.order_by
+        ordered_flood_zones = (
+            FloodZones.query.filter(
+                FloodZones.name.contains(name)
+            )
+            .filter(FloodZones.state.startswith(state))
+            .order_by(eval(f"FloodZones.name.{order}()"))
+        )
+        paginated_flood_zones = FloodZones.paginate(
+            ordered_flood_zones, page_number
+        )
+        return paginated_flood_zones
+
+    @classmethod
+    def paginate(
+        cls,
+        flood_zones,
+        page_number: int = 1,
+    ):
+        "Retorna la lista de meeting points pasados por parametro paginados"
+        ac = actual_config()
+        elements_quantity = ac.elements_quantity
+        paginated_flood_zones = flood_zones.paginate(
+            max_per_page=elements_quantity,
+            per_page=elements_quantity,
+            page=page_number,
+            error_out=False,
+        )
+        return paginated_flood_zones
 
     def update(
         self,
@@ -102,3 +156,9 @@ class FloodZones(db.Model):
                 longitude=str(coordinate[1]),
             )
             self.coordinates.append(c)
+
+    def delete(self):
+        "Borra la zona de inundacion"
+
+        db.session.delete(self)
+        db.session.commit()

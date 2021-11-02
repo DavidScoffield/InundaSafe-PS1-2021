@@ -49,7 +49,7 @@
     </div>
 
     <div class="col-sm-12 col-lg-6 d-flex justify-content-center justify-content-lg-end">
-      <form method="GET" action="{{url_for('meeting_point.index', page_number=1)}}"
+      <form method="GET" action="{{url_for('flood_zones.index', page_number=1)}}"
         class="d-flex justify-content-end align-content-center">
 
         <input type="text" name="name" placeholder="Buscar por nombre..." class="mx-1 pl-2" {% if argname %}
@@ -66,7 +66,7 @@
   </div>
   <br>
 
-  {% with messages = get_flashed_messages(category_filter=["flood_zones_import"]) %}
+  {% with messages = get_flashed_messages(category_filter=["flood_zones_import", "flood_zone_delete"]) %}
   {% for message in messages %}
   <p>{{message}}</p>
   {% endfor %}
@@ -76,8 +76,8 @@
     <thead>
       <tr>
         <th scope="col" class="text-center">Nombre</th>
+        <th scope="col" class="text-center">Codigo</th>
         <th scope="col" class="text-center">Estado</th>
-        <th scope="col" class="text-center">Color</th>
         <th scope="col" class="text-center">Acciones</th>
       </tr>
     </thead>
@@ -85,19 +85,19 @@
       {% for fz in flood_zones.items %}
       <tr>
         <td class="text-center">{{fz.name}}</td>
-        <td class="text-center">{{fz.state}}</td>
+        <td class="text-center">{{fz.cipher}}</td>
         <td class="text-center">{{translate_state(fz.state)}}</td>
         <td class="text-center">
           {% if helper_has_permission("zonas_inundables_show") %}
-          <form action="{{url_for('meeting_point.show')}}" method="post" class="d-inline">
-            <input name="id_meeting_point" type="hidden" value="{{fz.id}}">
+          <form action="{{url_for('flood_zones.show')}}" method="post" class="d-inline">
+            <input name="id_flood_zone" type="hidden" value="{{fz.id}}">
             <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
           </form>
           {% endif %}
           {% if helper_has_permission("zonas_inundables_destroy") %}
-          <form action="{{url_for('meeting_point.destroy')}}" method="post" class="d-inline">
-            <input name="id_meeting_point" type="hidden" value="{{fz.id}}">
-            <button type="submit" onclick="return confirm('¿Está seguro que desea borrar el punto de encuentro?')"
+          <form action="{{url_for('flood_zones.destroy')}}" method="post" class="d-inline">
+            <input name="id_flood_zone" type="hidden" value="{{fz.id}}">
+            <button type="submit" onclick="return confirm('¿Está seguro que desea borrar la zona inundable?')"
               class="btn btn-primary button-gradient mx-1">Eliminar</button>
           </form>
           {% endif %}

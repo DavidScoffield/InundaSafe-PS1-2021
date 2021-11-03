@@ -10,6 +10,7 @@ from app.resources import auth
 from app.resources.home import home as home_route
 from app.resources.meeting_point import meeting_point
 from app.resources.evacuation_route import evacuation_route
+from app.resources.complaint import complaint_route
 from app.resources.user import user as user_blueprint
 from app.resources.config import config_routes
 from app.resources.auth import auth_routes
@@ -79,6 +80,9 @@ def create_app(environment="development"):
 
     # Rutas página evacuation routes (usando Blueprints)
     app.register_blueprint(evacuation_route)
+
+    # Rutas página complaint (usando Blueprints)
+    app.register_blueprint(complaint_route)
 
     # Handlers
     app.register_error_handler(404, handler.not_found_error)

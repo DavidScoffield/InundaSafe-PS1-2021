@@ -1,0 +1,28 @@
+{% from 'bootstrap/form.html' import render_form %}
+{% extends "private_app_layout.html" %}
+{% block title %}Denuncias{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="container mx-auto py-4">
+  <!-- TITULO -->
+  <div class="d-flex align-items-center mb-3">
+    <a href="#" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Realizar una denuncia</h1>
+  </div>
+  {% with messages = get_flashed_messages(category_filter=["complaint_create"]) %}
+    <br>
+    {% for message in messages %}
+        <p>{{message}}</p>
+    {% endfor %}
+  {% endwith %}
+
+  {{render_form(form, action=url_for('user.create'), method="POST")}}
+  
+  <br><i>* Campos obligatorios</i>
+</div>
+
+{% endblock %}

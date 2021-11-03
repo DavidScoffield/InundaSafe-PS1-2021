@@ -355,6 +355,51 @@ CREATE TABLE `evacuation_route` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `complaint`
+--
+
+DROP TABLE IF EXISTS `complaint`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `complaint` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `category` varchar(100) NOT NULL,
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `closed_at` datetime NULL,
+  `description` varchar(500) NOT NULL,
+  `state` varchar(100),
+  `creator_first_name` varchar(100),
+  `creator_last_name` varchar(100),
+  `creator_telephone` varchar(50),
+  `creator_email` varchar(150),
+  PRIMARY KEY (`id`),
+  KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `complaint follow up`
+--
+
+DROP TABLE IF EXISTS `complaint_follow_up`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `complaint_follow_up` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `description` varchar(500) NOT NULL,
+  `author_id` int(11) unsigned NOT NULL,
+  `complaint_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY (`id`),
+  KEY `author_id` (`author_id`),
+  KEY `complaint_id` (`complaint_id`),
+  CONSTRAINT `complaint_follow_up_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `complaint_follow_up_ibfk_2` FOREIGN KEY (`complaint_id`) REFERENCES `complaint` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `coordinate`
@@ -368,14 +413,15 @@ CREATE TABLE `coordinate` (
   `latitude` varchar(100) NOT NULL,
   `longitude` varchar(100) NOT NULL,
   `evacuation_route_id` int(11) DEFAULT NULL,
+  `complaint_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `latitude_longitude` (`latitude`,`longitude`) USING BTREE,
   KEY `evacuation_route_id` (`evacuation_route_id`),
-  CONSTRAINT `coordinate_ibfk_1` FOREIGN KEY (`evacuation_route_id`) REFERENCES `evacuation_route` (`id`)
+  KEY `complaint_id` (`complaint_id`),
+  CONSTRAINT `coordinate_ibfk_1` FOREIGN KEY (`evacuation_route_id`) REFERENCES `evacuation_route` (`id`),
+  CONSTRAINT `coordinate_ibfk_2` FOREIGN KEY (`complaint_id`) REFERENCES `complaint` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
-
 
 
 

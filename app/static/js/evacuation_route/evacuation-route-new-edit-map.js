@@ -5,14 +5,14 @@ const submitHandler = (event, map) => {
 	/**
 	 * Función para manejar el evento cuando se quiere enviar el formulario
 	 * 
-	 * Si no se marcaron al menos dos puntos en el mapa, se solicita que se seleccionen
+	 * Si no se marcaron al menos tres puntos en el mapa, se solicita que se seleccionen
 	 * 
-	 * Si se marcaron al menos dos puntos, se envían las coordenadas de los mismos al servidor
+	 * Si se marcaron al menos tres puntos, se envían las coordenadas de los mismos al servidor
  	*/
 	
 	if (!map.validRoute()) {
 		event.preventDefault();
-		alert('Por favor, seleccione al menos dos puntos en el mapa');
+		alert('Por favor, seleccione al menos tres puntos en el mapa');
 	} else {
 		let coordinates = map.coordinates;
 		coordinates = JSON.stringify(coordinates);

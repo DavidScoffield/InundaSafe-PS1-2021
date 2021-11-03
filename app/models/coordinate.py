@@ -23,7 +23,7 @@ class Coordinate(db.Model):
     )
 
     def __repr__(self):
-        return "<Coordinate %r>" % self.id
+        return f"[{self.latitude}, {self.longitude}]"
 
     def __init__(
         self,

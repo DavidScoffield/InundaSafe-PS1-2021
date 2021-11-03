@@ -57,6 +57,14 @@ INSERT INTO `permissions` VALUES
   (23,'evacuation_route_edit'),
   (24,'evacuation_route_update'),
   (25,'evacuation_route_show'),
+    -- Denuncias 
+  (28,'complaint_index'),
+  (29,'complaint_new'),
+  (30,'complaint_create'),
+  (31,'complaint_destroy'),
+  (32,'complaint_edit'),
+  (33,'complaint_update'),
+  (34,'complaint_show'),
   -- USER
   (6,'usuario_index'),
   (7,'usuario_new'),
@@ -120,6 +128,13 @@ INSERT INTO `role_has_permissions` VALUES
   (1,23),
   (1,24),
   (1,25),
+  (1,28),
+  (1,29),
+  (1,30),
+  (1,31),
+  (1,32),
+  (1,33),
+  (1,34),
   -- OPERATOR
   (2,1),
   (2,2),
@@ -134,7 +149,13 @@ INSERT INTO `role_has_permissions` VALUES
   (2,21),
   (2,23),
   (2,24),
-  (2,25);
+  (2,25),
+  (2,28),
+  (2,29),
+  (2,30),
+  (2,32),
+  (2,33),
+  (2,34);
   -- (2,6),
   -- (2,7),
   -- (2,9),

@@ -62,7 +62,9 @@ INSERT INTO `permissions` VALUES
   (15,'zonas_inundables_index'),
   (16,'zonas_inundables_show'),
   (17,'zonas_inundables_import'),
-  (18,'zonas_inundables_destroy');
+  (18,'zonas_inundables_destroy'),
+  (28,'zonas_inundables_edit'),
+  (29,'zonas_inundables_update');
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,6 +112,8 @@ INSERT INTO `role_has_permissions` VALUES
   (1,16),
   (1,17),
   (1,18),
+  (1,28),
+  (1,29),
   -- OPERATOR
   (2,1),
   (2,2),
@@ -119,7 +123,9 @@ INSERT INTO `role_has_permissions` VALUES
   (2,14),
   (2,15),
   (2,16),
-  (2,17);
+  (2,17),
+  (2,28),
+  (2,29);
   -- (2,6),
   -- (2,7),
   -- (2,9),

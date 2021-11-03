@@ -60,6 +60,10 @@
       </tr>
     </tbody>
   </table>
+  <form action="{{url_for('flood_zones.edit')}}" method="post" class="d-inline">
+    <input name="id_flood_zone" type="hidden" value="{{flood_zone.id}}">
+    <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
+  </form>
 
   <div class="map-container">
     <div id="mapid" style="height:400px"></div>

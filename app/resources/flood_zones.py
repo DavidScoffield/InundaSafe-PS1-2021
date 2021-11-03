@@ -1,4 +1,7 @@
 import os
+
+from wtforms.fields.core import DecimalField
+from app.helpers.forms.flood_zones_form import FloodZoneForm
 from app.models.flood_zones import FloodZones
 from flask import (
     render_template,
@@ -58,6 +61,12 @@ def index(page_number: int = 1):
         state=state,
         name=name,
     )
+
+    if not flood_zones.pages:
+        flash(
+            "No se encontraron resultados",
+            category="flood_zones_not_results",
+        )
 
     # En caso que no encuentre ningun resultado resultado se redirige a la pagina 1 con los argumentos de busqueda
     if (
@@ -154,7 +163,7 @@ def upload_flood_zones():
             )
         finally:
             try:
-                #! TODO: cuando ocurre un problema el remove nunda se ejecuta, solucionar. Quizas pasarlo a un `finally` o algo asi
+                #! TODO: cuando ocurre un error, comprobar que el archivo siempre se elimine
                 # Remove file
                 remove_file_filesystem(file_path)
             except Exception as err:
@@ -222,4 +231,99 @@ def destroy():
 
     return redirect(
         url_for("flood_zones.index", page_number=1)
+    )
+
+
+@flood_zones.post("/edit")
+def edit():
+    "Controller para mostrar el formulario para la modificación de una zona inundable"
+
+    if not authenticated(session) or not check_permission(
+        "zonas_inundables_edit"
+    ):
+        abort(401)
+
+    id_flood_zone = request.form["id_flood_zone"]
+
+    # meeting point que se quiere modificar
+    flood_zone = FloodZones.find_by_id(id_flood_zone)
+
+    if not flood_zone:
+        flash(
+            "No se encontró la zona inundable especificada",
+            category="flood_zones_update",
+        )
+        return redirect(
+            url_for("flood_zones.index", page_number=1)
+        )
+
+    # se inicializa el formulario con los datos originales de la zona inundable que se desea modificar
+    form = FloodZoneForm(**flood_zone.get_attributes())
+
+    return render_template(
+        "flood_zones/edit.html", form=form
+    )
+
+
+@flood_zones.post("/update")
+def update():
+    "Controller para modificar una zona inundable a partir de los datos del formulario"
+
+    if not authenticated(session) or not check_permission(
+        "zonas_inundables_update"
+    ):
+        abort(401)
+
+    form = FloodZoneForm(request.form)
+    id_flood_zone = form.data["id"]
+
+    # meeting point que se quiere modificar
+    flood_zone = FloodZones.find_by_id(id_flood_zone)
+    if not flood_zone:
+        flash(
+            "No se encontró la zona inundable",
+            category="flood_zoness_update",
+        )
+        return redirect(
+            url_for("flood_zones.index", page_number=1)
+        )
+
+    if not form.validate_on_submit():
+        flash(
+            "Por favor, corrija los errores",
+            category="flood_zones_update",
+        )
+    else:
+        args = form.data
+        del args["submit"]
+        del args["csrf_token"]
+        del args["id"]
+        # Datos que no pueden actualizarse desde el formulario
+        del args["coordinates"]
+        del args["cipher"]
+
+        flood_zone_name = args["name"].lower()
+
+        if (
+            flood_zone_name != flood_zone.name.lower()
+            and FloodZones.exist_name(flood_zone_name)
+        ):  # quiere usar un nombre que ya existe
+            flash(
+                "El nombre que quiere utilizar no está disponible",
+                category="flood_zones_update",
+            )
+        else:  # quiere usa el mismo nombre o alguno que no existe
+            flood_zone.update(**args)
+            flash(
+                "Punto de encuentro modificado exitosamente",
+                category="flood_zones_update",
+            )
+            form = FloodZoneForm(
+                **flood_zone.get_attributes()
+            )
+
+    return render_template(
+        "flood_zones/edit.html",
+        form=form,
+        id_flood_zone=id_flood_zone,
     )

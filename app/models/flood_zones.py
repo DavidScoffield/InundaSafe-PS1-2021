@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 from sqlalchemy.orm import relationship
+from werkzeug.datastructures import cache_property
 from app.db import db
 from app.helpers.config import actual_config
 from app.models.coordinate import Coordinate
 from app.helpers.uuid import generate_unique_uuid
+from app.helpers.validate_coordinates import (
+    coordinates_encode,
+)
+from app.helpers.logger import logger_info
 
 
 class FloodZones(db.Model):
@@ -40,6 +45,16 @@ class FloodZones(db.Model):
         self.cipher = generate_unique_uuid()
         self.add_coordinates(coordinates)
 
+    def get_attributes(self):
+        "Retorna un diccionario con los atributos de la zona inundable"
+        attributes = vars(self)
+        attributes["coordinates"] = coordinates_encode(
+            self.coordinates
+        )
+        del attributes["_sa_instance_state"]
+
+        return attributes
+
     @classmethod
     def new(
         cls,
@@ -71,6 +86,21 @@ class FloodZones(db.Model):
         return FloodZones.query.filter(
             FloodZones.name == name
         ).first()
+
+    @classmethod
+    def exist_name(
+        cls,
+        name_to_find: str = None,
+    ):
+        """
+        Verifica si el nombre de zona inundable pasado ya esta en uso
+        """
+        return (
+            FloodZones.query.filter(
+                FloodZones.name.ilike(name_to_find),
+            ).first()
+            is not None
+        )
 
     @classmethod
     def search(
@@ -119,6 +149,7 @@ class FloodZones(db.Model):
 
     def update(
         self,
+        name: str = None,
         state: str = None,
         color: str = None,
         coordinates: list = None,
@@ -127,6 +158,7 @@ class FloodZones(db.Model):
         Metodo para actializar una zona inundable.
         Actualizaro solo aquellos parametros que sean pasados en la invocacion
         """
+        self.name = name if name is not None else self.name
         self.state = (
             state if state is not None else self.state
         )

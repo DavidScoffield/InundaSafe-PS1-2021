@@ -1,3 +1,4 @@
+import json
 import re
 
 
@@ -12,8 +13,14 @@ def validate_coordinates(coordinates):
 
     for coordinate in coordinates:
         if not re.fullmatch(
-            "^-?[0-9]{1,100}(.[0-9]+)?$", str(coordinate)
+            "^-?[0-9]{1,100}(\.[0-9]+)?$", str(coordinate)
         ):
             return False
 
     return True
+
+
+def coordinates_encode(coordinates: list):
+    return json.dumps(
+        [coor.as_array() for coor in coordinates]
+    )

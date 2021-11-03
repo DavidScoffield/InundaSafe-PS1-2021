@@ -66,7 +66,8 @@
   </div>
   <br>
 
-  {% with messages = get_flashed_messages(category_filter=["flood_zones_import", "flood_zone_delete"]) %}
+  {% with messages = get_flashed_messages(category_filter=["flood_zones_import", "flood_zone_delete",
+  "flood_zones_not_results"]) %}
   {% for message in messages %}
   <p>{{message}}</p>
   {% endfor %}
@@ -94,6 +95,12 @@
             <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
           </form>
           {% endif %}
+          {% if helper_has_permission("zonas_inundables_edit") %}
+          <form action="{{url_for('flood_zones.edit')}}" method="post" class="d-inline">
+            <input name="id_flood_zone" type="hidden" value="{{fz.id}}">
+            <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
+          </form>
+          {% endif %}
           {% if helper_has_permission("zonas_inundables_destroy") %}
           <form action="{{url_for('flood_zones.destroy')}}" method="post" class="d-inline">
             <input name="id_flood_zone" type="hidden" value="{{fz.id}}">
@@ -106,7 +113,7 @@
       {% endfor %}
     </tbody>
   </table>
-  {#
+
   <nav aria-label="Apartado de navegacion de zonas inundables">
     <ul class="pagination justify-content-center">
       {% if flood_zones.has_prev %}
@@ -139,7 +146,7 @@
       {% endif %}
     </ul>
   </nav>
-  #}
+
 
 </div>
 

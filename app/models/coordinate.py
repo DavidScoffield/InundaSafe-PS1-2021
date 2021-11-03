@@ -50,3 +50,6 @@ class Coordinate(db.Model):
         db.session.add(coordinate)
         db.session.commit()
         return coordinate
+
+    def as_array(self):
+        return [self.latitude, self.longitude]

@@ -15,6 +15,12 @@ class Coordinate(db.Model):
         db.ForeignKey("evacuation_route.id"),
         nullable=True,
     )
+    complaint_id = db.Column(
+        db.Integer,
+        db.ForeignKey("complaint.id", ondelete="CASCADE"),
+        nullable=True,
+    )
+
 
     __table_args__ = (
         Index(

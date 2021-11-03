@@ -85,6 +85,6 @@ export class MultipleMarkerMap {
 	}
 
 	validRoute() {
-		return this.coordinates.length >= 2;
+		return this.coordinates.length >= 3;
 	}
 }

@@ -4,6 +4,7 @@ from wtforms import (
     StringField,
     SelectField,
     HiddenField,
+    TextAreaField
 )
 from flask_wtf import FlaskForm
 
@@ -31,7 +32,7 @@ class EvacuationRouteForm(FlaskForm):
         },
     )
 
-    description = StringField("Descripción del recorrido")
+    description = TextAreaField("Descripción del recorrido")
 
     state = SelectField(
         "Estado",

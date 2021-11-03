@@ -162,4 +162,21 @@ def update():
 
 @evacuation_route.post("/show")
 def show():
-    pass
+    "Controller para mostrar la información de un recorrido de evacuación"
+
+    if not authenticated(session) or not check_permission(
+        "evacuation_route_show"
+    ):
+        abort(401)
+
+    id_evacuation_route = request.form["id_evacuation_route"]
+    evacuation_route = EvacuationRoute.find_by_id(id_evacuation_route)
+    if not evacuation_route:
+        flash("No se encontró el recorrido de evacuación",
+               category="evacuation_route_show")
+        return redirect(url_for("evacuation_route.index", page_number=1))
+
+    return render_template(
+        "evacuation_route/show.html",
+        evacuation_route=evacuation_route,
+    )

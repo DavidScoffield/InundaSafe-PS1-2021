@@ -14,7 +14,9 @@ def check_param(param_name, param, object_name = "meeting_point"):
         f"@{object_name}/state": param
         if param != "all" and param is not None
         else "",
-        "@user/name": param if param is not None else "",
+        "@user/username": param.strip()
+        if param is not None
+        else "",
         "@user/active": param
         if type(param) is int and param is not None
         else "",

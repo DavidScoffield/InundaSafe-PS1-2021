@@ -25,7 +25,7 @@
       <div class="col-sm-12 col-md-6 d-flex justify-content-sm-center justify-content-md-end">
         <form method="GET" action="{{url_for('user.index', page_number=users.page)}}" class="d-flex justify-content-end align-content-center">
   
-          <input type="text" name="name" placeholder="Buscar por nombre..." class="mx-1 pl-2" 
+          <input type="text" name="username" placeholder="Buscar por nombre usuario..." class="mx-1 pl-2" 
           {% if argname %} 
             value="{{argname}}"
           {% endif %}>
@@ -47,6 +47,7 @@
       <thead>
           <tr>
               <th scope="col" class="text-center">Roles</th>
+              <th scope="col" class="text-center">Nombre usuario</th>
               <th scope="col" class="text-center">email</th>
               <th scope="col" class="text-center">Nombre</th>
               <th scope="col" class="text-center">Apellido</th>
@@ -60,9 +61,10 @@
         <tr>
             <td class="text-center">
               {% for rol in user.roles %}
-                {{rol.name}}
+                {{format_role(rol.name)}}
               {% endfor %}
             </td>
+            <td class="text-center">{{user.username}}</td>
             <td class="text-center">{{user.email}}</td>
             <td class="text-center">{{user.first_name}}</td>
             <td class="text-center">{{user.last_name}}</td>
@@ -73,20 +75,38 @@
               {% set buttonText = 'Desbloquear' %}
               <td class="text-center">Bloqueado</td>  
             {% endif %}
-            <td class="text-center d-flex">
+            <td class="text-center d-flex justify-content-center">
                 {% if not helper_has_role(user.roles, "rol_administrador") %}
-                  <form  action="{{ url_for('user.toggle_state') }}" method="POST">
+                  <form  action="{{ url_for('user.toggle_state') }}" method="POST" class="d-inline">
                     <input name="user_id" type="hidden" value="{{user.id}}">
                     <input name="state" type="hidden" value="{{user.active}}">
-                    <button class="button-gradient" type="submit">{{buttonText}}</button>
+                    <button class="btn button-gradient" type="submit">{{buttonText}}</button>
                   </form>
                 {% endif %}
-                <a class="nav-link" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
+                <form action="{{url_for('user.show')}}" method="post" class="d-inline">
+                  <input name="id_user" type="hidden" value="{{user.id}}">
+                  <button type="submit" class="btn button-gradient mx-1">Ver</button>
+                </form>
+                <a class="btn button-gradient d-inline" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
+                <form  action="{{ url_for('user.delete') }}" method="POST" class="d-inline">
+                  <input type="hidden" name="user_id" value="{{user.id}}">
+                  <button type="submit" onclick="confirm_destroy(event)" class="btn button-gradient rounded">Eliminar</button>
+                </form>
+                
             </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
+
+    {% if not found_users %}
+      <br>
+      {% with messages = get_flashed_messages(category_filter=["user_index"]) %}
+          {% for message in messages %}
+              <p class="text-center">{{message}}</p>
+          {% endfor %}
+      {% endwith %}
+    {% endif %}
 
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
@@ -113,4 +133,13 @@
       </ul>
     </nav> 
 </div>
+
+<script>
+  function confirm_destroy(e)
+  {
+      if(!confirm("¿Está seguro que desea borrar a este usuario?")) {
+          e.preventDefault();
+      }
+  }
+  </script>
 {% endblock %}

@@ -20,6 +20,8 @@ from app.helpers.check_param_search import (
 )
 
 from app.helpers.forms.new_user_form import NewUserForm
+from app.helpers.forms.edit_other_user_form import EditOtherUserForm
+from app.helpers.forms.edit_my_profile_form import EditMyProfileForm
 
 user = Blueprint("user", __name__, url_prefix="/usuarios")
 
@@ -30,7 +32,7 @@ def index(page_number):
     Controller para mostrar el listado de usuarios
     Recibe como parametro el numero de la pagina a mostrar
     Puede recibir como argumentos:
-    - name : string -> campo de filtro para los nombres de usuarios
+    - username : string -> campo de filtro para los nombres de usuarios
     - active : string -> campo de filtro para los estados(activado, desactivado) de usuarios
     """
 
@@ -41,21 +43,27 @@ def index(page_number):
         abort(401)
 
     args = request.args
-    name = args.get("name")
+    username = args.get("username")
     active = args.get("active")
 
-    name = check_param("@user/name", name)
+    username = check_param("@user/username", username)
     active = check_param("@user/active", active_dic(active))
 
     # Busco los usuarios con sus filtros correspondientes
     users = User.search(
         active=active,
-        name=name,
+        username=username,
         dont_use_active=type(active) is not int,
     )
     # elimino al usuario del listado para que no se liste a él mismo
     this_user_id = session["user"]
     users = User.exclude_user(users, this_user_id)
+
+    if not users.first():
+        flash("No se encontraron resultados", category="user_index")
+        found_users = False
+    else:
+        found_users = True
 
     paginated_users = User.paginate(
         page_number=page_number,
@@ -82,7 +90,7 @@ def index(page_number):
         )
 
     return render_template(
-        "user/index.html", users=paginated_users
+        "user/index.html", users=paginated_users, found_users=found_users
     )
 
 
@@ -120,7 +128,7 @@ def create():
     username = params["username"]
     email = params["email"]
     password = params["password"]
-    state = request.form.get("state")
+    state = request.form.get("active")
     # selectedRoles = request.form.getlist("rol")
 
     selectedRoles = []
@@ -135,7 +143,7 @@ def create():
     # custom validate_rol_label() definido en la clase que chequea que se haya clickeado
     # al menos un checkbox.
     if not form.validate_on_submit():
-        flash("Por favor, corrija los errores")
+        flash("Por favor, corrija los errores", category="user_create")
         return render_template("user/new.html", form=form)
     else:
         user = User.check_existing_email_or_username(
@@ -144,12 +152,13 @@ def create():
 
         if user:
             if user.email == email:
-                flash("Ya existe un usuario con ese email")
+                flash("Ya existe un usuario con ese email", category="user_create")
                 return redirect(url_for("user.new"))
 
             if user.username == username:
                 flash(
-                    "Ya existe un usuario con ese nombre de usuario"
+                    "Ya existe un usuario con ese nombre de usuario",
+                    category="user_create"
                 )
                 return redirect(url_for("user.new"))
         if (
@@ -158,6 +167,10 @@ def create():
             state = 1
         else:
             state = 0
+
+        # Si esta creando a un admin, lo seteo como Activo, para que no pueda crearlo Bloqueado
+        if("rol_administrador" in selectedRoles):
+            state = 1
 
         User.insert_user(
             email,
@@ -169,7 +182,7 @@ def create():
             selectedRoles,
         )  # inserto al usuario en la bd
 
-    flash("Usuario creado correctamente")
+    flash("Usuario creado correctamente", category="user_create")
     return redirect(url_for("user.index", page_number=1))
 
 
@@ -217,9 +230,16 @@ def edit(user_id):
     if not check_permission("usuario_show"):
         abort(401)
 
-    user = User.find_user_by_id(user_id)
+    user = User.find_user_by_id_not_deleted(user_id)
+
+    # Si intenta acceder por URL con un id que no existe o que esta eliminado aborta.
+    if(not user):
+        abort(404)
+
+    form = EditOtherUserForm(**user.get_attributes())
+
     return render_template(
-        "user/edit_other_user.html", user=user
+        "user/edit_other_user.html", user=user, form=form
     )
 
 
@@ -233,26 +253,22 @@ def update(user_id):
     if not check_permission("usuario_update"):
         abort(401)
 
-    params = request.form.to_dict()
-    first_name = params["first_name"]
-    last_name = params["last_name"]
-    email = params["email"]
-    password = params["password"]
-    state = request.form.get("state")
-    selectedRoles = request.form.getlist("rol")
+    form = EditOtherUserForm(request.form)
 
-    if (
-        not first_name
-        or not last_name
-        or not email
-        or not password
-        or not state
-        or not len(selectedRoles)
-    ):
-        flash("Se deben completar todos los campos")
-        return redirect(
-            url_for("user.edit", user_id=user_id)
-        )
+    params = form.data
+
+    email = params["email"]
+
+    selectedRoles = []
+    # genero una lista de strings con los roles seleccionados en el form
+    for rol in ["rol_administrador", "rol_operador"]:
+        if params[rol]:
+            selectedRoles += [rol]
+
+    user = User.find_user_by_id(user_id)
+    if not form.validate_on_submit():       #validaciones del back WTF
+        flash("Por favor, corrija los errores", category="update_user")
+        return render_template("user/edit_other_user.html", user=user, form=form)
 
     # este if está por si dos admins se intentan sacar el permiso de admin mutuamente al mismo tiempo
     roles = Role.find_roles_from_strings(selectedRoles)
@@ -262,6 +278,16 @@ def update(user_id):
     for rol in user.roles:
         if rol.name == "rol_administrador":
             user_was_admin = True
+
+    # Por si se deshabilita el chequeo del front e intenta bloquear a un Admin al editarlo
+    if(user_was_admin):
+        params["active"] = "activo"
+
+
+    update_password = True
+    # Si la contraseña se envia vacia, no la queria editar: La dejo como estaba en la BD
+    if(not params["password"]):
+        update_password = False
 
     if (
         not has_role(roles, "rol_administrador")
@@ -280,7 +306,7 @@ def update(user_id):
             lista.count("rol_administrador") <= 1
         ):  # si hay 1 admin entonces no es posible dejar de ser admin porque no puede dejar de haber
             flash(
-                "No puede dejar de ser administrador ya que usted es el único existente"
+                "No puede dejar de ser administrador ya que usted es el único existente", category="update_user"
             )
             return redirect(
                 url_for("user.edit", user_id=user_id)
@@ -293,12 +319,15 @@ def update(user_id):
     )
     if user_email:
         if user_email.email == email:
-            flash("Ya existe un usuario con ese email")
+            flash("Ya existe un usuario con ese email", category="update_user")
             return redirect(
                 url_for("user.edit", user_id=user_id)
             )
 
-    User.update_user(user_id, params, selectedRoles)
+    User.update_user(user_id, params, selectedRoles, update_password)
+    flash(
+        "Usuario editado correctamente", category="update_user"
+    )
 
     return redirect(url_for("user.edit", user_id=user_id))
 
@@ -310,13 +339,15 @@ def edit_my_profile():
     if not authenticated(session):
         abort(401)
 
-    if not check_permission("usuario_show"):
+    if not check_permission("usuario_show_my_profile"):
         abort(401)
 
     user = User.find_user_by_id(session["user"])
 
+    form = EditMyProfileForm(**user.get_attributes())
+
     return render_template(
-        "user/my_profile.html", user=user
+        "user/my_profile.html", user=user, form=form
     )
 
 
@@ -327,18 +358,32 @@ def update_my_profile():
     if not authenticated(session):
         abort(401)
 
-    if not check_permission("usuario_update"):
+    if not check_permission("usuario_update_my_profile"):
         abort(401)
 
-    params = request.form.to_dict()
-    first_name = params["first_name"]
-    last_name = params["last_name"]
-    email = params["email"]
-    password = params["password"]
-    state = request.form.get("state")
-    selectedRoles = request.form.getlist("rol")
+    form = EditMyProfileForm(request.form)
+   
+    params = form.data
 
+    selectedRoles = []
+    # genero una lista de strings con los roles seleccionados en el form
+    for rol in ["rol_administrador", "rol_operador"]:
+        if params[rol]:
+            selectedRoles += [rol]
+    
     user = User.find_user_by_id(session["user"])
+
+    if not form.validate_on_submit():       #validaciones del back WTF
+        flash("Por favor, corrija los errores", category="user_my_profile")
+        return render_template("user/my_profile.html", user=user, form=form)
+
+    email = params["email"]
+
+    update_password = True
+    # Si la contraseña se envia vacia, no la queria editar: La dejo como estaba en la BD
+    if(not params["password"]):
+        update_password = False
+
     isAdmin = has_role(user.roles, "rol_administrador")
     if isAdmin:
         roles = Role.find_roles_from_strings(selectedRoles)
@@ -365,47 +410,50 @@ def update_my_profile():
                     url_for("user.edit_my_profile")
                 )
 
-        if (
-            not first_name
-            or not last_name
-            or not email
-            or not password
-            or not state
-            or not len(selectedRoles)
-        ):
-            flash(
-                "Se deben completar todos los campos",
-                category="user_my_profile",
-            )
-            return redirect(url_for("user.edit_my_profile"))
-    else:
-        if (
-            not first_name
-            or not last_name
-            or not email
-            or not password
-        ):
-            flash(
-                "Se deben completar todos los campos",
-                category="user_my_profile",
-            )
-            return redirect(url_for("user.edit_my_profile"))
-
     user_email = (
         User.check_existing_email_with_different_id(
             email, user.id
         )
     )
     if user_email:
-        if user_email.email == email:
-            flash(
-                "Ya existe un usuario con ese email",
-                category="user_my_profile",
-            )
-            return redirect(url_for("user.edit_my_profile"))
+        flash(
+            "Ya existe un usuario con ese email",
+            category="user_my_profile",
+        )
+        return redirect(url_for("user.edit_my_profile"))
 
     User.update_profile(
-        user, params, selectedRoles, isAdmin
+        user, params, selectedRoles, isAdmin, update_password
+    )
+    flash(
+        "Perfil actualizado correctamente", category="user_my_profile"
     )
 
     return redirect(url_for("user.edit_my_profile"))
+
+
+@user.post("/show")
+def show():
+    "Controller para mostrar la información de un usuario"
+
+    if not authenticated(session) or not check_permission(
+        "usuario_show"
+    ):
+        abort(401)
+
+    id_user = request.form["id_user"]
+    user = User.find_user_by_id_not_deleted(id_user)
+    if not user:
+        # flash(
+        #     "No se encontró el usuario especificado",
+        #     category="user_show",
+        # )
+        # return redirect(
+        #     url_for("user.index", page_number=1)
+        # )
+        abort(404)
+
+    return render_template(
+        "user/show.html",
+        user=user,
+    )

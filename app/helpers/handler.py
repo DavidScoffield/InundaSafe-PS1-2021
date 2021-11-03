@@ -23,3 +23,26 @@ def unauthorized_error(e):
         "error_description": "No está autorizado para acceder a la url",
     }
     return render_template("error.html", **kwargs), 401
+
+def not_allowed_error(e):
+    """
+    Funcion helper para redirigir a una pagina error con
+    un diccionario definido en caso de obtener un error 405
+    """
+    kwargs = {
+        "error_name": "405 Method Not Allowed",
+        "error_description": "No está permitido acceder a la url",
+    }
+    return render_template("error.html", **kwargs), 405
+
+
+def internal_server_error(e):
+    """
+    Funcion helper para redirigir a una pagina error con
+    un diccionario definido en caso de obtener un error 500
+    """
+    kwargs = {
+        "error_name": "500 Internal Server Error",
+        "error_description": "Ocurrió un error en el Servidor",
+    }
+    return render_template("error.html", **kwargs), 500

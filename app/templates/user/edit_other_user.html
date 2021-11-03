@@ -1,10 +1,11 @@
+{% from 'bootstrap/form.html' import render_form %}
 {% extends "private_app_layout.html" %}
 {% block title %}Editar{% endblock %}
 {% block head %}
   {{ super() }}
 {% endblock %}
 {% block content %}
-{% with messages = get_flashed_messages() %} {% if messages %}
+{% with messages = get_flashed_messages(category_filter=["update_user"]) %} {% if messages %}
   {% for message in messages %}
   {{ message }}
   {% endfor %}
@@ -19,66 +20,38 @@
     <h1 class="font-weight-bold">Editar datos de {{user.first_name}}:</h1>
   </div>
 
-  <form action="{{ url_for('user.update', user_id=user.id) }}" method="POST">
-    <p>
-      <label>Nombre de usuario:<label></br>
-      <p>{{user.username}}</p>
-    </p>
-    <p>
-      <label>Nombre:<label></br>
-      <input name="first_name" value={{user.first_name}} placeholder="Ingrese un nombre"/>
-    </p>
-    <p>
-      <label>Apellido:<label></br>
-      <input name="last_name" value={{user.last_name}} placeholder="Ingrese un apellido"/>
-    </p>
-    <p>
-      <label>Email:<label></br>
-      <input name="email" value={{user.email}} placeholder="Ingrese un email"/>
-    </p>
-    <p>
-      <label>Contraseña:<label></br>
-      <input type="password" name="password" value={{user.password}} placeholder="Ingrese una contraseña"/>
-    </p>
-    <p>
-      <label>Roles:<label></br>
-      <label>  
-      <input name="rol" type="checkbox" value="rol_administrador"   {{ "checked" if helper_has_role(user.roles, "rol_administrador") }}/>Administrador
-      </label>
-      <label>
-      <input name="rol" type="checkbox" value="rol_operador"  {{"checked" if helper_has_role(user.roles, "rol_operador") }}/>Operador
-      </label>
-    </p>
-    <p>
-      <label>Estado:<label></br>
-      <label>
-        <input name="state" type="radio" value="activo" {{"checked" if user.active == 1}}/>Activo
-      </label>
-      <label>
-        <input name="state" type="radio" value="bloqueado" {{"checked" if user.active == 0}}/>Bloqueado
-      </label>
-    </p>
-    
-    <p>
-      <input type="submit" value="Editar">
-    </p>
-  </form>
   <div>
-    <form  action="{{ url_for('user.delete') }}" method="POST">
-      <input type="hidden" name="user_id" value="{{user.id}}">
-      <button type="submit" onclick="confirm_destroy(event)" class="btn btn-danger mx-1 rounded">Eliminar Usuario</button>
-    </form>
-  </div>    
+    <p>Nombre de usuario: <b>{{user.username}}</b></p>
+  </div>
+
+  {{render_form(form, action=url_for('user.update', user_id=user.id), method="POST")}}
+  
+  <i>* Campos obligatorios</i>
 </div>
   
   <script>
+    // Script para tirar una alert cuando se intenta eliminar un User
     function confirm_destroy(e)
     {
         if(!confirm("¿Está seguro que desea borrar a este usuario?")) {
             e.preventDefault();
         }
     }
+  </script>
+
+  {% if (helper_has_role(user.roles, "rol_administrador")) %}
+    <script>
+      // Bloquea los radio button si el usuario a editar es un admin para no poder bloquearlo
+      // *el evento load se ejecuta cuando se carga toda la pagina completamente*
+      window.addEventListener("load", function(){
+        console.log("{{user.first_name}}")
+        let activoRadioButton = document.getElementById("active-0")
+        let bloqueadoRadioButton = document.getElementById("active-1")
+        activoRadioButton.disabled = true
+        bloqueadoRadioButton.disabled = true
+      });
     </script>
+  {% endif %}
 
 {% endblock %}
 

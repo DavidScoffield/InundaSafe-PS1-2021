@@ -24,6 +24,8 @@ export class SingleMarkerMap {
 		 * Si enableMarker es verdadero, se agrega un manejador al evento clcick para agregar el punto en el mapa
 		*/
 
+		this.coordinate = []
+
 		this.initializeMap(selector, initialMarker);
 		if (addSearch) {
 			this.addSearchControl();
@@ -59,10 +61,10 @@ export class SingleMarkerMap {
 		 * Si ya había un marcador colocado en el mapa, lo elimina y coloca uno nuevo a partir de la
 		 * latitud y longitud recibida por parámetro
 		*/
-
 		if (this.marker) {
 			this.marker.remove()
 		}
+		this.coordinate = [lat, lng];
 		this.marker = L.marker([lat, lng]).addTo(this.map);
 	}
 	

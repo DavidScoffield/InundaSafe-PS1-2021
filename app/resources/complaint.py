@@ -16,7 +16,8 @@ from flask import (
 from app.db import db
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
-
+import json
+from app.helpers.validate_coordinates import validate_coordinates
 
 complaint_route = Blueprint(
     "complaint", __name__, url_prefix="/denuncias"
@@ -31,7 +32,16 @@ def index():
     ):
         abort(401)
 
+    #devuelve Tuplas, [0] complaint y [1] el usuario asignado
+    #https://www.youtube.com/watch?v=_HIY1lZKEw0&ab_channel=PrettyPrinted
     complaints = Complaint.find_all_complaints()
+
+    print("---------------------------------------------------", flush=True)
+    for complaint in complaints:
+        print(complaint, flush=True)
+    print("---------------------------------------------------", flush=True)
+    
+
 
     return render_template(
         "complaint/index.html", complaints=complaints
@@ -60,13 +70,21 @@ def create():
         "complaint_create"
     ):
         abort(401)
-
+    
     form = ComplaintForm(request.form)
+    args = form.data
+    
+    args["coordinate"] = json.loads(args["coordinate"])
+    # Validacion de la coordenada
+    if not validate_coordinates(args["coordinate"]):
+        flash("Se ingresó una coordenada inválida", category="complaint_new")
+        return render_template("complaint/new.html", form=form)
+
+    # Validacion del resto de los campos
     if not form.validate_on_submit():
         flash("Por favor, corrija los errores", category="complaint_new")
         return render_template("complaint/new.html", form=form)
-    
-    args = form.data
+
     del args["submit"]
     del args["csrf_token"]
     Complaint.create_complaint(**args)

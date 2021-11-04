@@ -19,7 +19,7 @@ class ComplaintFollowUp(db.Model):
     )
 
     def __repr__(self):
-        return "<ComplaintFollowUp %r>" % self.name
+        return "<ComplaintFollowUp %r>" % self.description
 
     def __init__(self, author_id, description, complaint_id):
         """Constructor del modelo"""

@@ -2,6 +2,7 @@ from app.db import db
 from app.helpers.config import actual_config
 from sqlalchemy.orm import relationship
 from app.models.coordinate import Coordinate
+from app.models.user import User
 import datetime
 
 class Complaint(db.Model):
@@ -30,7 +31,7 @@ class Complaint(db.Model):
     follow_ups = relationship("ComplaintFollowUp")
 
     def __repr__(self):
-        return "<Complaint %r>" % self.name
+        return "<Complaint %r>" % self.title
 
     def __init__(self, title, category, description,
                  state, creator_first_name, creator_last_name, 
@@ -46,23 +47,19 @@ class Complaint(db.Model):
         self.creator_telephone = creator_telephone
         self.creator_email = creator_email
         self.assigned_to = assigned_to
-        self.coordinate = Coordinate(1, 2)
-
+        self.coordinate = Coordinate(coordinate[0], coordinate[1])
 
     @classmethod 
     def find_all_complaints(cls):
-        """Devuelve todas las denuncias de la BD"""
-        return Complaint.query.all()
+        """Devuelve todas las denuncias de la BD. Hago join porque necesito mostrar datos del usuario asignado en el front"""
+        
+        return db.session.query(Complaint, User).join(User, Complaint.assigned_to == User.id).all()
 
     @classmethod
-    def create_complaint(cls, title, category, description,
-                 state, creator_first_name, creator_last_name, 
-                 creator_telephone, creator_email, assigned_to, coordinate):
-        """Crea una denuncia con los datos del formulario y la almacena en la BD"""
+    def create_complaint(cls, **args):
+        """Crea una denuncia con su coordenada con los datos del formulario y la almacena en la BD."""
 
-        new_complaint = Complaint(title, category, description,
-                 state, creator_first_name, creator_last_name, 
-                 creator_telephone, creator_email, assigned_to, coordinate)
-        print("Insertando...............................", flush=True)
+        new_complaint = Complaint(**args)
+
         db.session.add(new_complaint)
         db.session.commit()

@@ -1,4 +1,5 @@
-#from app.models.evacuation_route import EvacuationRoute
+from app.models.complaint import Complaint
+from app.models.complaint_follow_up import ComplaintFollowUp
 from app.helpers.forms.complaint_form import (
     ComplaintForm
 )
@@ -15,16 +16,27 @@ from flask import (
 from app.db import db
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
-from app.helpers.check_param_search import (
-    check_param,
-)
-from app.helpers.validate_coordinates import validate_coordinates
-import json
+
 
 complaint_route = Blueprint(
     "complaint", __name__, url_prefix="/denuncias"
 )
 
+@complaint_route.get("/")
+def index():
+    "Listado de las denuncias"
+
+    if not authenticated(session) or not check_permission(
+        "complaint_index"
+    ):
+        abort(401)
+
+    complaints = Complaint.find_all_complaints()
+
+    return render_template(
+        "complaint/index.html", complaints=complaints
+    )
+    
 
 @complaint_route.get("/new")
 def new():
@@ -39,38 +51,25 @@ def new():
 
     return render_template("complaint/new.html", form=form)
 
-"""
+
 @complaint_route.post("/new")
 def create():
-    "Controller para crear el recorrido de evacuación a partir de los datos del formulario"
+    "Controller para crear una denuncia a partir de los datos del formulario"
     
     if not authenticated(session) or not check_permission(
-        "evacuation_route_create"
+        "complaint_create"
     ):
         abort(401)
 
-    form = EvacuationRouteForm(request.form)
+    form = ComplaintForm(request.form)
     if not form.validate_on_submit():
-        flash("Por favor, corrija los errores",
-              category="evacuation_route_new")
-    else:
-        args = form.data
-        del args["submit"]
-        del args["csrf_token"]
-        del args["id"]
-        if EvacuationRoute.exists_name(args["name"]):
-            flash("Ya existe un recorrido de evacuación con ese nombre",
-                   category="evacuation_route_new")
-        else:
-            args["coordinates"] = json.loads(args["coordinates"])
-            for coordinate in args["coordinates"]:
-                if not validate_coordinates(coordinate):
-                    flash("Se ingresó una coordenada inválida", category="evacuation_route_new")
-                    return render_template("evacuation_route/new.html", form=form)
+        flash("Por favor, corrija los errores", category="complaint_new")
+        return render_template("complaint/new.html", form=form)
+    
+    args = form.data
+    del args["submit"]
+    del args["csrf_token"]
+    Complaint.create_complaint(**args)
 
-            EvacuationRoute.new(**args)
-            flash("Recorrido de evacuación agregado exitosamente",
-                   category="evacuation_route_new")
-
-    return render_template("evacuation_route/new.html", form=form)
-    """
+    flash("Denuncia creada correctamente", category="complaint_index")
+    return redirect(url_for("complaint.index"))

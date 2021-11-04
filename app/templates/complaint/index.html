@@ -1,0 +1,80 @@
+{% extends "private_app_layout.html" %}
+{% block title %}Denuncias{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+
+  <div class="container mx-auto py-4">
+    
+    <!-- TITULO -->
+    <div class="d-flex align-items-center mb-3">
+      <a href="{{url_for('home.index')}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+        <i class="fas fa-arrow-left fa-lg"></i>
+      </a>
+      <h1 class="font-weight-bold">Denuncias</h1>
+    </div>
+
+    {% with messages = get_flashed_messages(category_filter=["complaint_index"]) %}
+      <br>
+      {% for message in messages %}
+          <p>{{message}}</p>
+      {% endfor %}
+    {% endwith %}
+
+    <!-- BUTTONS -->
+    <div class="w-100 row justify-content-center">
+      <div class="col d-flex justify-content-sm-center justify-content-md-start mb-sm-3 mb-md-0">
+        <a class="btn btn-primary button-gradient" role="button" href="{{url_for('complaint.new')}}">Nueva</a>
+      </div>
+    </div>
+
+    <br />
+
+    <!-- LIST -->
+    <table class="table">
+      <thead>
+          <tr>
+              <th scope="col" class="text-center">Titulo</th>
+              <th scope="col" class="text-center">Categoria</th>
+              <th scope="col" class="text-center">Fecha de creación</th>
+              <th scope="col" class="text-center">Descripcion</th>
+              <th scope="col" class="text-center">Estado</th>
+              <th scope="col" class="text-center">Asignado a</th>
+              <th scope="col" class="text-center">Email denunciante</th>
+              <th scope="col" class="text-center">Acciones</th>
+          </tr>
+      </thead>
+
+      <tbody>
+        {% for complaint in complaints %}
+        <tr>
+            <td class="text-center">
+                {{complaint.title}}
+                hola
+            </td>
+            <td class="text-center">{{complaint.category}}</td>
+            <td class="text-center">{{complaint.created_at}}</td>
+            <td class="text-center">{{complaint.description}}</td>
+            <td class="text-center">{{complaint.state}}</td>
+            <td class="text-center">{{complaint.assigned_to}}</td>
+            <td class="text-center">{{complaint.creator_email}}</td>
+            <td class="text-center d-flex justify-content-center">
+              Acciones!!!
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+</div>
+
+<script>
+  function confirm_destroy(e)
+  {
+      if(!confirm("¿Está seguro que desea borrar a este usuario?")) {
+          e.preventDefault();
+      }
+  }
+  </script>
+{% endblock %}

@@ -12,9 +12,7 @@ from flask_wtf import FlaskForm
 
 class ComplaintForm(FlaskForm):
 
-    "Crea el formulario para obtener datos de un meeting point"
-
-    #id = HiddenField()
+    "Crea el formulario para obtener datos de una denuncia"
 
     title = StringField(
         "Título (*)",
@@ -62,7 +60,7 @@ class ComplaintForm(FlaskForm):
         },
     )
 
-    coordinates = HiddenField()
+    coordinate = HiddenField()
 
     state = SelectField(
         "Estado",
@@ -77,10 +75,10 @@ class ComplaintForm(FlaskForm):
                       ), ]
     )
 
-    state = SelectField(
+    assigned_to = SelectField(
         "Asignado a",
         choices=[
-            ("not_confirm", "NO SE QUE OPCIONES"),
+            ("1", "NO SE QUE OPCIONES"),
             ("in_course", "PONER"),
             #no se que opciones tendrian que ir
         ],
@@ -89,7 +87,7 @@ class ComplaintForm(FlaskForm):
                       ), ]
     )
 
-    last_name = StringField(
+    creator_last_name = StringField(
         "Apellido denunciante (*)",
         [
             validators.DataRequired(
@@ -106,7 +104,7 @@ class ComplaintForm(FlaskForm):
         },
     )
 
-    first_name = StringField(
+    creator_first_name = StringField(
         "Nombre denunciante (*)",
         [
             validators.DataRequired(
@@ -123,7 +121,7 @@ class ComplaintForm(FlaskForm):
         },
     )
 
-    telephone = StringField(
+    creator_telephone = StringField(
         "Teléfono (*)",
         [
             validators.DataRequired(
@@ -140,7 +138,7 @@ class ComplaintForm(FlaskForm):
         },
     )
 
-    email = EmailField(
+    creator_email = EmailField(
         "Email (*)",
         [
             validators.DataRequired(

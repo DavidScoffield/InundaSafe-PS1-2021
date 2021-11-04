@@ -401,8 +401,11 @@ CREATE TABLE `complaint` (
   `creator_last_name` varchar(100),
   `creator_telephone` varchar(50),
   `creator_email` varchar(150),
+  `assigned_to` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY (`id`)
+  KEY (`id`),
+  KEY `assigned_to` (`assigned_to`),
+  CONSTRAINT `complaint_ibfk_1` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

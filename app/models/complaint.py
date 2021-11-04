@@ -23,6 +23,9 @@ class Complaint(db.Model):
     creator_last_name = db.Column(db.String(100))
     creator_telephone = db.Column(db.String(50))
     creator_email = db.Column(db.String(150))
+    assigned_to = db.Column(
+        db.Integer, 
+        db.ForeignKey("users.id"))
     coordinate = relationship("Coordinate", uselist=False)    #,cascade="all,delete", cascade="all,delete-orphan") ?. uselist=False es para one to one
     follow_ups = relationship("ComplaintFollowUp")
 
@@ -31,7 +34,7 @@ class Complaint(db.Model):
 
     def __init__(self, title, category, description,
                  state, creator_first_name, creator_last_name, 
-                 creator_telephone, creator_email, coordinate):
+                 creator_telephone, creator_email, assigned_to, coordinate):
         """Constructor del modelo"""
 
         self.title = title
@@ -42,5 +45,24 @@ class Complaint(db.Model):
         self.creator_last_name = creator_last_name
         self.creator_telephone = creator_telephone
         self.creator_email = creator_email
-        self.coordinate = Coordinate(coordinate[0], coordinate[1])
+        self.assigned_to = assigned_to
+        self.coordinate = Coordinate(1, 2)
 
+
+    @classmethod 
+    def find_all_complaints(cls):
+        """Devuelve todas las denuncias de la BD"""
+        return Complaint.query.all()
+
+    @classmethod
+    def create_complaint(cls, title, category, description,
+                 state, creator_first_name, creator_last_name, 
+                 creator_telephone, creator_email, assigned_to, coordinate):
+        """Crea una denuncia con los datos del formulario y la almacena en la BD"""
+
+        new_complaint = Complaint(title, category, description,
+                 state, creator_first_name, creator_last_name, 
+                 creator_telephone, creator_email, assigned_to, coordinate)
+        print("Insertando...............................", flush=True)
+        db.session.add(new_complaint)
+        db.session.commit()

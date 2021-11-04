@@ -13,14 +13,14 @@
     </a>
     <h1 class="font-weight-bold">Realizar una denuncia</h1>
   </div>
-  {% with messages = get_flashed_messages(category_filter=["complaint_create"]) %}
+  {% with messages = get_flashed_messages(category_filter=["complaint_new"]) %}
     <br>
     {% for message in messages %}
         <p>{{message}}</p>
     {% endfor %}
   {% endwith %}
 
-  {{render_form(form, action=url_for('user.create'), method="POST")}}
+  {{render_form(form, action=url_for('complaint.create'), method="POST")}}
   
   <br><i>* Campos obligatorios</i>
 </div>

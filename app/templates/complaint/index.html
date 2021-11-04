@@ -15,7 +15,7 @@
       <h1 class="font-weight-bold">Denuncias</h1>
     </div>
 
-    {% with messages = get_flashed_messages(category_filter=["complaint_index"]) %}
+    {% with messages = get_flashed_messages(category_filter=["complaint_index", "complaint_show"]) %}
       <br>
       {% for message in messages %}
           <p>{{message}}</p>
@@ -60,7 +60,24 @@
             <td class="text-center">{{complaint.assigned_to}}</td>
             <td class="text-center">{{complaint.creator_email}}</td>
             <td class="text-center d-flex justify-content-center">
-              Acciones!!!
+              {% if helper_has_permission("complaint_show") %}
+                <form action="{{url_for('complaint.show')}}" method="post" class="d-inline">
+                  <input name="id_complaint" type="hidden" value="{{complaint.id}}">
+                  <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
+                </form>
+              {% endif %}
+              {% if helper_has_permission("complaint_edit") %}
+                <form action="{{url_for('complaint.edit')}}" method="post" class="d-inline">
+                  <input name="id_complaint" type="hidden" value="{{complaint.id}}">
+                  <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
+                </form>
+              {% endif %}
+              {% if helper_has_permission("complaint_destroy") %}
+                <form action="{{url_for('complaint.destroy')}}" method="post" class="d-inline">
+                  <input name="id_complaint" type="hidden" value="{{complaint.id}}">
+                  <button type="submit" onclick="return confirm('¿Está seguro que desea borrar esta denuncia?')" class="btn btn-primary button-gradient mx-1">Eliminar</button>
+                </form>
+              {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -68,13 +85,4 @@
     </table>
 
 </div>
-
-<script>
-  function confirm_destroy(e)
-  {
-      if(!confirm("¿Está seguro que desea borrar a este usuario?")) {
-          e.preventDefault();
-      }
-  }
-  </script>
 {% endblock %}

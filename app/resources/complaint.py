@@ -73,3 +73,46 @@ def create():
 
     flash("Denuncia creada correctamente", category="complaint_index")
     return redirect(url_for("complaint.index"))
+
+
+@complaint_route.post("/show")
+def show():
+    "Controller para mostrar la información de una denuncia"
+
+    if not authenticated(session) or not check_permission(
+        "complaint_show"
+    ):
+        abort(401)
+
+    id_complaint = request.form["id_complaint"]
+    complaint = Complaint.find_by_id(id_complaint)
+    if not complaint:
+        flash("No se encontró la denuncia",
+               category="complaint_show")
+        return redirect(url_for("complaint.index"))
+
+    return render_template(
+        "complaint/show.html",
+        complaint=complaint,
+    )
+
+
+@complaint_route.post("/edit")
+def edit():
+    "Controller para editar denuncia"
+
+    if not authenticated(session) or not check_permission(
+        "complaint_edit"
+    ):
+        abort(401)
+
+    
+
+@complaint_route.post("/destroy")
+def destroy():
+    "Controller para eliminar denuncia"
+
+    if not authenticated(session) or not check_permission(
+        "complaint_destroy"
+    ):
+        abort(401)

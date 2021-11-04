@@ -1,0 +1,62 @@
+{% from 'bootstrap/form.html' import render_form %}
+
+{% extends "private_app_layout.html" %} 
+
+{% block title %} InundaSafe | Ver denuncia {% endblock %} 
+
+{% block head %} 
+
+  {{ super() }}
+
+{% endblock %} 
+
+{% block content %}
+<br>
+<div class="container mx-auto py-4">
+<div class="d-flex align-items-center">
+    <a href="{{url_for('complaint.index')}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Ver información de la denuncia</h1>
+</div>
+<br>
+
+<table class="table table-striped">
+    <tbody>
+      <tr>
+        <th scope="row">Título</th>
+        <td>{{complaint.title}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Categoría</th>
+        <td>{{complaint.category}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Fecha de creación</th>
+        <td>{{complaint.created_at}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Descripción</th>
+        <td>{{complaint.description}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Estado</th>
+        <td>{{complaint.state}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Asignado a</th>
+        <td>{{complaint.assigned_to}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Email denunciante</th>
+        <td>{{complaint.creator_email}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="map-container">
+    <div id="mapid" style="height:400px"></div>
+  </div>
+
+</div>
+{% endblock %}

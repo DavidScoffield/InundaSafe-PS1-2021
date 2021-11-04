@@ -63,3 +63,9 @@ class Complaint(db.Model):
 
         db.session.add(new_complaint)
         db.session.commit()
+
+    @classmethod
+    def find_by_id(cls, id):
+        "Retorna la denuncia correspondiente al id recibido por parámetro"
+
+        return Complaint.query.get(id)

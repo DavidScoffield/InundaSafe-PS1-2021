@@ -3,15 +3,15 @@ from wtforms import (
     validators,
     StringField,
     PasswordField,
-    RadioField,
-    BooleanField
+    BooleanField,
 )
+from wtforms.fields.core import SelectField
 from wtforms.fields.html5 import EmailField
 from flask_wtf import FlaskForm
 
-class NewUserForm(FlaskForm):
+class EditMyProfileForm(FlaskForm):
 
-    "Crea el formulario para dar de alta a un usuario"
+    "Crea el formulario para editar mi perfil"
 
     first_name = StringField(
         "Nombre (*)",
@@ -47,23 +47,6 @@ class NewUserForm(FlaskForm):
         },
     )
 
-    username = StringField(
-        "Nombre de usuario (*)",
-        [
-            validators.DataRequired(
-                message="Este campo es obligatorio"
-            ),
-            validators.Regexp(
-                "^[a-z A-Z 0-9]+$",
-                message="Por favor, ingrese un nombre de usuario válido",
-            ),
-        ],
-        render_kw={
-            "pattern": "[a-z A-Z 0-9]+$",
-            "title": "El nombre de usuario solo puede contener letras y números",
-        },
-    )
-
     email = EmailField(
         "Email (*)",
         [
@@ -77,34 +60,18 @@ class NewUserForm(FlaskForm):
     )
 
     password = PasswordField(
-        "Contraseña (*)",
+        "Contraseña",
         [
-            validators.DataRequired(
-                message="Este campo es obligatorio"
-            ),
+            validators.Optional(),
             validators.Regexp(
                 "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$",
-                message="La contraseña debe al menos 8 caracteres, una letra y un número",
+                message="La contraseña debe tener al menos 8 caracteres, una letra y un número",
             ),
         ],
         render_kw={
             "pattern": "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$",
-            "title": "La contraseña debe al menos 8 caracteres, una letra y un número",
+            "title": "La contraseña debe tener al menos 8 caracteres, una letra y un número",
         },
-    )
-
-    active = RadioField(
-        "Estado (*)",
-        [
-        validators.DataRequired(
-                message="Este campo es obligatorio"
-        )
-        ],
-        choices=[
-            ("activo", "Activo"),
-            ("bloqueado", "Bloqueado")
-        ],
-        default='activo'
     )
 
     rol_label = StringField(
@@ -117,7 +84,7 @@ class NewUserForm(FlaskForm):
     rol_administrador = BooleanField(
         "Adminsitrador",
         render_kw={
-            "value":"rol_administrador"
+            "value":"rol_administrador", "onclick":"confirm_uncheck_admin(event)"
         },
     )
 
@@ -129,7 +96,7 @@ class NewUserForm(FlaskForm):
     )
 
     submit = SubmitField(
-        "Guardar", render_kw={"class": "button-gradient", "onclick":"validate_roles(event)"}
+        "Guardar", render_kw={"class": "btn button-gradient", "onclick":"validate_roles(event)"}
     )
 
     def validate_rol_label(form, field):

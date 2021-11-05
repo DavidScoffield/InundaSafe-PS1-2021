@@ -1,0 +1,55 @@
+{% from 'bootstrap/form.html' import render_form %} 
+{% extends "private_app_layout.html" %} 
+{% block
+title %} InundaSafe | Ver Usuario {% endblock %} 
+{% block head %} {{ super() }} {% endblock %} 
+{% block content %}
+<br />
+<div class="container mx-auto py-4">
+  <div class="d-flex align-items-center">
+    <a
+      href="{{url_for('user.index', page_number=1)}}"
+      class="text-muted p-1 mr-3"
+      style="cursor: pointer"
+    >
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Información de {{user.first_name}} {{user.last_name}}</h1>
+  </div>
+  <br />
+
+  <table class="table table-striped">
+    <tbody>
+      <tr>
+        <th scope="row">Email</th>
+        <td>{{user.email}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Nombre de usuario</th>
+        <td>{{user.username}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Nombre</th>
+        <td>{{user.first_name}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Apellido</th>
+        <td>{{user.last_name}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Estado</th>
+        <td>{{translate_users_active(user.active)}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Rol/es</th>
+        <td>
+          {% for rol in user.roles %}
+            {{rol.name}}
+          {% endfor %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <a class="btn button-gradient d-inline" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
+</div>
+{% endblock %}

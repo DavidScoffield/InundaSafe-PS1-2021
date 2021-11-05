@@ -2,7 +2,7 @@
 
 {% extends "private_app_layout.html" %} 
 
-{% block title %} InundaSafe | Alta punto de encuentro {% endblock %} 
+{% block title %} InundaSafe | Alta recorrido de evacuación {% endblock %} 
 
 {% block head %} 
 
@@ -11,10 +11,10 @@
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
 	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 	<script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
-    <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css">
+  <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css">
 
-	<script type="module" src="{{url_for('static', filename='js/meeting_point/meeting-point-new-edit-map.js')}}"></script>
+	<script type="module" src="{{url_for('static', filename='js/evacuation_route/evacuation-route-new-edit-map.js')}}"></script>
 
 {% endblock %} 
 
@@ -24,13 +24,13 @@
 
 <div class="container mx-auto py-4">
 <div class="d-flex align-items-center">
-    <a href="{{url_for('meeting_point.index', page_number=1)}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+    <a href="#" class="text-muted p-1 mr-3" style="cursor: pointer">
       <i class="fas fa-arrow-left fa-lg"></i>
     </a>
-    <h1 class="font-weight-bold">Alta de punto de encuentro</h1>
+    <h1 class="font-weight-bold">Alta de recorrido de evacuación</h1>
 </div>
 
-{% with messages = get_flashed_messages(category_filter=["meeting_point_new"]) %}
+{% with messages = get_flashed_messages(category_filter=["evacuation_route_new"]) %}
 <br>
     {% for message in messages %}
         <p>{{message}}</p>
@@ -38,11 +38,11 @@
 
 {% endwith %}
  
-{{ render_form(form, method='POST', action=url_for('meeting_point.new'), id='meeting_point_form') }}
+{{ render_form(form, method='POST', action=url_for('evacuation_route.new'), id='evacuation_route_form') }}
 
 <br>
 
-<p>* Seleccione la ubicación del punto de encuentro</p>
+<p>* Marque los puntos que conforman el recorrido de evacuación</p>
 
 <div class="map-container">
   <div id="mapid" style="height:400px"></div>

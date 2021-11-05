@@ -15,6 +15,11 @@ class Coordinate(db.Model):
         db.ForeignKey("flood_zones.id", ondelete="CASCADE"),
         nullable=True,
     )
+    evacuation_route_id = db.Column(
+        db.Integer,
+        db.ForeignKey("evacuation_route.id"),
+        nullable=True,
+    )
 
     __table_args__ = (
         Index(
@@ -23,7 +28,7 @@ class Coordinate(db.Model):
     )
 
     def __repr__(self):
-        return "<Coordinate %r>" % self.id
+        return f"[{self.latitude}, {self.longitude}]"
 
     def __init__(
         self,

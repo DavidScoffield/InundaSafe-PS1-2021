@@ -47,6 +47,9 @@
         <a class="nav-link" href="{{url_for('flood_zones.index', page_number=1)}}"
           >Zonas inundables</a
         >
+      {% endif %} {% if helper_has_permission("evacuation_route_index") %}
+      <li class="nav-item {% if bp == 'evacuation_route' %} active {% endif %}">
+        <a class="nav-link" href="{{url_for('evacuation_route.index', page_number=1)}}">Recorridos de evacuación</a>
       </li>
       {% endif %}
     </ul>

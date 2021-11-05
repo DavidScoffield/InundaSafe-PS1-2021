@@ -93,19 +93,6 @@ def index(page_number: int = 1):
     )
 
 
-# @flood_zones.get("/upload", endpoint="show_upload")
-# def show_load_flood_zones():
-
-#     "Controller para crear el punto de encuentro a partir de los datos del formulario"
-
-#     if not authenticated(session) or not check_permission(
-#         "zonas_inundables_import"
-#     ):
-#         abort(401)
-
-#     return render_template("flood_zones/load.html")
-
-
 @flood_zones.post("/upload", endpoint="upload")
 def upload_flood_zones():
 
@@ -149,7 +136,6 @@ def upload_flood_zones():
                 data=data, error=error
             )
 
-            # TODO: Guardar o actualizar los datos validos en la BD
             save_data(data)
 
         except Exception as err:

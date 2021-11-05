@@ -148,7 +148,7 @@ INSERT INTO `role_has_permissions` VALUES
   (2,21),
   (2,23),
   (2,24),
-  (2,25);
+  (2,25),
   (2,26),
   (2,27),
   (2,28),
@@ -415,7 +415,7 @@ CREATE TABLE `coordinate` (
   KEY `latitude_longitude` (`latitude`,`longitude`) USING BTREE,
   KEY `flood_zone_id` (`flood_zone_id`),
   KEY `evacuation_route_id` (`evacuation_route_id`),
-  CONSTRAINT `coordinate_ibfk_1` FOREIGN KEY (`flood_zone_id`) REFERENCES `flood_zones` (`id`) ON DELETE CASCADE
+  CONSTRAINT `coordinate_ibfk_1` FOREIGN KEY (`flood_zone_id`) REFERENCES `flood_zones` (`id`) ON DELETE CASCADE,
   CONSTRAINT `coordinate_ibfk_2` FOREIGN KEY (`evacuation_route_id`) REFERENCES `evacuation_route` (`id`)  /* ON DELETE CASCADE ?? */
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

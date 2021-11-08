@@ -168,11 +168,12 @@ def edit():
               category="evacuation_route_update")
         return redirect(url_for("evacuation_route.index", page_number=1))
     
+    coordinates = evacuation_route.coordinates
     # se inicializa el formulario con los datos originales de la ruta de evacuación que se desea modificar
     form = EvacuationRouteForm(**evacuation_route.get_attributes())
-    
+
     return render_template("evacuation_route/edit.html", form=form,
-                            evacuation_route=evacuation_route)
+                            coordinates=coordinates)
 
 
 @evacuation_route.post("/update")
@@ -210,7 +211,7 @@ def update():
             flash("Ya existe un recorrido de evacuación con ese nombre",
                    category="evacuation_route_update")
         else:                                                               # quiere usar el mismo nombre o alguno que no existe
-            args["coordinates"] = json.loads(args["coordinates"])
+            coordinates = args["coordinates"] = json.loads(args["coordinates"])
             valid_coordinates = True
             for coordinate in args["coordinates"]:
                 if not validate_coordinates(coordinate):
@@ -219,14 +220,14 @@ def update():
 
             if valid_coordinates:
                 evacuation_route.update(**args)
-                flash("recorrido de evacuación modificado exitosamente",
+                flash("Recorrido de evacuación modificado exitosamente",
                     category="evacuation_route_update")
 
     return render_template(
         "evacuation_route/edit.html",
         form=form,
         id_evacuation_route=id_evacuation_route,
-        evacuation_route=evacuation_route
+        coordinates=coordinates
     )
 
 

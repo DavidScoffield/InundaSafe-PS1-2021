@@ -152,12 +152,82 @@ def destroy():
 
 @evacuation_route.post("/edit")
 def edit():
-    pass
+    "Controller para mostrar el formulario para la modificación de un recorrido de evacuación"
+
+    if not authenticated(session) or not check_permission(
+        "evacuation_route_edit"
+    ):
+        abort(401)
+
+    id_evacuation_route = request.form["id_evacuation_route"]
+
+    evacuation_route = EvacuationRoute.find_by_id(id_evacuation_route) # ruta de evacuación que se quiere modificar
+
+    if not evacuation_route:
+        flash("No se encontró el recorrido de evacuación",
+              category="evacuation_route_update")
+        return redirect(url_for("evacuation_route.index", page_number=1))
+    
+    # se inicializa el formulario con los datos originales de la ruta de evacuación que se desea modificar
+    form = EvacuationRouteForm(**evacuation_route.get_attributes())
+    
+    return render_template("evacuation_route/edit.html", form=form,
+                            evacuation_route=evacuation_route)
 
 
 @evacuation_route.post("/update")
 def update():
-    pass
+    "Controller para modificar el recorrido de evacuación a partir de los datos del formulario"
+
+    if not authenticated(session) or not check_permission(
+        "evacuation_route_update"
+    ):
+        abort(401)
+
+    form = EvacuationRouteForm(request.form)
+    id_evacuation_route = form.data["id"]
+
+    # ruta de evacuación que se quiere modificar
+    evacuation_route = EvacuationRoute.find_by_id(id_evacuation_route)
+    if not evacuation_route:
+        flash("No se encontró el recorrido de evacuación",
+              category="evacuation_route_update")
+        return redirect(url_for("evacuation_route.index", page_number=1))
+
+    if not form.validate_on_submit():
+        flash("Por favor, corrija los errores",
+              category="evacuation_route_update")
+    else:
+        args = form.data
+        del args["submit"]
+        del args["csrf_token"]
+        del args["id"]
+
+        form_name = args["name"].lower()                                    # el nombre que quiere cargar el usuario
+
+        if (EvacuationRoute.exists_name(form_name)
+            and form_name != evacuation_route.name.lower()):                # quiere usar un nombre que ya existe
+            flash("Ya existe un recorrido de evacuación con ese nombre",
+                   category="evacuation_route_update")
+        else:                                                               # quiere usar el mismo nombre o alguno que no existe
+            args["coordinates"] = json.loads(args["coordinates"])
+            valid_coordinates = True
+            for coordinate in args["coordinates"]:
+                if not validate_coordinates(coordinate):
+                    flash("Se ingresó una coordenada inválida", category="evacuation_route_update")
+                    valid_coordinates = False
+
+            if valid_coordinates:
+                evacuation_route.update(**args)
+                flash("recorrido de evacuación modificado exitosamente",
+                    category="evacuation_route_update")
+
+    return render_template(
+        "evacuation_route/edit.html",
+        form=form,
+        id_evacuation_route=id_evacuation_route,
+        evacuation_route=evacuation_route
+    )
 
 
 @evacuation_route.post("/show")

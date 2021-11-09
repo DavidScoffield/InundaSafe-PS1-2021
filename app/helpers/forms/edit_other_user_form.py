@@ -4,14 +4,16 @@ from wtforms import (
     StringField,
     PasswordField,
     RadioField,
-    BooleanField
+    BooleanField,
 )
 from wtforms.fields.html5 import EmailField
 from flask_wtf import FlaskForm
 
-class NewUserForm(FlaskForm):
+class EditOtherUserForm(FlaskForm):
 
-    "Crea el formulario para dar de alta a un usuario"
+    "Crea el formulario para editar a otro usuario"
+
+    #id = HiddenField()
 
     first_name = StringField(
         "Nombre (*)",
@@ -47,23 +49,6 @@ class NewUserForm(FlaskForm):
         },
     )
 
-    username = StringField(
-        "Nombre de usuario (*)",
-        [
-            validators.DataRequired(
-                message="Este campo es obligatorio"
-            ),
-            validators.Regexp(
-                "^[a-z A-Z 0-9]+$",
-                message="Por favor, ingrese un nombre de usuario válido",
-            ),
-        ],
-        render_kw={
-            "pattern": "[a-z A-Z 0-9]+$",
-            "title": "El nombre de usuario solo puede contener letras y números",
-        },
-    )
-
     email = EmailField(
         "Email (*)",
         [
@@ -77,11 +62,9 @@ class NewUserForm(FlaskForm):
     )
 
     password = PasswordField(
-        "Contraseña (*)",
+        "Contraseña",
         [
-            validators.DataRequired(
-                message="Este campo es obligatorio"
-            ),
+            validators.Optional(),
             validators.Regexp(
                 "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$",
                 message="La contraseña debe al menos 8 caracteres, una letra y un número",

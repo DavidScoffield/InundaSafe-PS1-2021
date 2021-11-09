@@ -67,7 +67,11 @@ class MeetingPoint(db.Model):
         name: str = "",
         state: str = "",
     ):
-        "Retorna una lista con todos los meeting points, teniendo en cuenta los filtros pasados por parametro, en caso que estos sean vacio retorna todos los meeting points. Retorna el resultado paginado"
+        """
+        Retorna una lista con todos los meeting points, teniendo en cuenta los filtros pasados
+        por parametro, en caso que estos sean vacio retorna todos los meeting points.
+        Retorna el resultado paginado
+        """
 
         ac = actual_config()
         order = ac.order_by
@@ -111,15 +115,10 @@ class MeetingPoint(db.Model):
             is not None
         )
 
-    @classmethod
-    def delete(cls, id):
+    def delete(self):
         "Borra un punto de encuentro"
 
-        meeting_point = MeetingPoint.query.filter_by(
-            id=id
-        ).first()
-
-        db.session.delete(meeting_point)
+        db.session.delete(self)
         db.session.commit()
 
     def update(self, **args):

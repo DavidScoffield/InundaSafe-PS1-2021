@@ -3,19 +3,27 @@ from flask import Flask, render_template
 from flask_session import Session
 from flask_bootstrap import Bootstrap
 from dotenv import load_dotenv
+from app.helpers.format_role import (
+    format_role as helper_format_role,
+)
 from config import config
 from app import db
 from app.resources import auth
 from app.resources.home import home as home_route
 from app.resources.meeting_point import meeting_point
+from app.resources.flood_zones import flood_zones
+from app.resources.evacuation_route import evacuation_route
 from app.resources.user import user as user_blueprint
 from app.resources.config import config_routes
 from app.resources.auth import auth_routes
 from app.helpers import handler
-from app.helpers import check_permission as helper_permissions
+from app.helpers import (
+    check_permission as helper_permissions,
+)
 from app.helpers import has_role as helper_has_role
 from app.helpers import auth as helper_auth
 from app.helpers import config as helper_config
+from app.helpers import user as helper_user
 from app.helpers.import_models import *
 
 
@@ -48,10 +56,31 @@ def create_app(environment="development"):
     Session(app)
 
     # Funciones que se exportan al contexto de Jinja2
-    app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
-    app.jinja_env.globals.update(helper_has_role=helper_has_role.has_role)
-    app.jinja_env.globals.update(get_actual_config=helper_config.actual_config)
-    app.jinja_env.globals.update(translate_state=lambda state: "Publicado" if state == "publicated" else "Despublicado")
+    app.jinja_env.globals.update(
+        is_authenticated=helper_auth.authenticated
+    )
+    app.jinja_env.globals.update(
+        helper_has_role=helper_has_role.has_role
+    )
+    app.jinja_env.globals.update(
+        get_actual_config=helper_config.actual_config
+    )
+    app.jinja_env.globals.update(
+        get_user_info=helper_user.logged_user_info
+    )
+    app.jinja_env.globals.update(
+        format_role=helper_format_role
+    )
+    app.jinja_env.globals.update(
+        translate_state=lambda state: "Publicado"
+        if state == "publicated"
+        else "Despublicado"
+    )
+    app.jinja_env.globals.update(
+        translate_users_active=lambda active: "Activo"
+        if active == 1
+        else "Bloqueado"
+    )
     app.jinja_env.globals.update(
         helper_has_permission=helper_permissions.check_permission
     )
@@ -71,10 +100,23 @@ def create_app(environment="development"):
     # Rutas página meeting points (usando Blueprints)
     app.register_blueprint(meeting_point)
 
+    # Rutas página zonas inundables (usando Blueprints)
+    app.register_blueprint(flood_zones)
+
+    # Rutas página evacuation routes (usando Blueprints)
+    app.register_blueprint(evacuation_route)
+
     # Handlers
     app.register_error_handler(404, handler.not_found_error)
-    app.register_error_handler(401, handler.unauthorized_error)
-    # Implementar lo mismo para el error 500
+    app.register_error_handler(
+        401, handler.unauthorized_error
+    )
+    app.register_error_handler(
+        405, handler.not_allowed_error
+    )
+    app.register_error_handler(
+        500, handler.internal_server_error
+    )
 
     # Retornar la instancia de app configurada
     return app

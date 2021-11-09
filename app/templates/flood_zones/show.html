@@ -1,0 +1,73 @@
+{% from 'bootstrap/form.html' import render_form %}
+
+{% extends "private_app_layout.html" %}
+
+{% block title %} InundaSafe | Ver zona inundable {% endblock %}
+
+{% block head %}
+
+{{ super() }}
+
+{#
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+<script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
+<script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script>
+<link rel="stylesheet" type="text/css"
+  href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css">
+
+<script type="module" src="{{url_for('static', filename='js/flood_zones/meeting-point-show-map.js')}}"></script>
+#}
+
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container mx-auto py-4">
+  <div class="d-flex align-items-center">
+    <a href="{{url_for('flood_zones.index', page_number=1)}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Información de {{flood_zone.name}}</h1>
+  </div>
+  <br>
+
+  <table class="table table-striped">
+    <tbody>
+      <tr>
+        <th scope="row">Nombre</th>
+        <td>{{flood_zone.name}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Código</th>
+        <td>{{flood_zone.cipher}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Estado</th>
+        <td>{{translate_state(flood_zone.state)}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Cantidad de puntos</th>
+        <td>{{flood_zone.coordinates|length}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Color</th>
+        <td>{{flood_zone.color}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <form action="{{url_for('flood_zones.edit')}}" method="post" class="d-inline">
+    <input name="id_flood_zone" type="hidden" value="{{flood_zone.id}}">
+    <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
+  </form>
+
+  <div class="map-container">
+    <div id="mapid" style="height:400px"></div>
+  </div>
+
+</div>
+{% endblock %}

@@ -9,7 +9,7 @@ from app.helpers.bcrypt import (
 from app.models.user_has_roles import user_has_roles
 from app.models.role import Role
 from app.helpers.config import actual_config
-
+from app.helpers.from_intState_to_stringState import active_dic
 
 class User(db.Model):
     """Modelo para el manejo de la tabla User de la base de datos"""
@@ -22,7 +22,7 @@ class User(db.Model):
     username = db.Column(
         db.String(50), nullable=False, unique=True
     )
-    password_hash = db.Column(db.String(), nullable=False)
+    password_hash = db.Column(db.Text, nullable=False)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Integer, nullable=False)
@@ -62,11 +62,28 @@ class User(db.Model):
         self.active = active
         self.is_deleted = is_deleted
 
+    def get_attributes(self):
+        "Retorna un diccionario con los atributos del usuario"
+        
+        attributes = vars(self)
+        #del attributes["_sa_instance_state"]
+
+        #Convierte de 1 a 'activo' o de 0 a 'bloqueado' para el WTF
+        attributes["active"] = active_dic(attributes["active"])
+
+        #Roles por defecto que tiene el user, los agrego para que matcheen con WTF
+        for rol in attributes["roles"]:
+            attributes[rol.name] = True
+
+        return attributes
+
+
     @classmethod
     def find_by_email_and_pass(cls, email, password):
         """
         - Busca en la base de datos a un usuario que tenga el mismo mail
-        - Si lo encuentra cumprueba que el que recupera tenga la misma contraseña que la que llega como parametro, y devuelve al usuario encontrado
+        - Si lo encuentra cumprueba que el que recupera tenga la misma contraseña
+        que la que llega como parametro, y devuelve al usuario encontrado
         - Caso contrario retorna None
         """
 
@@ -95,6 +112,15 @@ class User(db.Model):
         return User.query.filter(User.id == user_id).first()
 
     @classmethod
+    def find_user_by_id_not_deleted(cls, user_id):
+        """Buscar usuario en la base de datos por id"""
+        return (
+            User.query.filter(User.id == user_id)
+            .filter(User.is_deleted == 0)
+            .first()
+        )
+
+    @classmethod
     def check_existing_email_or_username(
         cls, email, username
     ):
@@ -110,7 +136,8 @@ class User(db.Model):
     def check_existing_email_with_different_id(
         cls, email, id_user
     ):
-        """Comprobar si existe algun usuario con determinado email y que no sea el del usuario con id = id_user"""
+        """Comprobar si existe algun usuario con determinado email
+        y que no sea el del usuario con id = id_user"""
         return (
             User.query.filter(User.email == email)
             .filter(User.id != id_user)
@@ -118,15 +145,16 @@ class User(db.Model):
         )
 
     @classmethod
-    def update_user(cls, user_id, data, selectedRoles):
+    def update_user(cls, user_id, data, selectedRoles, update_password):
         """Actualizar usuario en la base de datos con los datos pasados por parametros"""
         user = User.find_user_by_id(user_id)
         user.first_name = data["first_name"]
         user.last_name = data["last_name"]
         user.email = data["email"]
-        user.password = data["password"]
+        if(update_password):
+            user.password = data["password"]
         if (
-            data["state"] == "activo"
+            data["active"] == "activo"
         ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
             user.active = 1
         else:
@@ -139,31 +167,22 @@ class User(db.Model):
 
     @classmethod
     def update_profile(
-        cls, user, data, selectedRoles, isAdmin
+        cls, user, data, selectedRoles, isAdmin, update_password
     ):
         user.first_name = data["first_name"]
         user.last_name = data["last_name"]
         user.email = data["email"]
-        user.password = data["password"]
+        if(update_password):
+            user.password = data["password"]
+        db.session.commit()
 
         if isAdmin:
-            if (
-                data["state"] == "activo"
-            ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
-                user.active = 1
-            else:
-                user.active = 0
-
-            db.session.commit()
-
             roles = Role.find_roles_from_strings(
                 selectedRoles
             )
 
             Role.delete_rol(user.roles, user)
             Role.insert_rol(roles, user)
-        else:
-            db.session.commit()
 
     @classmethod
     def insert_user(
@@ -208,7 +227,11 @@ class User(db.Model):
         active: int = 1,
         dont_use_active: bool = True,
     ):
-        "Retorna una lista con todos los meeting points, teniendo en cuenta los filtros pasados por parametro, en caso que estos sean vacio retorna todos los usuarios. Pagina el resultado"
+        """
+        Retorna una lista con todos los usuarios, teniendo en cuenta los filtros
+        pasados por parametro, en caso que estos sean vacio retorna todos los usuarios.
+        Pagina el resultado
+        """
         ordered_users = User.search(
             name=name,
             active=active,
@@ -222,17 +245,20 @@ class User(db.Model):
     @classmethod
     def search(
         cls,
-        name: str = "",
+        username: str = "",
         active: int = 1,
         dont_use_active: bool = True,
     ):
-        "Retorna una lista con todos los meeting points, teniendo en cuenta los filtros pasados por parametro, en caso que estos sean vacio retorna todos los usuarios."
+        """
+        Retorna una lista con todos los usuarios, teniendo en cuenta los filtros
+        pasados por parametro, en caso que estos sean vacio retorna todos los usuarios.
+        """
 
         ac = actual_config()
         order = ac.order_by
         return (
             User.query.filter(User.is_deleted == 0)
-            .filter(User.first_name.contains(name))
+            .filter(User.username.contains(username))
             .filter(
                 or_(User.active == active, dont_use_active)
             )
@@ -275,7 +301,11 @@ class User(db.Model):
 
     @password.setter
     def password(self, password):
-        "Setter para la password, y al momento de realizarla, crear la contraseña hasheada y almacenar esta en vez del string"
+        """
+        Setter para la password, y al momento de realizarla,
+        crear la contraseña hasheada y almacenar esta en vez del string
+        """
+
         self.password_hash = generate_password_hash(
             password
         )

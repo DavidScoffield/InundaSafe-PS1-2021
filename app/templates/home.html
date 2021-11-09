@@ -1,10 +1,13 @@
 {% extends "private_app_layout.html" %} 
-{% block title %}InundaSafe | Home Privada{% endblock %} 
+{% block title %} InundaSafe | Home Privada{% endblock %} 
 {% block head %} 
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='home.css')}}">
 {% endblock head %}
 {% block content %}
+
+{% set user = get_user_info() %}
+
 <div class=" m-auto pt-4 text-center home-content">
   <div>
     <h1 class="text-center">Aplicación Privada</h1>

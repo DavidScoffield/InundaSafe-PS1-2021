@@ -3,7 +3,7 @@
 
 {% extends "private_app_layout.html" %} 
 
-{% block title %} InundaSafe | Listado de puntos de encuentro {% endblock %} 
+{% block title %} InundaSafe | Listado de puntos de recorridos de evacuación {% endblock %} 
 
 {% block head %} 
 
@@ -22,16 +22,16 @@
     <a href="{{url_for('home.index')}}" class="text-muted p-1 mr-3" style="cursor: pointer">
       <i class="fas fa-arrow-left fa-lg"></i>
     </a>
-    <h1 class="font-weight-bold">Puntos de encuentro</h1>
+    <h1 class="font-weight-bold">Recorridos de evacuación</h1>
   </div>
 
 <!-- <div class="w-100 d-flex justify-content-between align-items-center"> -->
   <div class="w-100 row justify-content-center">
     <div class="col d-flex justify-content-sm-center justify-content-md-start mb-sm-3 mb-md-0">
-      <a class="btn btn-primary button-gradient" role="button" href="{{url_for('meeting_point.new')}}">Nuevo</a>
+      <a class="btn btn-primary button-gradient" role="button" href="{{url_for('evacuation_route.new')}}">Nuevo</a>
     </div>
     <div class="col-sm-12 col-md-6 d-flex justify-content-sm-center justify-content-md-end">
-      <form method="GET" action="{{url_for('meeting_point.index', page_number=meeting_points.page)}}" class="d-flex justify-content-end align-content-center">
+      <form method="GET" action="{{url_for('evacuation_route.index', page_number=evacuation_routes.page)}}" class="d-flex justify-content-end align-content-center">
 
         <input type="text" name="name" placeholder="Buscar por nombre..." class="mx-1 pl-2" 
         {% if argname %} 
@@ -49,7 +49,7 @@
   </div>
   <br>
 
-  {% with messages = get_flashed_messages(category_filter=["meeting_point_delete", "meeting_point_update", "meeting_point_show"]) %}
+  {% with messages = get_flashed_messages(category_filter=["evacuation_route_delete", "evacuation_route_update", "evacuation_route_show"]) %}
       {% for message in messages %}
           <p>{{message}}</p>
       {% endfor %}
@@ -59,34 +59,32 @@
       <thead>
           <tr>
               <th scope="col" class="text-center">Nombre</th>
-              <th scope="col" class="text-center">Dirección</th>
               <th scope="col" class="text-center">Estado</th>
               <th scope="col" class="text-center">Acciones</th>
           </tr>
       </thead>
       <tbody>
-          {% for mp in meeting_points.items %}
+          {% for er in evacuation_routes.items %}
           <tr>
-              <td class="text-center">{{mp.name}}</td>
-              <td class="text-center">{{mp.address}}</td>
-              <td class="text-center">{{translate_state(mp.state)}}</td>
+              <td class="text-center">{{er.name}}</td>
+              <td class="text-center">{{translate_state(er.state)}}</td>
               <td class="text-center">
-                  {% if helper_has_permission("punto_encuentro_show") %}
-                  <form action="{{url_for('meeting_point.show')}}" method="post" class="d-inline">
-                    <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
+                  {% if helper_has_permission("evacuation_route_show") %}
+                  <form action="{{url_for('evacuation_route.show')}}" method="post" class="d-inline">
+                    <input name="id_evacuation_route" type="hidden" value="{{er.id}}">
                     <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
                   </form>
                   {% endif %}
-                  {% if helper_has_permission("punto_encuentro_edit") %}
-                  <form action="{{url_for('meeting_point.edit')}}" method="post" class="d-inline">
-                    <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
+                  {% if helper_has_permission("evacuation_route_edit") %}
+                  <form action="{{url_for('evacuation_route.edit')}}" method="post" class="d-inline">
+                    <input name="id_evacuation_route" type="hidden" value="{{er.id}}">
                     <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
                   </form>
                   {% endif %}
-                  {% if helper_has_permission("punto_encuentro_destroy") %}
-                    <form action="{{url_for('meeting_point.destroy')}}" method="post" class="d-inline">
-                      <input name="id_meeting_point" type="hidden" value="{{mp.id}}">
-                      <button type="submit" onclick="return confirm('¿Está seguro que desea borrar el punto de encuentro?')" class="btn btn-primary button-gradient mx-1">Eliminar</button>
+                  {% if helper_has_permission("evacuation_route_destroy") %}
+                    <form action="{{url_for('evacuation_route.destroy')}}" method="post" class="d-inline">
+                      <input name="id_evacuation_route" type="hidden" value="{{er.id}}">
+                      <button type="submit" onclick="return confirm('¿Está seguro que desea borrar el recorrido de evacuación?')" class="btn btn-primary button-gradient mx-1">Eliminar</button>
                     </form>
                   {% endif %}
               </td>
@@ -94,33 +92,25 @@
           {% endfor %}
       </tbody>
   </table>
-  {% if not found_meeting_points %}
-      <br>
-      {% with messages = get_flashed_messages(category_filter=["meeting_point_index"]) %}
-          {% for message in messages %}
-              <p class="text-center">{{message}}</p>
-          {% endfor %}
-      {% endwith %}
-  {% endif %}
-  <nav aria-label="Meeting points page navigation">
+  <nav aria-label="Evacuation routes page navigation">
       <ul class="pagination justify-content-center">
-        {% if meeting_points.has_prev %}
+        {% if evacuation_routes.has_prev %}
           <li class="page-item">
-            <a class="page-link" href="{{url_for('meeting_point.index', page_number=meeting_points.prev_num)}}?{{request.query_string.decode()}}" tabindex="-1">Anterior</a>
+            <a class="page-link" href="{{url_for('evacuation_route.index', page_number=evacuation_routes.prev_num)}}?{{request.query_string.decode()}}" tabindex="-1">Anterior</a>
           </li>
         {% else %}
           <li class="page-item disabled">
             <a class="page-link" href="#" tabindex="-1">Anterior</a>
           <li>
         {% endif %}
-        {% for page in meeting_points.iter_pages() %}
+        {% for page in evacuation_routes.iter_pages() %}
           {% if page %}
-            <li class="page-item"><a class="page-link" href="{{url_for('meeting_point.index', page_number=page)}}?{{request.query_string.decode()}}">{{ page }}</a></li>
+            <li class="page-item"><a class="page-link" href="{{url_for('evacuation_route.index', page_number=page)}}?{{request.query_string.decode()}}">{{ page }}</a></li>
           {% endif %}
         {% endfor %}
-        {% if meeting_points.has_next %}
+        {% if evacuation_routes.has_next %}
           <li class="page-item">
-            <a class="page-link" href="{{url_for('meeting_point.index', page_number=meeting_points.next_num)}}?{{request.query_string.decode()}}">Siguiente</a>
+            <a class="page-link" href="{{url_for('evacuation_route.index', page_number=evacuation_routes.next_num)}}?{{request.query_string.decode()}}">Siguiente</a>
           </li>
         {% else %}
           <li class="page-item disabled">

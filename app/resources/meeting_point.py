@@ -12,7 +12,6 @@ from flask import (
     session,
     abort,
 )
-from app.db import db
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
 from app.helpers.check_param_search import (
@@ -51,17 +50,26 @@ def create():
 
     form = MeetingPointForm(request.form)
     if not form.validate_on_submit():
-        flash("Por favor, corrija los errores", category="meeting_point_new")
+        flash(
+            "Por favor, corrija los errores",
+            category="meeting_point_new",
+        )
     else:
         args = form.data
         del args["submit"]
         del args["csrf_token"]
         del args["id"]
         if MeetingPoint.exists_address(args["address"]):
-            flash("Ya existe un punto de encuentro con esa dirección", category="meeting_point_new")
+            flash(
+                "Ya existe un punto de encuentro con esa dirección",
+                category="meeting_point_new",
+            )
         else:
             MeetingPoint.new(**args)
-            flash("Punto de encuentro agregado exitosamente", category="meeting_point_new")
+            flash(
+                "Punto de encuentro agregado exitosamente",
+                category="meeting_point_new",
+            )
 
     return render_template(
         "meeting_point/new.html", form=form
@@ -96,6 +104,12 @@ def index(page_number):
         name=name,
     )
 
+    if not meeting_points.pages:
+        found_meeting_points = False
+        flash("No se encontraron resultados", category="meeting_point_index")
+    else:
+        found_meeting_points = True
+
     # En caso que no encuentre ningun resultado resultado se redirige a la pagina 1 con los argumentos de busqueda
     if (
         meeting_points.page != 1
@@ -118,6 +132,7 @@ def index(page_number):
     return render_template(
         "meeting_point/index.html",
         meeting_points=meeting_points,
+        found_meeting_points=found_meeting_points
     )
 
 
@@ -130,9 +145,22 @@ def destroy():
     ):
         abort(401)
 
-    MeetingPoint.delete(request.form["id_meeting_point"])
+    id_meeting_point = request.form["id_meeting_point"]
+    meeting_point = MeetingPoint.find_by_id(
+        id_meeting_point
+    )
 
-    flash("Punto de encuentro borrado exitosamente", category="meeting_point_delete")
+    if not meeting_point:
+        flash(
+            "No se encontró el punto de encuentro",
+            category="meeting_point_delete",
+        )
+    else:
+        meeting_point.delete()
+        flash(
+            "Punto de encuentro borrado exitosamente",
+            category="meeting_point_delete",
+        )
 
     return redirect(
         url_for("meeting_point.index", page_number=1)
@@ -150,13 +178,27 @@ def edit():
 
     id_meeting_point = request.form["id_meeting_point"]
 
-    meeting_point = MeetingPoint.find_by_id(id_meeting_point)  # meeting point que se quiere modificar
+    # meeting point que se quiere modificar
+    meeting_point = MeetingPoint.find_by_id(
+        id_meeting_point
+    )
 
-    form = MeetingPointForm(**meeting_point.get_attributes())  # se inicializa el formulario con los datos originales del meeting point que se desea modificar
+    if not meeting_point:
+        flash(
+            "No se encontró el punto de encuentro",
+            category="meeting_point_update",
+        )
+        return redirect(
+            url_for("meeting_point.index", page_number=1)
+        )
+
+    # se inicializa el formulario con los datos originales del meeting point que se desea modificar
+    form = MeetingPointForm(
+        **meeting_point.get_attributes()
+    )
 
     return render_template(
-        "meeting_point/edit.html",
-        form=form,
+        "meeting_point/edit.html", form=form
     )
 
 
@@ -172,29 +214,48 @@ def update():
     form = MeetingPointForm(request.form)
     id_meeting_point = form.data["id"]
 
+    # meeting point que se quiere modificar
     meeting_point = MeetingPoint.find_by_id(
         id_meeting_point
-    )  # meeting point que se quiere modificar
+    )
+    if not meeting_point:
+        flash(
+            "No se encontró el punto de encuentro",
+            category="meeting_point_update",
+        )
+        return redirect(
+            url_for("meeting_point.index", page_number=1)
+        )
 
     if not form.validate_on_submit():
-        flash("Por favor, corrija los errores", category="meeting_point_update")
+        flash(
+            "Por favor, corrija los errores",
+            category="meeting_point_update",
+        )
     else:
         args = form.data
         del args["submit"]
         del args["csrf_token"]
         del args["id"]
 
-        form_address = args["address"].lower()  # la dirección que quiere cargar el usuario
+        # la dirección que quiere cargar el usuario
+        form_address = args["address"].lower()
 
         if (
             MeetingPoint.exists_address(form_address)
             and form_address
             != meeting_point.address.lower()
         ):  # quiere usar una dirección que ya existe
-            flash("Ya existe un punto de encuentro con esa dirección", category="meeting_point_update")
+            flash(
+                "Ya existe un punto de encuentro con esa dirección",
+                category="meeting_point_update",
+            )
         else:  # quiere usar la misma dirección o alguna que no existe
             meeting_point.update(**args)
-            flash("Punto de encuentro modificado exitosamente", category="meeting_point_update")
+            flash(
+                "Punto de encuentro modificado exitosamente",
+                category="meeting_point_update",
+            )
 
     return render_template(
         "meeting_point/edit.html",
@@ -213,10 +274,17 @@ def show():
         abort(401)
 
     id_meeting_point = request.form["id_meeting_point"]
-
     meeting_point = MeetingPoint.find_by_id(
         id_meeting_point
     )
+    if not meeting_point:
+        flash(
+            "No se encontró el punto de encuentro",
+            category="meeting_point_show",
+        )
+        return redirect(
+            url_for("meeting_point.index", page_number=1)
+        )
 
     return render_template(
         "meeting_point/show.html",

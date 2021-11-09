@@ -9,7 +9,7 @@ export class ZoneMap {
    * la capacidad de mostrar y marcar una zona inundable
    */
 
-  constructor({ selector }) {
+  constructor({ selector, initialZone = null }) {
     /**
      * Constructor de la clase. Parámetros:
      *
@@ -19,28 +19,28 @@ export class ZoneMap {
      * enableMarker: booleano que indica si se desea habilitar que el usuario pueda marcar un punto en el mapa
      *
      * Inicializa el mapa a partir del selector y marcador inicial recibido por parámetro
-     *
+     *s
      * Si enableMarker es verdadero, se agrega un manejador al evento clcick para agregar el punto en el mapa
      */
 
     this.#drawnItems = new L.FeatureGroup()
 
-    this.#initializeMap(selector)
+    this.#initializeMap(selector, initialZone)
 
-    this.map.on(L.Draw.Event.CREATED, (e) => {
-      this.#eventHandler(e, this.map, this.#drawnItems, this.editControls, this.createControls)
-    })
+    // this.map.on(L.Draw.Event.CREATED, (e) => {
+    //   this.#eventHandler(e, this.map, this.#drawnItems, this.editControls, this.createControls)
+    // })
 
-    this.map.on('draw:deleted', () => {
-      this.#deleteHandler(this.map, this.editControls, this.createControls)
-    })
+    // this.map.on('draw:deleted', () => {
+    //   this.#deleteHandler(this.map, this.editControls, this.createControls)
+    // })
   }
 
-  #initializeMap(selector) {
+  #initializeMap(selector, initialZone) {
     /**
      * Método que inicializa el mapa
      *
-     * Renderiza el mapa en el selector indicado, y en caso de que exista un marcador inicial, lo colocará en el mapa
+     * Renderiza el mapa en el selector indicado, y en caso de que exista una zoza inicial, la colocará en el mapa
      */
 
     this.map = L.map(selector).setView([initialLat, initialLng], 13)
@@ -48,7 +48,19 @@ export class ZoneMap {
 
     this.map.addLayer(this.#drawnItems)
 
-    this.map.addControl(this.createControls)
+    if (initialZone) {
+      this.#addZone(initialZone, this.#drawnItems, this.map)
+    }
+
+    // this.map.addControl(this.createControls)
+  }
+
+  #addZone(initialZone, drawnItems, map) {
+    const polygon = new L.Polygon(initialZone)
+
+    drawnItems.addLayer(polygon)
+
+    map.setView(polygon.getBounds().getCenter(), 13)
   }
 
   #eventHandler(e, map, drawnItems, editControls, createControls) {
@@ -67,21 +79,21 @@ export class ZoneMap {
     }
   }
 
-  #deleteHandler() {
+  #deleteHandler(map, editControls, createControls) {
     createControls.addTo(map)
     editControls.remove()
   }
 
-  hasValidZone() {
-    return this.drawnLayers.length === 1
-  }
+  // hasValidZone() {
+  //   return this.drawnLayers.length === 1
+  // }
 
   get drawnLayers() {
     return Object.values(this.#drawnItems._layers)
   }
 
   get editControls() {
-    return (this.createControlsToolbar ||= new L.Control.Draw({
+    return (this.editControlsToolbar ||= new L.Control.Draw({
       draw: false,
       edit: {
         featureGroup: this.#drawnItems,
@@ -97,5 +109,14 @@ export class ZoneMap {
         polyline: false,
       },
     }))
+  }
+
+  get coordinates() {
+    return this.drawnLayers[0]
+      .getLatLngs()
+      .flat()
+      .map((coor) => {
+        return { lat: coor.lat, lng: coor.lng }
+      })
   }
 }

@@ -155,7 +155,7 @@ def upload_flood_zones():
                 logger_error(f" - ERROR: {err}")
 
         flash(
-            f"{len(data)} datos guardados en el sistema. {len(error)} datos descartados por errores.",
+            message_to_inform(data, error),
             category="flood_zones_import",
         )
 
@@ -329,3 +329,19 @@ def save_flood_zones(data: list):
             FloodZones.new(
                 name=item["name"], coordinates=item["area"]
             )
+
+
+def message_to_inform(data, error):
+    return f"{message_to_inform_success(data)} {message_to_inform_error(error)}"
+
+
+def message_to_inform_success(data):
+    return f"{len(data)} registros guardados en el sistema."
+
+
+def message_to_inform_error(error):
+    return (
+        "Ningún registro descartado por errores."
+        if len(error) == 0
+        else f"Los siguientes registros fueron descartados por errores: {', '.join(map(lambda e: e['name'], error))}."
+    )

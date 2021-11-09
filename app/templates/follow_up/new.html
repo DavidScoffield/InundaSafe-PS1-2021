@@ -1,0 +1,31 @@
+{% from 'bootstrap/form.html' import render_form %}
+{% extends "private_app_layout.html" %}
+{% block title %}Seguimientos{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="container mx-auto py-4">
+  <!-- TITULO -->
+  <div class="d-flex align-items-center mb-3">
+    <a href="#" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Realizar un seguimiento</h1>
+  </div>
+  {% with messages = get_flashed_messages(category_filter=["follow_up_new"]) %}
+    <br>
+    {% for message in messages %}
+        <p>{{message}}</p>
+    {% endfor %}
+  {% endwith %}
+
+  <p>Autor del seguimiento: {{ user.username }}</p>
+
+  {{render_form(form, action=url_for('follow_up.create'), method="POST", id='follow_up_form')}}
+
+  <br><i>* Campos obligatorios</i><br>
+
+</div>
+
+{% endblock %}

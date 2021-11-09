@@ -10,7 +10,7 @@ class Config(object):
     DB_NAME = "db_name"
     SECRET_KEY = "secret"
     UPLOAD_EXTENSIONS = [".csv"]
-    UPLOAD_FOLDER = "upload_folder"
+    UPLOAD_FOLDER = "uploads"
 
     @staticmethod
     def configure(app):

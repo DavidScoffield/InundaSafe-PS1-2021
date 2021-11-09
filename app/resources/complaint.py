@@ -32,7 +32,8 @@ def index():
     ):
         abort(401)
     
-    complaints = Complaint.find_all_complaints()
+    complaints = Complaint.find_all_complaints_and_their_categories()
+    #complaints es un conjunto de tuplas con el siguiente formato: [Complaint, Category]
 
     return render_template(
         "complaint/index.html", complaints=complaints

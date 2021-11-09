@@ -48,28 +48,28 @@
         {% for complaint in complaints %}
         <tr>
             <td class="text-center">
-                {{complaint.title}}
+                {{complaint[0].title}}
             </td>
-            <td class="text-center">{{complaint.category}}</td>
-            <td class="text-center">{{complaint.created_at}}</td>
-            <td class="text-center">{{complaint.state}}</td>
-            <td class="text-center">{{complaint.creator_email}}</td>
+            <td class="text-center">{{complaint[1].name}}</td>
+            <td class="text-center">{{complaint[0].created_at}}</td>
+            <td class="text-center">{{complaint[0].state}}</td>
+            <td class="text-center">{{complaint[0].creator_email}}</td>
             <td class="text-center d-flex justify-content-center">
               {% if helper_has_permission("complaint_show") %}
                 <form action="{{url_for('complaint.show')}}" method="post" class="d-inline">
-                  <input name="id_complaint" type="hidden" value="{{complaint.id}}">
+                  <input name="id_complaint" type="hidden" value="{{complaint[0].id}}">
                   <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
                 </form>
               {% endif %}
               {% if helper_has_permission("complaint_edit") %}
                 <form action="{{url_for('complaint.edit')}}" method="post" class="d-inline">
-                  <input name="id_complaint" type="hidden" value="{{complaint.id}}">
+                  <input name="id_complaint" type="hidden" value="{{complaint[0].id}}">
                   <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
                 </form>
               {% endif %}
               {% if helper_has_permission("complaint_destroy") %}
                 <form action="{{url_for('complaint.destroy')}}" method="post" class="d-inline">
-                  <input name="id_complaint" type="hidden" value="{{complaint.id}}">
+                  <input name="id_complaint" type="hidden" value="{{complaint[0].id}}">
                   <button type="submit" onclick="return confirm('¿Está seguro que desea borrar esta denuncia?')" class="btn btn-primary button-gradient mx-1">Eliminar</button>
                 </form>
               {% endif %}

@@ -413,7 +413,7 @@ DROP TABLE IF EXISTS `complaint`;
 CREATE TABLE `complaint` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
-  `category` varchar(100) NOT NULL,
+  `category` int(11) unsigned NOT NULL,
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `closed_at` datetime NULL,
   `description` varchar(500) NOT NULL,
@@ -422,13 +422,44 @@ CREATE TABLE `complaint` (
   `creator_last_name` varchar(100),
   `creator_telephone` varchar(50),
   `creator_email` varchar(150),
-  `assigned_to` int(11) unsigned NOT NULL,
+  `assigned_to` int(11) unsigned,
   PRIMARY KEY (`id`),
   KEY (`id`),
   KEY `assigned_to` (`assigned_to`),
-  CONSTRAINT `complaint_ibfk_1` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`)
+  KEY `category` (`category`),
+  CONSTRAINT `complaint_ibfk_1` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`),
+  CONSTRAINT `complaint_ibfk_2` FOREIGN KEY (`category`) REFERENCES `category` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `categories`
+--
+
+DROP TABLE IF EXISTS `category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `category` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `category`
+--
+
+LOCK TABLES `category` WRITE;
+/*!40000 ALTER TABLE `category` DISABLE KEYS */;
+INSERT INTO `category` VALUES 
+  -- Punto de encuentro 
+  (1,'Alcantarilla tapada'),
+  (2,'Basural');
+/*!40000 ALTER TABLE `category` ENABLE KEYS */;
+UNLOCK TABLES;
+
 
 --
 -- Table structure for table `complaint follow up`

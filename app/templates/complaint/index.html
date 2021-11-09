@@ -38,9 +38,7 @@
               <th scope="col" class="text-center">Titulo</th>
               <th scope="col" class="text-center">Categoria</th>
               <th scope="col" class="text-center">Fecha de creación</th>
-              <th scope="col" class="text-center">Descripcion</th>
               <th scope="col" class="text-center">Estado</th>
-              <th scope="col" class="text-center">Asignado a</th>
               <th scope="col" class="text-center">Email denunciante</th>
               <th scope="col" class="text-center">Acciones</th>
           </tr>
@@ -54,9 +52,7 @@
             </td>
             <td class="text-center">{{complaint.category}}</td>
             <td class="text-center">{{complaint.created_at}}</td>
-            <td class="text-center">{{complaint.description}}</td>
             <td class="text-center">{{complaint.state}}</td>
-            <td class="text-center">{{complaint.assigned_to}}</td>
             <td class="text-center">{{complaint.creator_email}}</td>
             <td class="text-center d-flex justify-content-center">
               {% if helper_has_permission("complaint_show") %}

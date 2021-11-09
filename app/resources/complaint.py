@@ -31,17 +31,8 @@ def index():
         "complaint_index"
     ):
         abort(401)
-
-    #devuelve Tuplas, [0] complaint y [1] el usuario asignado
-    #https://www.youtube.com/watch?v=_HIY1lZKEw0&ab_channel=PrettyPrinted
-    complaints = Complaint.find_all_complaints()
-
-    print("---------------------------------------------------", flush=True)
-    for complaint in complaints:
-        print(complaint, flush=True)
-    print("---------------------------------------------------", flush=True)
     
-
+    complaints = Complaint.find_all_complaints()
 
     return render_template(
         "complaint/index.html", complaints=complaints

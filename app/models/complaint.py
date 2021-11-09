@@ -11,7 +11,9 @@ class Complaint(db.Model):
     __tablename__ = "complaint"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False, unique=True)
-    category = db.Column(db.String(100))
+    category = db.Column(
+        db.Integer,
+        db.ForeignKey("category.id"))
     created_at = db.Column(
         db.DateTime, default=datetime.datetime.utcnow
     )
@@ -51,9 +53,12 @@ class Complaint(db.Model):
 
     @classmethod 
     def find_all_complaints(cls):
-        """Devuelve todas las denuncias de la BD. Hago join porque necesito mostrar datos del usuario asignado en el front"""
-        
-        return db.session.query(Complaint, User).join(User, Complaint.assigned_to == User.id).all()
+        """Devuelve todas las denuncias de la BD"""
+        return Complaint.query.all()
+
+        #Esto era para hacer join Complaint-User para devolver tambien al usuario asignado a esta denuncia.
+        #return db.session.query(Complaint, User).join(User, Complaint.assigned_to == User.id).all()
+        #devuelve Tuplas, [0] complaint y [1] el usuario asignado
 
     @classmethod
     def create_complaint(cls, **args):

@@ -20,7 +20,6 @@ from app.helpers.upload_flood_zones import (
     allowed_file,
     read_file,
     remove_file_filesystem,
-    save_data,
     save_file_filesystem,
     validate_data,
 )
@@ -136,7 +135,7 @@ def upload_flood_zones():
                 data=data, error=error
             )
 
-            save_data(data)
+            save_flood_zones(data)
 
         except Exception as err:
             logger_error(f" - ERROR: {err}")
@@ -313,3 +312,20 @@ def update():
         form=form,
         id_flood_zone=id_flood_zone,
     )
+
+
+# Persisting data in BD
+def save_flood_zones(data: list):
+    """
+    Guarda los datos de las zonas inundables en `data` en la BD.
+    -> Actializa en caso de que ya exista
+    -> Crea una nueva de no existir
+    """
+    for item in data:
+        flood_zone = FloodZones.find_by_name(item["name"])
+        if flood_zone:
+            flood_zone.update(coordinates=item["area"])
+        else:
+            FloodZones.new(
+                name=item["name"], coordinates=item["area"]
+            )

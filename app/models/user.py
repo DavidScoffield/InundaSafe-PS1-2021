@@ -121,6 +121,15 @@ class User(db.Model):
         )
 
     @classmethod
+    def find_users_not_deleted_and_active(cls):
+        """Busca todos los usuarios que no esten borrados y que no esten bloqueados"""
+        return (
+            User.query.filter(User.is_deleted == 0)
+            .filter(User.active == 1)
+            .all()
+        )
+
+    @classmethod
     def check_existing_email_or_username(
         cls, email, username
     ):

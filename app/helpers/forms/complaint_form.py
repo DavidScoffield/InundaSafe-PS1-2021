@@ -6,9 +6,17 @@ from wtforms import (
     HiddenField,
 )
 from wtforms.fields.html5 import EmailField
-from wtforms.widgets import HiddenInput
 from flask_wtf import FlaskForm
 
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from app.models.category import Category
+from app.models.user import User
+
+def all_categories():
+    return Category.find_all_categories()
+
+def all_users():
+    return User.find_users_not_deleted_and_active()
 
 class ComplaintForm(FlaskForm):
 
@@ -21,26 +29,20 @@ class ComplaintForm(FlaskForm):
                 message="Este campo es obligatorio"
             ),
             validators.Regexp(
-                "^[a-zA-Z0-9 ]+$",
-                message="Por favor, ingrese un título válido. El título no puede tener caracteres especiales.",
+                "^[a-zA-Z ]+$",
+                message="Por favor, ingrese un título válido. El título solo puede contener letras.",
             ),
         ],
         render_kw={
-            "pattern": "^[a-zA-Z0-9 ]+$",
-            "title": "El título no puede tener caracteres especiales",
+            "pattern": "^[a-zA-Z ]+$",
+            "title": "El título solo puede contener letras",
         },
     )
 
-    category = SelectField(
+    category = QuerySelectField(
         "Categoría (*)",
-        choices=[
-            ("sewer", "Alcantarilla tapada"),
-            ("garbage_dump", "Basural"),
-            #agregar más categorías
-        ],
-        validators = [ validators.DataRequired(
-                        message="Este campo es obligatorio"
-                      ), ]
+        query_factory=all_categories,
+        get_label="name"
     )
 
     description = StringField(
@@ -70,21 +72,18 @@ class ComplaintForm(FlaskForm):
             ("resolved", "Resuelta"),
             ("closed", "Cerrada"),
         ],
-        validators = [ validators.DataRequired(
-                        message="Este campo es obligatorio"
-                      ), ]
+        validators = [ 
+            validators.DataRequired(
+                message="Este campo es obligatorio"
+            ), 
+        ]
     )
 
-    assigned_to = SelectField(
+    assigned_to = QuerySelectField(
         "Asignado a",
-        choices=[
-            ("1", "NO SE QUE OPCIONES"),
-            ("in_course", "PONER"),
-            #no se que opciones tendrian que ir
-        ],
-        validators = [ validators.DataRequired(
-                        message="Este campo es obligatorio"
-                      ), ]
+        query_factory=all_users,
+        allow_blank=True,
+        get_label="username"
     )
 
     creator_last_name = StringField(
@@ -94,13 +93,13 @@ class ComplaintForm(FlaskForm):
                 message="Este campo es obligatorio"
             ),
             validators.Regexp(
-                "^[a-zA-Z0-9 ]+$",
-                message="Por favor, ingrese un apellido válido. El apellido no puede tener caracteres especiales.",
+                "^[a-zA-Z ]+$",
+                message="Por favor, ingrese un apellido válido. El apellido solo puede tener letras.",
             ),
         ],
         render_kw={
-            "pattern": "^[a-zA-Z0-9 ]+$",
-            "title": "El apellido no puede tener caracteres especiales",
+            "pattern": "^[a-zA-Z ]+$",
+            "title": "El apellido solo puede tener letras",
         },
     )
 
@@ -111,13 +110,13 @@ class ComplaintForm(FlaskForm):
                 message="Este campo es obligatorio"
             ),
             validators.Regexp(
-                "^[a-zA-Z0-9 ]+$",
-                message="Por favor, ingrese un nombre válido. El nombre no puede tener caracteres especiales.",
+                "^[a-zA-Z ]+$",
+                message="Por favor, ingrese un nombre válido. El nombre solo puede tener letras.",
             ),
         ],
         render_kw={
-            "pattern": "^[a-zA-Z0-9 ]+$",
-            "title": "El nombre no puede tener caracteres especiales",
+            "pattern": "^[a-zA-Z ]+$",
+            "title": "El nombre solo puede tener letras",
         },
     )
 

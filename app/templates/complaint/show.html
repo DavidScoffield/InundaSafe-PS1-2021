@@ -8,6 +8,13 @@
 
   {{ super() }}
 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+	<script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
+  <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css">
+
+
 {% endblock %} 
 
 {% block content %}
@@ -58,5 +65,36 @@
     <div id="mapid" style="height:400px"></div>
   </div>
 
+  <h1 class="font-weight-bold">Seguimientos realizados a la denuncia {{complaint.title}}</h1>
+  <table class="table table-striped">
+    <tbody>
+      <div class="w-100 row">
+        <form action="{{url_for('follow_up.new')}}" method="post" class="d-inline">
+          <input name="id_complaint" type="hidden" value="{{complaint.id}}">
+          <button type="submit" class="btn btn-primary button-gradient mx-1">Nuevo</button>
+        </form>
+      </div>
+        <thead>
+            <tr>
+                <th scope="col" class="text-center">Descripción</th>
+                <th scope="col" class="text-center">Autor</th>
+                <th scope="col" class="text-center">Fecha de creación</th>
+            </tr>
+        </thead>
+      {% if complaint.follow_ups %}
+      {% set i = namespace(value=0) %}
+        {% for follow_up in complaint.follow_ups %}
+        <tr>           
+          <td class="text-center">{{follow_up.description}}</td>
+          <td class="text-center">{{lista[i.value]}}</td>
+          <td class="text-center">{{follow_up.created_at}}</td>
+        </tr>
+        {% set i.value = i.value + 1 %}
+        {% endfor %}
+       {% else %}
+          <p>La denuncia {{complaint.title}} no tiene seguimientos aún, cree uno</p>
+       {% endif %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}

@@ -18,7 +18,7 @@ from app.helpers.check_permission import check_permission
 from app.helpers.check_param_search import (
     check_param,
 )
-from app.helpers.validate_coordinates import validate_coordinates
+from app.helpers.validate_coordinates import validate_json_coordinate_list
 import json
 
 evacuation_route = Blueprint(
@@ -62,15 +62,15 @@ def create():
             flash("Ya existe un recorrido de evacuación con ese nombre",
                    category="evacuation_route_new")
         else:
-            args["coordinates"] = json.loads(args["coordinates"])
-            for coordinate in args["coordinates"]:
-                if not validate_coordinates(coordinate):
-                    flash("Se ingresó una coordenada inválida", category="evacuation_route_new")
-                    return render_template("evacuation_route/new.html", form=form)
+            valid_coordinates, coordinates, errors = validate_json_coordinate_list(args["coordinates"])
 
-            EvacuationRoute.new(**args)
-            flash("Recorrido de evacuación agregado exitosamente",
-                   category="evacuation_route_new")
+            if valid_coordinates:
+                args["coordinates"] = coordinates
+                EvacuationRoute.new(**args)
+                flash("Recorrido de evacuación agregado exitosamente",
+                       category="evacuation_route_new")
+            else:
+                flash(errors, category="evacuation_route_new")
 
     return render_template("evacuation_route/new.html", form=form)
 
@@ -187,6 +187,7 @@ def update():
 
     form = EvacuationRouteForm(request.form)
     id_evacuation_route = form.data["id"]
+    coordinates = []
 
     # ruta de evacuación que se quiere modificar
     evacuation_route = EvacuationRoute.find_by_id(id_evacuation_route)
@@ -211,17 +212,16 @@ def update():
             flash("Ya existe un recorrido de evacuación con ese nombre",
                    category="evacuation_route_update")
         else:                                                               # quiere usar el mismo nombre o alguno que no existe
-            coordinates = args["coordinates"] = json.loads(args["coordinates"])
-            valid_coordinates = True
-            for coordinate in args["coordinates"]:
-                if not validate_coordinates(coordinate):
-                    flash("Se ingresó una coordenada inválida", category="evacuation_route_update")
-                    valid_coordinates = False
+
+            valid_coordinates, coordinates, errors = validate_json_coordinate_list(args["coordinates"])
 
             if valid_coordinates:
+                args["coordinates"] = coordinates
                 evacuation_route.update(**args)
                 flash("Recorrido de evacuación modificado exitosamente",
-                    category="evacuation_route_update")
+                       category="evacuation_route_update")
+            else:
+                flash(errors, category="evacuation_route_update")
 
     return render_template(
         "evacuation_route/edit.html",

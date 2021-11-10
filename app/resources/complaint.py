@@ -101,6 +101,8 @@ def show():
     id_complaint = request.form["id_complaint"]
     complaint = Complaint.find_by_id(id_complaint)
  
+    complaint_category_and_assigned_user = complaint.find_my_category_and_assigned_user()
+
     if not complaint:
         flash("No se encontró la denuncia",
                category="complaint_show")
@@ -113,7 +115,10 @@ def show():
 
     return render_template(
         "complaint/show.html",
-        complaint=complaint, lista=lista
+        complaint=complaint, 
+        lista=lista, 
+        complaint_category=complaint_category_and_assigned_user[0], 
+        complaint_assigned_to=complaint_category_and_assigned_user[1]
     )
 
 

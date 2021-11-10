@@ -14,7 +14,8 @@
   <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css">
 
-
+  <script type="module" src="{{url_for('static', filename='js/complaint/complaint-show-readonly-map.js')}}"></script>
+  
 {% endblock %} 
 
 {% block content %}
@@ -36,7 +37,7 @@
       </tr>
       <tr>
         <th scope="row">Categoría</th>
-        <td>{{complaint.category}}</td>
+        <td>{{complaint_category.name}}</td>
       </tr>
       <tr>
         <th scope="row">Fecha de creación</th>
@@ -52,7 +53,7 @@
       </tr>
       <tr>
         <th scope="row">Asignado a</th>
-        <td>{{complaint.assigned_to}}</td>
+        <td>{{complaint_assigned_to.username}}</td>
       </tr>
       <tr>
         <th scope="row">Email denunciante</th>
@@ -61,6 +62,8 @@
     </tbody>
   </table>
 
+  <input type="hidden" id="coordinate_lat" value={{complaint.coordinate.latitude}}>
+  <input type="hidden" id="coordinate_lng" value={{complaint.coordinate.longitude}}>
   <div class="map-container">
     <div id="mapid" style="height:400px"></div>
   </div>

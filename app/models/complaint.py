@@ -5,6 +5,8 @@ from app.models.coordinate import Coordinate
 from app.models.category import Category
 import datetime
 
+from app.models.user import User
+
 class Complaint(db.Model):
     """Modelo para las denuncias"""
 
@@ -93,7 +95,13 @@ class Complaint(db.Model):
 
         return Complaint.query.get(id)
 
-    
+    def find_my_category_and_assigned_user(self):
+        """Devuelve los Objetos Category y User (assigned_to) asociados a esta denuncia (self)"""
+        res = []
+        res.append(Category.query.get(self.category))
+        res.append(User.query.get(self.assigned_to))
+        return res
+
     def update_complaint(self, **args):
         """Actualizacion de la denuncia"""
         

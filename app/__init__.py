@@ -1,5 +1,5 @@
 from os import environ
-from flask import Flask, render_template
+from flask import Flask, render_template, Blueprint
 from flask_session import Session
 from flask_bootstrap import Bootstrap
 from dotenv import load_dotenv
@@ -16,6 +16,9 @@ from app.resources.evacuation_route import evacuation_route
 from app.resources.user import user as user_blueprint
 from app.resources.config import config_routes
 from app.resources.auth import auth_routes
+
+from app.resources.api.flood_zones import flood_zones_api
+
 from app.helpers import handler
 from app.helpers import (
     check_permission as helper_permissions,
@@ -105,6 +108,13 @@ def create_app(environment="development"):
 
     # Rutas página evacuation routes (usando Blueprints)
     app.register_blueprint(evacuation_route)
+
+    # APIS
+    api = Blueprint("api", __name__, url_prefix="/api")
+    # Register of apis
+    api.register_blueprint(flood_zones_api)
+
+    app.register_blueprint(api)
 
     # Handlers
     app.register_error_handler(404, handler.not_found_error)

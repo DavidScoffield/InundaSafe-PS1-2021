@@ -21,13 +21,16 @@ const submitHandler = (event, map) => {
 }
 
 window.onload = () => {
-
 	let coordinate = document.getElementById('coordinate').value
 
 	if (coordinate) { 
 		coordinate = JSON.parse(coordinate)
+		
+		//ESTA BIEN? Hago esto porque initializeMap() y addMarker() lo usan asi
+		coordinate["lat"] = coordinate[0]
+		coordinate["lng"] = coordinate[1]
 	 } else { 
-		 coordinate = []
+		coordinate = []
 	}
 
 	const map = new SingleMarkerMap ({

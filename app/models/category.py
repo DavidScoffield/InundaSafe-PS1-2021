@@ -19,3 +19,7 @@ class Category(db.Model):
     @classmethod
     def find_all_categories(cls):
         return Category.query.all()
+
+    @classmethod
+    def find_by_id(cls, category_id):
+        return Category.query.filter(Category.id == category_id).first()

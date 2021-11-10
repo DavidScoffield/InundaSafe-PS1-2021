@@ -22,6 +22,8 @@ class ComplaintForm(FlaskForm):
 
     "Crea el formulario para obtener datos de una denuncia"
 
+    id = HiddenField()
+
     title = StringField(
         "Título (*)",
         [
@@ -121,7 +123,7 @@ class ComplaintForm(FlaskForm):
     )
 
     creator_telephone = StringField(
-        "Teléfono (*)",
+        "Teléfono denunciante(*)",
         [
             validators.DataRequired(
                 message="Este campo es obligatorio"
@@ -138,7 +140,7 @@ class ComplaintForm(FlaskForm):
     )
 
     creator_email = EmailField(
-        "Email (*)",
+        "Email denunciante(*)",
         [
             validators.DataRequired(
                 message="Este campo es obligatorio"

@@ -42,7 +42,8 @@ class Complaint(db.Model):
                  state, creator_first_name, creator_last_name,
                  creator_telephone, creator_email, assigned_to, coordinate):
         """Constructor del modelo"""
-        """assigned_to y category tienen el objeto entero, se asigna solo su id en la fk al inicializar la Category"""
+        "assigned_to y category tienen el objeto entero, se asigna solo su id en la fk al inicializar la Category"
+        "assigned_to puede ser Null si no se le asigno un usuario a la Denuncia; category es obligatoria"
 
         self.title = title
         self.category = category.id
@@ -54,6 +55,18 @@ class Complaint(db.Model):
         self.creator_email = creator_email
         self.assigned_to = assigned_to.id if assigned_to != None else None
         self.coordinate = Coordinate(coordinate[0], coordinate[1])
+
+    def get_attributes(self):
+        "Retorna un diccionario con los atributos de la denuncia"
+        "Elimino algunos atributos porque los cargo en el controller correctamente"
+
+        attributes = vars(self)
+        #del attributes["_sa_instance_state"]
+        del attributes["assigned_to"]
+        del attributes["category"]
+        del attributes["coordinate"]
+
+        return attributes
 
     @classmethod
     def find_all_complaints_and_their_categories(cls):
@@ -79,3 +92,21 @@ class Complaint(db.Model):
         "Retorna la denuncia correspondiente al id recibido por parámetro"
 
         return Complaint.query.get(id)
+
+    
+    def update_complaint(self, **args):
+        """Actualizacion de la denuncia"""
+        
+        self.title = args["title"]
+        self.category = args["category"].id
+        self.description = args["description"]
+        self.state = args["state"]
+        self.creator_first_name = args["creator_first_name"]
+        self.creator_last_name = args["creator_last_name"]
+        self.creator_telephone = args["creator_telephone"]
+        self.creator_email = args["creator_email"]
+        self.assigned_to = args["assigned_to"].id if args["assigned_to"] != None else None
+        self.coordinate.latitude = args["coordinate"][0]
+        self.coordinate.longitude = args["coordinate"][1]
+
+        db.session.commit()

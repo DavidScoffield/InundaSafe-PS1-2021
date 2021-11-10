@@ -74,14 +74,14 @@
           <button type="submit" class="btn btn-primary button-gradient mx-1">Nuevo</button>
         </form>
       </div>
+      {% if complaint.follow_ups %}
         <thead>
             <tr>
                 <th scope="col" class="text-center">Descripción</th>
                 <th scope="col" class="text-center">Autor</th>
                 <th scope="col" class="text-center">Fecha de creación</th>
             </tr>
-        </thead>
-      {% if complaint.follow_ups %}
+        </thead>      
       {% set i = namespace(value=0) %}
         {% for follow_up in complaint.follow_ups %}
         <tr>           
@@ -92,7 +92,7 @@
         {% set i.value = i.value + 1 %}
         {% endfor %}
        {% else %}
-          <p>La denuncia {{complaint.title}} no tiene seguimientos aún, cree uno</p>
+          <h5>*La denuncia {{complaint.title}} no tiene seguimientos aún, cree uno*</h5>
        {% endif %}
     </tbody>
   </table>

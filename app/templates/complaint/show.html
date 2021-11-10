@@ -53,7 +53,13 @@
       </tr>
       <tr>
         <th scope="row">Asignado a</th>
-        <td>{{complaint_assigned_to.username}}</td>
+        <td>
+          {% if complaint_assigned_to.username != Null %}
+            {{complaint_assigned_to.username}}
+          {% else %}
+            Sin usuario asignado
+          {% endif %}
+        </td>
       </tr>
       <tr>
         <th scope="row">Email denunciante</th>

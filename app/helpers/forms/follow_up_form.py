@@ -2,6 +2,7 @@ from wtforms import (
     SubmitField,
     validators,
     StringField,
+    HiddenField,
 )
 from flask_wtf import FlaskForm
 
@@ -26,6 +27,8 @@ class FollowUpForm(FlaskForm):
             "title": "La descripción no puede tener caracteres especiales",
         },
     )
+
+    id_complaint = HiddenField()
 
     submit = SubmitField(
         "Guardar", render_kw={"class": "button-gradient"}

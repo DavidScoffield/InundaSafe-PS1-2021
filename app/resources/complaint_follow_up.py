@@ -34,7 +34,7 @@ def index():
         abort(401)
     
 
-@follow_up_route.get("/new")
+@follow_up_route.post("/new")
 def new():
     "Controller para mostrar el formulario para el alta de un seguimiento"
 
@@ -43,13 +43,14 @@ def new():
     ):
         abort(401)
 
-    form = FollowUpForm()
+    id_complaint = request.form["id_complaint"]
+    form = FollowUpForm(request.form)
     user = User.find_user_by_id(session["user"])
 
-    return render_template("follow_up/new.html", form=form, user=user)
+    return render_template("follow_up/new.html", form=form, user=user, id_complaint=id_complaint)
 
 
-@follow_up_route.post("/new")
+@follow_up_route.post("/create")
 def create():
     "Controller para crear un seguimiento a partir de los datos del formulario"
     
@@ -57,9 +58,31 @@ def create():
         "follow_up_create"
     ):
         abort(401)
+
+    form = FollowUpForm(request.form)
+    args = form.data
+    complaint_id = args["id_complaint"]
+
+    user = User.find_user_by_id(session["user"])
     
+    # Validacion de los campos
+    if not form.validate_on_submit():
+        flash("Por favor, corrija los errores", category="follow_up_new")
+        return render_template("follow_up/new.html", form=form, user=user, complaint_id=complaint_id)
+    
+    del args["submit"]
+    del args["csrf_token"]
+    description = args["description"]
+    
+    ComplaintFollowUp.create_follow_up(description, session["user"], complaint_id)
 
+    flash("Seguimiento creado correctamente", category="follow_up_new")
+    return render_template("follow_up/new.html", form=form, user=user, id_complaint=complaint_id)
 
+    
+    
+    
+  
 @follow_up_route.post("/edit")
 def edit():
     "Controller para editar seguimiento"
@@ -68,7 +91,6 @@ def edit():
         "follow_up_edit"
     ):
         abort(401)
-
     
 
 @follow_up_route.post("/destroy")

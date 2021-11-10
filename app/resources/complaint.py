@@ -1,5 +1,6 @@
 from app.models.complaint import Complaint
 from app.models.complaint_follow_up import ComplaintFollowUp
+from app.models.user import User
 from app.helpers.forms.complaint_form import (
     ComplaintForm
 )
@@ -93,17 +94,23 @@ def show():
         "complaint_show"
     ):
         abort(401)
-
+    
     id_complaint = request.form["id_complaint"]
     complaint = Complaint.find_by_id(id_complaint)
+ 
     if not complaint:
         flash("No se encontró la denuncia",
                category="complaint_show")
         return redirect(url_for("complaint.index"))
+    
+    lista = []
+    for a in complaint.follow_ups:
+        author = User.find_user_by_id(a.author_id)
+        lista.append(author.username) 
 
     return render_template(
         "complaint/show.html",
-        complaint=complaint,
+        complaint=complaint, lista=lista
     )
 
 

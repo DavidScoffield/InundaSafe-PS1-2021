@@ -27,3 +27,13 @@ class ComplaintFollowUp(db.Model):
         self.author_id = author_id
         self.description = description
         self.complaint_id = complaint_id
+    
+
+    @classmethod
+    def create_follow_up(cls, description, author_id, complaint_id):
+        """Crea un seguimiento con los datos del formulario y la almacena en la BD."""
+
+        new_follow_up = ComplaintFollowUp(author_id, description, complaint_id)
+
+        db.session.add(new_follow_up)
+        db.session.commit()

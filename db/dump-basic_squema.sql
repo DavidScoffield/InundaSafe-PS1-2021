@@ -65,6 +65,14 @@ INSERT INTO `permissions` VALUES
   (32,'complaint_edit'),
   (33,'complaint_update'),
   (34,'complaint_show'),
+    -- Seguimientos
+  (35,'follow_up_index'),
+  (36,'follow_up_new'),
+  (37,'follow_up_create'),
+  (38,'follow_up_destroy'),
+  (39,'follow_up_edit'),
+  (40,'follow_up_update'),
+  (41,'follow_up_show'),
   -- USER
   (6,'usuario_index'),
   (7,'usuario_new'),
@@ -135,6 +143,13 @@ INSERT INTO `role_has_permissions` VALUES
   (1,32),
   (1,33),
   (1,34),
+  (1,35),
+  (1,36),
+  (1,37),
+  (1,38),
+  (1,39),
+  (1,40),
+  (1,41),
   -- OPERATOR
   (2,1),
   (2,2),
@@ -155,7 +170,13 @@ INSERT INTO `role_has_permissions` VALUES
   (2,30),
   (2,32),
   (2,33),
-  (2,34);
+  (2,34),
+  (2,35),
+  (2,36),
+  (2,37),
+  (2,39),
+  (2,40),
+  (2,41);
   -- (2,6),
   -- (2,7),
   -- (2,9),

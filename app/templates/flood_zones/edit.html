@@ -21,7 +21,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
 
 <!-- Own JavaScript -->
-<script type="module" src="{{url_for('static', filename='js/flood_zones/edit/index.js')}}"></script>
+<script type="module" src="{{url_for('static', filename='js/flood_zones/show_map.js')}}"></script>
 
 {% endblock %}
 
@@ -47,6 +47,9 @@
 
   <br>
   <i>* Campos obligatorios</i>
+  <div class="map-container " style="margin-top: 10px;">
+    <div id="mapid" style="height:400px"></div>
+  </div>
 
 </div>
 {% endblock %}

@@ -9,38 +9,39 @@ export class ZoneMap {
    * la capacidad de mostrar y marcar una zona inundable
    */
 
-  constructor({ selector, initialZone = null }) {
+  constructor({ selector, initialZone = null, enableControls = true }) {
     /**
      * Constructor de la clase. Parámetros:
-     *
+     
      * selector: es el selector donde se colocará el mapa
-     * addSearch: booleano que indica si desea agregar un botón para realizar búsquedas por dirección
-     * initialMarker: es el conjunto de coordenadas inicial que se desea mostrar en el mapa
-     * enableMarker: booleano que indica si se desea habilitar que el usuario pueda marcar un punto en el mapa
-     *
-     * Inicializa el mapa a partir del selector y marcador inicial recibido por parámetro
-     *s
-     * Si enableMarker es verdadero, se agrega un manejador al evento clcick para agregar el punto en el mapa
+     * initialZone: es el conjunto de coordenadas inicial para mostrar
+     una zona inundable el mapa
+     * enableControls: booleano que indica si se desea habilitar los controles en el mapa
+     
+     * Inicializa el mapa a partir del selector y initialZone en caso de recibirlo 
+     por parámetros
      */
 
     this.#drawnItems = new L.FeatureGroup()
 
-    this.#initializeMap(selector, initialZone)
+    this.#initializeMap(selector, initialZone, enableControls)
 
-    // this.map.on(L.Draw.Event.CREATED, (e) => {
-    //   this.#eventHandler(e, this.map, this.#drawnItems, this.editControls, this.createControls)
-    // })
-
-    // this.map.on('draw:deleted', () => {
-    //   this.#deleteHandler(this.map, this.editControls, this.createControls)
-    // })
+    if (enableControls) {
+      this.map.on(L.Draw.Event.CREATED, (e) => {
+        this.#eventHandler(e, this.map, this.#drawnItems, this.editControls, this.createControls)
+      })
+      this.map.on('draw:deleted', () => {
+        this.#deleteHandler(this.map, this.editControls, this.createControls)
+      })
+    }
   }
 
-  #initializeMap(selector, initialZone) {
+  #initializeMap(selector, initialZone, enableControls) {
     /**
      * Método que inicializa el mapa
-     *
-     * Renderiza el mapa en el selector indicado, y en caso de que exista una zoza inicial, la colocará en el mapa
+     
+     * Renderiza el mapa en el selector indicado, y en caso de que exista 
+    una zona inicial, la colocará en el mapa
      */
 
     this.map = L.map(selector).setView([initialLat, initialLng], 13)
@@ -52,7 +53,9 @@ export class ZoneMap {
       this.#addZone(initialZone, this.#drawnItems, this.map)
     }
 
-    // this.map.addControl(this.createControls)
+    if (enableControls) {
+      this.map.addControl(this.createControls)
+    }
   }
 
   #addZone(initialZone, drawnItems, map) {
@@ -84,9 +87,9 @@ export class ZoneMap {
     editControls.remove()
   }
 
-  // hasValidZone() {
-  //   return this.drawnLayers.length === 1
-  // }
+  hasValidZone() {
+    return this.drawnLayers.length === 1
+  }
 
   get drawnLayers() {
     return Object.values(this.#drawnItems._layers)

@@ -107,20 +107,30 @@ class EvacuationRoute(db.Model):
 
         return EvacuationRoute.query.get(id)
 
+    def delete_coordinates(self):
+        "Borra las coordenadas del recorrido de evacuación"
+
+        for coordinate in self.coordinates:
+            db.session.delete(coordinate)
+        db.session.commit()
 
     def delete(self):
-        "Borra un recorrido de evacuación"
-
+        "Borra un recorrido de evacuación y sus coordenadas asociadas"
+        
+        self.delete_coordinates()
         db.session.delete(self)
         db.session.commit()
 
 
-    def get_attributes(self):
+    def get_attributes(self, keep_instance_state = True):
         "Retorna un diccionario con los atributos del recorrido de evacuación"
 
         attributes = vars(self)
-        del attributes["_sa_instance_state"]
+        attributes["coordinates"] = self.coordinates
         
+        if not keep_instance_state:
+            del attributes["_sa_instance_state"]
+
         return attributes
 
 
@@ -129,6 +139,7 @@ class EvacuationRoute(db.Model):
 
         for attribute, value in args.items():
             if attribute == "coordinates":
+                self.delete_coordinates()
                 self.coordinates = [Coordinate(coordinate[0], coordinate[1]) for coordinate in value]
             else:
                 setattr(self, attribute, value)

@@ -168,12 +168,10 @@ def edit():
               category="evacuation_route_update")
         return redirect(url_for("evacuation_route.index", page_number=1))
     
-    coordinates = evacuation_route.coordinates
     # se inicializa el formulario con los datos originales de la ruta de evacuación que se desea modificar
     form = EvacuationRouteForm(**evacuation_route.get_attributes())
 
-    return render_template("evacuation_route/edit.html", form=form,
-                            coordinates=coordinates)
+    return render_template("evacuation_route/edit.html", form=form)
 
 
 @evacuation_route.post("/update")
@@ -187,7 +185,6 @@ def update():
 
     form = EvacuationRouteForm(request.form)
     id_evacuation_route = form.data["id"]
-    coordinates = []
 
     # ruta de evacuación que se quiere modificar
     evacuation_route = EvacuationRoute.find_by_id(id_evacuation_route)
@@ -226,8 +223,7 @@ def update():
     return render_template(
         "evacuation_route/edit.html",
         form=form,
-        id_evacuation_route=id_evacuation_route,
-        coordinates=coordinates
+        id_evacuation_route=id_evacuation_route
     )
 
 

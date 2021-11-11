@@ -143,3 +143,16 @@ def destroy():
         "follow_up_destroy"
     ):
         abort(401)
+    
+    id_follow_up = request.form["id_follow_up"]
+    follow_up = ComplaintFollowUp.find_by_id(id_follow_up)
+
+    if not follow_up:
+        flash("No se encontró el seguimiento",
+               category="follow_up_delete")
+    else:
+        follow_up.delete()
+        flash("Seguimiento borrado exitosamente",
+               category="follow_up_delete")
+
+    return redirect(url_for("complaint.index", page_number=1)) #redirigir a otro lado!!!!!

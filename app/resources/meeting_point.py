@@ -260,6 +260,8 @@ def update():
                 meeting_point.update(**args)
                 flash("Punto de encuentro modificado exitosamente",
                        category="meeting_point_update")
+            else:
+                flash(errors, category="meeting_point_update")
 
     return render_template(
         "meeting_point/edit.html",

@@ -43,29 +43,7 @@ class MeetingPointForm(FlaskForm):
         ],
     )
 
-    coor_X = HiddenField(
-        [
-            validators.DataRequired(
-                message="Este campo es obligatorio"
-            ),
-            validators.Regexp(
-                "^-?[0-9]{1,100}(?:\.[0-9]+)?$",
-                message="Por favor, ingrese una coordenada X válida",
-            ),
-        ],
-    )
-
-    coor_Y = HiddenField(
-        [
-            validators.DataRequired(
-                message="Este campo es obligatorio"
-            ),
-            validators.Regexp(
-                "^-?[0-9]{1,100}(?:\.[0-9]+)?$",
-                message="Por favor, ingrese una coordenada Y válida",
-            ),
-        ],
-    )
+    coordinate = HiddenField()
 
     telephone = StringField(
         "Teléfono",

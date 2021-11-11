@@ -49,3 +49,9 @@ class ComplaintFollowUp(db.Model):
 
         self.description = description
         db.session.commit()
+    
+    def delete(self):
+        "Borra un seguimiento"
+
+        db.session.delete(self)
+        db.session.commit()

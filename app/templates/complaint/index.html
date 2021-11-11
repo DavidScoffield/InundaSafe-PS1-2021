@@ -15,7 +15,7 @@
       <h1 class="font-weight-bold">Denuncias</h1>
     </div>
 
-    {% with messages = get_flashed_messages(category_filter=["complaint_index", "complaint_show"]) %}
+    {% with messages = get_flashed_messages(category_filter=["complaint_index", "complaint_show", "follow_up_delete"]) %}
       <br>
       {% for message in messages %}
           <p>{{message}}</p>

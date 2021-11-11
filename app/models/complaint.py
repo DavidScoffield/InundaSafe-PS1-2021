@@ -1,3 +1,4 @@
+from sqlalchemy.sql.expression import join
 from app.db import db
 from app.helpers.config import actual_config
 from sqlalchemy.orm import relationship
@@ -70,15 +71,27 @@ class Complaint(db.Model):
 
         return attributes
 
-    @classmethod
+    """@classmethod
     def find_all_complaints_and_their_categories(cls):
-        """Devuelve todas las denuncias de la BD JOIN las Categorias de esas denuncias"""
-        """Resulta en un conjunto de tuplas, donde [0] es la Complaint y [1] es la Category"""
+        Devuelve todas las denuncias de la BD JOIN las Categorias de esas denuncia
+        Resulta en un conjunto de tuplas, donde [0] es la Complaint y [1] es la Category
         return db.session.query(Complaint, Category).join(Category, Complaint.category == Category.id).all()
         
         #Esto era para hacer join Complaint-User para devolver tambien al usuario asignado a esta denuncia.
         #return db.session.query(Complaint, User).join(User, Complaint.assigned_to == User.id).all()
-        #devuelve Tuplas, [0] complaint y [1] el usuario asignado
+        #devuelve Tuplas, [0] complaint y [1] el usuario asignado"""
+
+    @classmethod
+    def paginate_complaints_and_their_categories(cls, page_number: int = 1):
+        """Devuelve todas las denuncias (join con Category para poder acceder a los datos del Objeto) paginadas"""
+        ac = actual_config()
+        elements_quantity = ac.elements_quantity
+        return db.session.query(Complaint, Category).join(Category, Complaint.category == Category.id).paginate(
+            max_per_page=elements_quantity,
+            per_page=elements_quantity,
+            page=page_number,
+            error_out=True,
+        )
 
     @classmethod
     def create_complaint(cls, **args):

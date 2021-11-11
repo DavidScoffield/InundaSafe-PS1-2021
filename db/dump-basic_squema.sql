@@ -129,6 +129,8 @@ INSERT INTO `role_has_permissions` VALUES
   (1,7),
   (1,8),
   (1,9),
+  (1,26),
+  (1,27),
   (1,10),
   (1,11),
   (1,12),
@@ -139,6 +141,9 @@ INSERT INTO `role_has_permissions` VALUES
   (1,17),
   (1,18),
   (1,19),
+  (2,15),
+  (2,16),
+  (2,17),
   (1,20),
   (1,21),
   (1,22),
@@ -367,8 +372,6 @@ CREATE TABLE `meeting_point` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL ,
   `address` varchar(255) NOT NULL,
-  `coor_X` varchar(100),
-  `coor_Y` varchar(100),
   `state` varchar(100),
   `telephone` varchar(50),
   `email` varchar(150),
@@ -385,16 +388,16 @@ CREATE TABLE `meeting_point` (
 LOCK TABLES `meeting_point` WRITE;
 /*!40000 ALTER TABLE `meeting_point` DISABLE KEYS */;
 INSERT INTO `meeting_point` VALUES 
-  (1,'Polideportivo Los Hornos','66 y 153','121','341','publicated', '234165', 'polideportivo@gmail.com'), 
-  (2,'Pasaje Dardo Rocha','7 y 50','421','500','despublicated', '232157', 'pasaje@hotmail.com'), 
-  (3,'Estadio Único','32 y 25','311','560','publicated', '532557', 'estadio@hotmail.com'), 
-  (4,'Meridiano V','17 y 72','223','213','publicated', '352157', 'meridiano@gmail.com'), 
-  (5,'Hipódromo','44 y 115','503','921','despublicated', '842348', 'hipódromo@gmail.com'),
-  (6,'Centro Comunal Villa Elvira','82 e/ 7 y 8','324','102','despublicated', '932145', 'villaelvira@gmail.com'),
-  (7,'Centro Comunal Ringuelet','Av. 7 2180','142', '441', 'publicated', '934549', 'ringuelet@gmail.com'),
-  (8,'Centro Comunal Abasto','516 bis e/210 y 211','572', '111', 'publicated', '632172', 'abasto@gmail.com'),
-  (9,'Centro Comunal Arana','131 e/ 636 y 637','321', '401', 'publicated', '622571', 'arana@hotmail.com'),
-  (10,'Centro Comunal Gorina','140 bis y 489','222', '303', 'despublicated', '992231', 'gorina@hotmail.com');
+  (1,'Polideportivo Los Hornos','66 y 153', 'publicated', '234165', 'polideportivo@gmail.com'), 
+  (2,'Pasaje Dardo Rocha','7 y 50', 'despublicated', '232157', 'pasaje@hotmail.com'), 
+  (3,'Estadio Único','32 y 25', 'publicated', '532557', 'estadio@hotmail.com'), 
+  (4,'Meridiano V','17 y 72', 'publicated', '352157', 'meridiano@gmail.com'), 
+  (5,'Hipódromo','44 y 115', 'despublicated', '842348', 'hipódromo@gmail.com'),
+  (6,'Centro Comunal Villa Elvira','82 e/ 7 y 8', 'despublicated', '932145', 'villaelvira@gmail.com'),
+  (7,'Centro Comunal Ringuelet','Av. 7 2180', 'publicated', '934549', 'ringuelet@gmail.com'),
+  (8,'Centro Comunal Abasto','516 bis e/210 y 211', 'publicated', '632172', 'abasto@gmail.com'),
+  (9,'Centro Comunal Arana','131 e/ 636 y 637', 'publicated', '622571', 'arana@hotmail.com'),
+  (10,'Centro Comunal Gorina','140 bis y 489', 'despublicated', '992231', 'gorina@hotmail.com');
 /*!40000 ALTER TABLE `meeting_point` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -528,16 +531,39 @@ CREATE TABLE `coordinate` (
   `flood_zone_id` int(11) DEFAULT NULL,
   `evacuation_route_id` int(11) DEFAULT NULL,
   `complaint_id` int(11) DEFAULT NULL,
+  `meeting_point_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `latitude_longitude` (`latitude`,`longitude`) USING BTREE,
   KEY `flood_zone_id` (`flood_zone_id`),
   KEY `evacuation_route_id` (`evacuation_route_id`),
   KEY `complaint_id` (`complaint_id`),
+  KEY `meeting_point_id` (`meeting_point_id`),
   CONSTRAINT `coordinate_ibfk_1` FOREIGN KEY (`flood_zone_id`) REFERENCES `flood_zones` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `coordinate_ibfk_2` FOREIGN KEY (`evacuation_route_id`) REFERENCES `evacuation_route` (`id`),  /* ON DELETE CASCADE ?? */
-  CONSTRAINT `coordinate_ibfk_3` FOREIGN KEY (`complaint_id`) REFERENCES `complaint` (`id`)
+  CONSTRAINT `coordinate_ibfk_2` FOREIGN KEY (`evacuation_route_id`) REFERENCES `evacuation_route` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `coordinate_ibfk_3` FOREIGN KEY (`complaint_id`) REFERENCES `complaint` (`id`),
+  CONSTRAINT `coordinate_ibfk_4` FOREIGN KEY (`meeting_point_id`) REFERENCES `meeting_point` (`id`)  ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coordinate`
+--
+
+LOCK TABLES `coordinate` WRITE;
+/*!40000 ALTER TABLE `coordinate` DISABLE KEYS */;
+INSERT INTO `coordinate` VALUES 
+  (1, '-34.90105126667501', '-57.954463965143084', NULL, NULL, NULL, 1), 
+  (2, '-34.91115226667502', '-57.954463965143084', NULL, NULL, NULL, 2),
+  (3, '-34.92125326667503', '-57.954463965143084', NULL, NULL, NULL, 3),
+  (4, '-34.93135426667504', '-57.954463965143084', NULL, NULL, NULL, 4),
+  (5, '-34.94145526667505', '-57.954463965143084', NULL, NULL, NULL, 5),
+  (6, '-34.90155626667506', '-57.914463965143084', NULL, NULL, NULL, 6), 
+  (7, '-34.91165726667507', '-57.924463965143084', NULL, NULL, NULL, 7), 
+  (8, '-34.92175226667508', '-57.934463965143084', NULL, NULL, NULL, 8),
+  (9, '-34.93185286667509', '-57.944463965143084', NULL, NULL, NULL, 9), 
+  (10, '-34.94985126667510', '-57.945563965143084', NULL, NULL, NULL, 10);
+/*!40000 ALTER TABLE `coordinate` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 

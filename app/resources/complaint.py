@@ -198,3 +198,16 @@ def destroy():
         "complaint_destroy"
     ):
         abort(401)
+
+    id_complaint = request.form["id_complaint"]
+    complaint = Complaint.find_by_id(id_complaint)
+
+    if not complaint:
+        flash("No se encontró la denuncia",
+               category="complaint_destroy")
+    else:
+        complaint.delete()
+        flash("Denuncia borrada exitosamente",
+               category="complaint_destroy")
+
+    return redirect(url_for("complaint.index", page_number=1))

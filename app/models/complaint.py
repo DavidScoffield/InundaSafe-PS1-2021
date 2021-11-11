@@ -36,7 +36,7 @@ class Complaint(db.Model):
         nullable=True,
     )
     coordinate = relationship("Coordinate", uselist=False)    #,cascade="all,delete", cascade="all,delete-orphan") ?. uselist=False es para one to one
-    follow_ups = relationship("ComplaintFollowUp")
+    follow_ups = relationship("ComplaintFollowUp", cascade="all,delete-orphan")
 
     def __repr__(self):
         return "<Complaint %r>" % self.title
@@ -130,4 +130,12 @@ class Complaint(db.Model):
         self.coordinate.latitude = args["coordinate"][0]
         self.coordinate.longitude = args["coordinate"][1]
 
+        db.session.commit()
+
+    
+    def delete(self):
+        "Borra una denuncia, junto con su Coordenada"
+
+        db.session.delete(self.coordinate)
+        db.session.delete(self)
         db.session.commit()

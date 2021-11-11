@@ -52,6 +52,11 @@
         <a class="nav-link" href="{{url_for('evacuation_route.index', page_number=1)}}">Recorridos de evacuación</a>
       </li>
       {% endif %}
+      {% if helper_has_permission("complaint_index") %}
+      <li class="nav-item {% if bp == 'complaint' %} active {% endif %}">
+        <a class="nav-link" href="{{url_for('complaint.index', page_number=1)}}">Denuncias</a>
+      </li>
+      {% endif %}
     </ul>
     <div class="btn-group">
       <button

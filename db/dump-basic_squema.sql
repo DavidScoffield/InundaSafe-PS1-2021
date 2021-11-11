@@ -57,6 +57,22 @@ INSERT INTO `permissions` VALUES
   (23,'evacuation_route_edit'),
   (24,'evacuation_route_update'),
   (25,'evacuation_route_show'),
+    -- Denuncias 
+  (42,'complaint_index'),
+  (43,'complaint_new'),
+  (30,'complaint_create'),
+  (31,'complaint_destroy'),
+  (32,'complaint_edit'),
+  (33,'complaint_update'),
+  (34,'complaint_show'),
+    -- Seguimientos
+  (35,'follow_up_index'),
+  (36,'follow_up_new'),
+  (37,'follow_up_create'),
+  (38,'follow_up_destroy'),
+  (39,'follow_up_edit'),
+  (40,'follow_up_update'),
+  (41,'follow_up_show'),
   -- USER
   (6,'usuario_index'),
   (7,'usuario_new'),
@@ -129,10 +145,22 @@ INSERT INTO `role_has_permissions` VALUES
   (1,23),
   (1,24),
   (1,25),
-  (1,26),
-  (1,27),
   (1,28),
   (1,29),
+  (1,30),
+  (1,31),
+  (1,32),
+  (1,33),
+  (1,34),
+  (1,35),
+  (1,36),
+  (1,37),
+  (1,38),
+  (1,39),
+  (1,40),
+  (1,41),
+  (1,42),
+  (1,43),
   -- OPERATOR
   (2,1),
   (2,2),
@@ -140,9 +168,6 @@ INSERT INTO `role_has_permissions` VALUES
   (2,5),
   (2,13),
   (2,14),
-  (2,15),
-  (2,16),
-  (2,17),
   (2,19),
   (2,20),
   (2,21),
@@ -152,7 +177,19 @@ INSERT INTO `role_has_permissions` VALUES
   (2,26),
   (2,27),
   (2,28),
-  (2,29);
+  (2,29),
+  (2,30),
+  (2,32),
+  (2,33),
+  (2,34),
+  (2,35),
+  (2,36),
+  (2,37),
+  (2,39),
+  (2,40),
+  (2,41),
+  (2,42),
+  (2,43);
   -- (2,6),
   -- (2,7),
   -- (2,9),
@@ -397,6 +434,85 @@ CREATE TABLE `evacuation_route` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `complaint`
+--
+
+DROP TABLE IF EXISTS `complaint`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `complaint` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `category` int(11) unsigned NOT NULL,
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `closed_at` datetime NULL,
+  `description` varchar(500) NOT NULL,
+  `state` varchar(100),
+  `creator_first_name` varchar(100),
+  `creator_last_name` varchar(100),
+  `creator_telephone` varchar(50),
+  `creator_email` varchar(150),
+  `assigned_to` int(11) unsigned,
+  PRIMARY KEY (`id`),
+  KEY (`id`),
+  KEY `assigned_to` (`assigned_to`),
+  KEY `category` (`category`),
+  CONSTRAINT `complaint_ibfk_1` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`),
+  CONSTRAINT `complaint_ibfk_2` FOREIGN KEY (`category`) REFERENCES `category` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `categories`
+--
+
+DROP TABLE IF EXISTS `category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `category` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `category`
+--
+
+LOCK TABLES `category` WRITE;
+/*!40000 ALTER TABLE `category` DISABLE KEYS */;
+INSERT INTO `category` VALUES 
+  -- Punto de encuentro 
+  (1,'Alcantarilla tapada'),
+  (2,'Basural');
+/*!40000 ALTER TABLE `category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Table structure for table `complaint follow up`
+--
+
+DROP TABLE IF EXISTS `complaint_follow_up`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `complaint_follow_up` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `description` varchar(500) NOT NULL,
+  `author_id` int(11) unsigned NOT NULL,
+  `complaint_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY (`id`),
+  KEY `author_id` (`author_id`),
+  KEY `complaint_id` (`complaint_id`),
+  CONSTRAINT `complaint_follow_up_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `complaint_follow_up_ibfk_2` FOREIGN KEY (`complaint_id`) REFERENCES `complaint` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `coordinate`
@@ -411,14 +527,18 @@ CREATE TABLE `coordinate` (
   `longitude` varchar(100) NOT NULL,
   `flood_zone_id` int(11) DEFAULT NULL,
   `evacuation_route_id` int(11) DEFAULT NULL,
+  `complaint_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `latitude_longitude` (`latitude`,`longitude`) USING BTREE,
   KEY `flood_zone_id` (`flood_zone_id`),
   KEY `evacuation_route_id` (`evacuation_route_id`),
+  KEY `complaint_id` (`complaint_id`),
   CONSTRAINT `coordinate_ibfk_1` FOREIGN KEY (`flood_zone_id`) REFERENCES `flood_zones` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `coordinate_ibfk_2` FOREIGN KEY (`evacuation_route_id`) REFERENCES `evacuation_route` (`id`)  /* ON DELETE CASCADE ?? */
+  CONSTRAINT `coordinate_ibfk_2` FOREIGN KEY (`evacuation_route_id`) REFERENCES `evacuation_route` (`id`),  /* ON DELETE CASCADE ?? */
+  CONSTRAINT `coordinate_ibfk_3` FOREIGN KEY (`complaint_id`) REFERENCES `complaint` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
 
 
 --

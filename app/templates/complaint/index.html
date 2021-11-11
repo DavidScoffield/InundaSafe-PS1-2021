@@ -1,0 +1,108 @@
+{% extends "private_app_layout.html" %}
+{% block title %}Denuncias{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+
+  <div class="container mx-auto py-4">
+    
+    <!-- TITULO -->
+    <div class="d-flex align-items-center mb-3">
+      <a href="{{url_for('home.index')}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+        <i class="fas fa-arrow-left fa-lg"></i>
+      </a>
+      <h1 class="font-weight-bold">Denuncias</h1>
+    </div>
+
+    {% with messages = get_flashed_messages(category_filter=["complaint_index", "complaint_show", "complaint_destroy"]) %}
+      <br>
+      {% for message in messages %}
+          <p>{{message}}</p>
+      {% endfor %}
+    {% endwith %}
+
+    <!-- BUTTONS -->
+    <div class="w-100 row justify-content-center">
+      <div class="col d-flex justify-content-sm-center justify-content-md-start mb-sm-3 mb-md-0">
+        <a class="btn btn-primary button-gradient" role="button" href="{{url_for('complaint.new')}}">Nueva</a>
+      </div>
+    </div>
+
+    <br />
+
+    <!-- LIST -->
+    <table class="table">
+      <thead>
+          <tr>
+              <th scope="col" class="text-center">Titulo</th>
+              <th scope="col" class="text-center">Categoria</th>
+              <th scope="col" class="text-center">Fecha de creación</th>
+              <th scope="col" class="text-center">Estado</th>
+              <th scope="col" class="text-center">Email denunciante</th>
+              <th scope="col" class="text-center">Acciones</th>
+          </tr>
+      </thead>
+
+      <tbody>
+        {% for complaint in complaints.items %}
+        <tr>
+            <td class="text-center">
+                {{complaint[0].title}}
+            </td>
+            <td class="text-center">{{complaint[1].name}}</td>
+            <td class="text-center">{{complaint[0].created_at}}</td>
+            <td class="text-center">{{complaint[0].state}}</td>
+            <td class="text-center">{{complaint[0].creator_email}}</td>
+            <td class="text-center d-flex justify-content-center">
+              {% if helper_has_permission("complaint_show") %}
+                <form action="{{url_for('complaint.show')}}" method="post" class="d-inline">
+                  <input name="id_complaint" type="hidden" value="{{complaint[0].id}}">
+                  <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
+                </form>
+              {% endif %}
+              {% if helper_has_permission("complaint_edit") %}
+                <form action="{{url_for('complaint.edit')}}" method="post" class="d-inline">
+                  <input name="id_complaint" type="hidden" value="{{complaint[0].id}}">
+                  <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
+                </form>
+              {% endif %}
+              {% if helper_has_permission("complaint_destroy") %}
+                <form action="{{url_for('complaint.destroy')}}" method="post" class="d-inline">
+                  <input name="id_complaint" type="hidden" value="{{complaint[0].id}}">
+                  <button type="submit" onclick="return confirm('¿Está seguro que desea borrar esta denuncia?')" class="btn btn-primary button-gradient mx-1">Eliminar</button>
+                </form>
+              {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        {% if complaints.has_prev %}
+          <li class="page-item"></li>
+          <a class="page-link" href="{{url_for('complaint.index', page_number=complaints.prev_num)}}?{{request.query_string.decode()}}" tabindex="-1">Anterior</a>
+        {% else %}
+          <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1">Anterior</a>
+        {% endif %}
+        </li>
+          {% for page in complaints.iter_pages() %}
+              {% if page %}
+                <li class="page-item"><a class="page-link" href="{{url_for('complaint.index', page_number=page)}}?{{request.query_string.decode()}}">{{ page }}</a></li>
+              {% endif %}
+          {% endfor %}
+        {% if complaints.has_next %}
+          <li class="page-item"></li>
+          <a class="page-link" href="{{url_for('complaint.index', page_number=complaints.next_num)}}?{{request.query_string.decode()}}">Siguiente</a>
+        {% else %}
+          <li class="page-item disabled">
+          <a class="page-link" href="#">Siguiente</a>
+        {% endif %}
+      </ul>
+    </nav>
+
+</div>
+{% endblock %}

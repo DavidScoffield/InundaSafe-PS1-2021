@@ -11,6 +11,8 @@ class FollowUpForm(FlaskForm):
 
     "Crea el formulario para obtener datos de un seguimiento"
 
+    id = HiddenField()
+
     description = StringField(
         "Descripción (*)",
         [

@@ -9,7 +9,7 @@ class ComplaintFollowUp(db.Model):
     description = db.Column(db.String(500), nullable=False)
     author_id = db.Column(
         db.Integer,
-        db.ForeignKey("users.id"), #, ondelete="CASCADE" ?
+        db.ForeignKey("users.id"),
     )
     complaint_id = db.Column(
         db.Integer, 

@@ -37,3 +37,15 @@ class ComplaintFollowUp(db.Model):
 
         db.session.add(new_follow_up)
         db.session.commit()
+    
+    @classmethod
+    def find_by_id(cls, id):
+        "Retorna el seguimiento correspondiente al id recibido por parámetro"
+
+        return ComplaintFollowUp.query.get(id)
+
+    def update_follow_up(self, description):
+        """Actualizacion del seguimiento"""
+
+        self.description = description
+        db.session.commit()

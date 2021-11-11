@@ -62,7 +62,7 @@ def create():
     form = FollowUpForm(request.form)
     args = form.data
     complaint_id = args["id_complaint"]
-
+    
     user = User.find_user_by_id(session["user"])
     
     # Validacion de los campos
@@ -79,18 +79,60 @@ def create():
     flash("Seguimiento creado correctamente", category="follow_up_new")
     return render_template("follow_up/new.html", form=form, user=user, id_complaint=complaint_id)
 
-    
-    
-    
   
 @follow_up_route.post("/edit")
 def edit():
-    "Controller para editar seguimiento"
+    "Controller para mostrar el form para editar un seguimiento"
 
     if not authenticated(session) or not check_permission(
         "follow_up_edit"
     ):
         abort(401)
+    
+    id_follow_up = request.form["id_follow_up"]
+    follow_up = ComplaintFollowUp.find_by_id(id_follow_up)
+    author_follow_up = User.find_user_by_id(follow_up.author_id)
+ 
+    #Le doy al form la descripción que está en la BD para el seguimiento específico
+    form = FollowUpForm(description=follow_up.description, id=id_follow_up)
+
+    return render_template(
+        "follow_up/edit.html", follow_up=follow_up, form=form, author_follow_up=author_follow_up
+    )
+
+
+@follow_up_route.post("/update")
+def update():
+    """Controller para actualizar el seguimiento en la BD"""
+
+    if not authenticated(session) or not check_permission(
+        "follow_up_update"
+    ):
+        abort(401)
+    
+    form = FollowUpForm(request.form)
+    args = form.data
+
+    #seguimiento a actualizar
+    follow_up = ComplaintFollowUp.find_by_id(args["id"])
+
+    author_follow_up = User.find_user_by_id(follow_up.author_id)
+
+    # Validacion de campos
+    if not form.validate_on_submit():
+        flash("Por favor, corrija los errores", category="follow_up_update")
+        return render_template("follow_up/edit.html", follow_up=follow_up, form=form, author_follow_up=author_follow_up)
+
+    del args["submit"]
+    del args["csrf_token"]
+
+    #actualizo el seguimiento en la BD
+    follow_up.update_follow_up(args["description"])
+
+    flash("Seguimiento actualizado correctamente", category="follow_up_update")
+    return render_template(
+        "follow_up/edit.html", follow_up=follow_up, form=form, author_follow_up=author_follow_up
+    )
     
 
 @follow_up_route.post("/destroy")

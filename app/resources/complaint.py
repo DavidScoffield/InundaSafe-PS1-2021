@@ -26,20 +26,20 @@ complaint_route = Blueprint(
     "complaint", __name__, url_prefix="/denuncias"
 )
 
-@complaint_route.get("/")
-def index():
+@complaint_route.get("/<int:page_number>")
+def index(page_number):
     "Listado de las denuncias"
 
     if not authenticated(session) or not check_permission(
         "complaint_index"
     ):
         abort(401)
-    
-    complaints = Complaint.find_all_complaints_and_their_categories()
-    #complaints es un conjunto de tuplas con el siguiente formato: [Complaint, Category]
+
+    paginated_complaints = Complaint.paginate_complaints_and_their_categories(page_number)
+    #es un conjunto de tuplas con el siguiente formato: [Complaint, Category]
 
     return render_template(
-        "complaint/index.html", complaints=complaints
+        "complaint/index.html", complaints=paginated_complaints
     )
     
 
@@ -86,7 +86,7 @@ def create():
     Complaint.create_complaint(**args)
 
     flash("Denuncia creada correctamente", category="complaint_index")
-    return redirect(url_for("complaint.index"))
+    return redirect(url_for("complaint.index", page_number=1))
 
 
 @complaint_route.post("/show")
@@ -106,7 +106,7 @@ def show():
     if not complaint:
         flash("No se encontró la denuncia",
                category="complaint_show")
-        return redirect(url_for("complaint.index"))
+        return redirect(url_for("complaint.index", page_number=1))
     
     lista = []
     for a in complaint.follow_ups:

@@ -45,7 +45,7 @@
       </thead>
 
       <tbody>
-        {% for complaint in complaints %}
+        {% for complaint in complaints.items %}
         <tr>
             <td class="text-center">
                 {{complaint[0].title}}
@@ -78,6 +78,31 @@
         {% endfor %}
       </tbody>
     </table>
+
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        {% if complaints.has_prev %}
+          <li class="page-item"></li>
+          <a class="page-link" href="{{url_for('complaint.index', page_number=complaints.prev_num)}}?{{request.query_string.decode()}}" tabindex="-1">Anterior</a>
+        {% else %}
+          <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1">Anterior</a>
+        {% endif %}
+        </li>
+          {% for page in complaints.iter_pages() %}
+              {% if page %}
+                <li class="page-item"><a class="page-link" href="{{url_for('complaint.index', page_number=page)}}?{{request.query_string.decode()}}">{{ page }}</a></li>
+              {% endif %}
+          {% endfor %}
+        {% if complaints.has_next %}
+          <li class="page-item"></li>
+          <a class="page-link" href="{{url_for('complaint.index', page_number=complaints.next_num)}}?{{request.query_string.decode()}}">Siguiente</a>
+        {% else %}
+          <li class="page-item disabled">
+          <a class="page-link" href="#">Siguiente</a>
+        {% endif %}
+      </ul>
+    </nav>
 
 </div>
 {% endblock %}

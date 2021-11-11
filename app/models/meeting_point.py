@@ -126,6 +126,7 @@ class MeetingPoint(db.Model):
 
         for attribute, value in args.items():
             if attribute == "coordinate":
+                db.session.delete(self.coordinate)
                 self.coordinate = Coordinate(value[0], value[1])
             else:
                 setattr(self, attribute, value)

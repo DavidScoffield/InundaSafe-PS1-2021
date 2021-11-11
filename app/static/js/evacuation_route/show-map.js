@@ -13,7 +13,8 @@ window.onload = () => {
 	new MultipleMarkerMap ({
 		selector: 'mapid',
 		addSearch: false,
-		initialMarker: coordinates,
+		addResetButton: false,
+		initialCoordinates: coordinates,
 		enableMarker: false
 	});
 	

@@ -2,13 +2,13 @@
 
 {% extends "private_app_layout.html" %} 
 
-{% block title %} InundaSafe | Alta recorrido de evacuación {% endblock %} 
+{% block title %} InundaSafe | Edición recorrido de evacuación {% endblock %} 
 
 {% block head %} 
 
-	{{ super() }}
+  {{ super() }}
 
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
 	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 	<script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
   <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script>
@@ -17,35 +17,37 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
 
-	<script type="module" src="{{url_for('static', filename='js/evacuation_route/new-edit-map.js')}}"></script>
 
+
+	<script type="module" src="{{url_for('static', filename='js/evacuation_route/new-edit-map.js')}}"></script>
+  
 {% endblock %} 
 
 {% block content %}
-
 <br>
-
 <div class="container mx-auto py-4">
 <div class="d-flex align-items-center">
-    <a href="#" class="text-muted p-1 mr-3" style="cursor: pointer">
+    <a href="{{url_for('evacuation_route.index', page_number=1)}}" class="text-muted p-1 mr-3" style="cursor: pointer">
       <i class="fas fa-arrow-left fa-lg"></i>
     </a>
-    <h1 class="font-weight-bold">Alta de recorrido de evacuación</h1>
-</div>
+    <h1 class="font-weight-bold">Modificación de recorrido de evacuación</h1>
+  </div>
 
-{% with messages = get_flashed_messages(category_filter=["evacuation_route_new"]) %}
+{% with messages = get_flashed_messages(category_filter=["evacuation_route_update"]) %}
 <br>
     {% for message in messages %}
         <p>{{message}}</p>
     {% endfor %}
 
 {% endwith %}
- 
-{{ render_form(form, method='POST', action=url_for('evacuation_route.new'), id='evacuation_route_form') }}
+
+{{ render_form(form, method='POST', action=url_for('evacuation_route.update'), id='evacuation_route_form') }}
 
 <br>
 
 <p>* Marque los puntos que conforman el recorrido de evacuación</p>
+
+<input id="coordinates" type="hidden" value="{{coordinates}}">
 
 <div class="map-container">
   <div id="mapid" style="height:400px"></div>
@@ -55,5 +57,4 @@
 <i>* Campos obligatorios</i>
 
 </div>
-
 {% endblock %}

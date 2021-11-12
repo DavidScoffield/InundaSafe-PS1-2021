@@ -81,7 +81,7 @@
                   <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
                 </form>
               {% endif %}
-              {% if helper_has_permission("complaint_edit") and not complaint_is_finished(complaint) %}
+              {% if helper_has_permission("complaint_edit") and not complaint_is_finished(complaint) and is_admin_or_is_my_complaint(complaint) %}
                 <form action="{{url_for('complaint.edit')}}" method="post" class="d-inline">
                   <input name="id_complaint" type="hidden" value="{{complaint.id}}">
                   <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>

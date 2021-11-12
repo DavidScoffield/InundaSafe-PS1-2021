@@ -42,8 +42,8 @@ class Complaint(db.Model):
         return "<Complaint %r>" % self.title
 
     def __init__(self, title, category, description,
-                 state, creator_first_name, creator_last_name,
-                 creator_telephone, creator_email, assigned_to, coordinate):
+                 creator_first_name, creator_last_name,
+                 creator_telephone, creator_email, coordinate, assigned_to = None, state = None):
         """Constructor del modelo"""
         "assigned_to y category tienen el objeto entero, se asigna solo su id en la fk al inicializar la Category"
         "assigned_to puede ser Null si no se le asigno un usuario a la Denuncia; category es obligatoria"
@@ -101,6 +101,7 @@ class Complaint(db.Model):
 
         db.session.add(new_complaint)
         db.session.commit()
+        return new_complaint
 
     @classmethod
     def find_by_id(cls, id):

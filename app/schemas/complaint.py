@@ -24,11 +24,11 @@ class ComplaintSchema(Schema):
     coordinate = fields.Str(data_key="coordenadas",
                             required = True, load_only=True)
 
-    creator_first_name = fields.Str(data_key="apellido_denunciante",
+    creator_first_name = fields.Str(data_key="nombre_denunciante",
                                     required = True,
                                     validate=validate.Regexp("^[a-zA-Z ]+$"))
 
-    creator_last_name = fields.Str(data_key="nombre_denunciante",
+    creator_last_name = fields.Str(data_key="apellido_denunciante",
                                    required = True,
                                    validate=validate.Regexp("^[a-zA-Z ]+$"))
 

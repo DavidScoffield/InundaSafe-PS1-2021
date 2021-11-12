@@ -155,4 +155,4 @@ def destroy():
         flash("Seguimiento borrado exitosamente",
                category="follow_up_delete")
 
-    return redirect(url_for("complaint.index", page_number=1)) #redirigir a otro lado!!!!!
+    return redirect(url_for("complaint.index", page_number=1))

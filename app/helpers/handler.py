@@ -2,6 +2,19 @@ from flask import render_template, request, jsonify
 from app.helpers.logger import logger_exception, logger_info
 
 
+def bad_request_error(e):
+    """
+    Funcion helper para redirigir a una pagina error con
+    un diccionario definido en caso de obtener un error 400
+    """
+    
+    kwargs = {
+        "error_name": "400 Bad Request",
+        "error_description": "Por favor, verifique los datos ingresados",
+    }
+    return make_response(kwargs, 400)
+
+
 def not_found_error(e):
     """
     Funcion helper para redirigir a una pagina error
@@ -50,12 +63,16 @@ def internal_server_error(e):
     """
     kwargs = {
         "error_name": "500 Internal Server Error",
-        "error_description": "Ocurrió un error en el Servidor",
+        "error_description": "Ocurrió un error inesperado en el servidor",
     }
     return make_response(kwargs, 500)
 
 
 def make_response(data, status):
+    """
+    Función que retorna el error en formato json en caso de que el requerimiento
+    fuese de una api, o html en otro caso
+    """
     if request.path.startswith("/api/"):
         return jsonify(data), status
     else:

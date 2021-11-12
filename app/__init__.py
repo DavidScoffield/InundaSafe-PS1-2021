@@ -134,6 +134,7 @@ def create_app(environment="development"):
     app.register_blueprint(follow_up_route)
 
     # Handlers
+    app.register_error_handler(400, handler.bad_request_error)
     app.register_error_handler(404, handler.not_found_error)
     app.register_error_handler(
         401, handler.unauthorized_error

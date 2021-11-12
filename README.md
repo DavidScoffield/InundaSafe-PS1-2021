@@ -50,7 +50,7 @@ Aplicación para el trabajo integrador para la materia de Proyecto de Software d
 
   Realiza la creación de una denuncia en base a los parámetros recibidos por post.
 
-  *Ver ejemplos en el archivo /request/complaints/create.rest*
+  *Ver ejemplos en el archivo /request/complaints/create.md*
 
 ## Iniciar ambiente
 

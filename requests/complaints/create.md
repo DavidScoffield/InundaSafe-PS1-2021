@@ -55,7 +55,7 @@ No cumple con las restricciones (retorna 400 Bad Request)
   "coordenadas": a,
   "apellido_denunciante": "Perez!",
   "nombre_denunciante": "Juan|",
-  "telcel_denunciante": 2218436754,
+  "telcel_denunciante": "2218436754",
   "email_denunciante": "juan.perezgmail.com",
   "titulo": "Alcantarilla tapada",
   "descripcion": "Hay una alcantarilla tapada"

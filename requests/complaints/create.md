@@ -34,6 +34,23 @@
 }
 ```
 
+Como resultado se crea la denuncia con los datos recibidos y retorna el siguiente resultado:
+
+```json
+{
+  "atributos": {
+    "apellido_denunciante": "Perez",
+    "email_denunciante": "juan.perez@gmail.com",
+    "telcel_denunciante": "2218436754",
+    "coordenadas": "41.40338, 2.17403",
+    "nombre_denunciante": "Juan",
+    "titulo": "Alcantarilla tapada",
+    "descripcion": "Hay una alcantarilla tapada",
+    "categoria_id": 1
+  }
+}
+```
+
 ### Ejemplo de datos incorrectos:
 
 ```json

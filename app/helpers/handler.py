@@ -1,4 +1,5 @@
 from flask import render_template, request, jsonify
+from app.helpers.logger import logger_exception, logger_info
 
 
 def not_found_error(e):
@@ -6,9 +7,14 @@ def not_found_error(e):
     Funcion helper para redirigir a una pagina error
     con un diccionario definido en caso de obtener un error 404
     """
+
+    description = e.description
+
     kwargs = {
         "error_name": "404 Not Found Error",
-        "error_description": "La url a la que quiere acceder no existe",
+        "error_description": "La url a la que quiere acceder no existe"
+        if description is None
+        else description,
     }
     return make_response(kwargs, 404)
 

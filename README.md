@@ -41,6 +41,17 @@ Aplicación para el trabajo integrador para la materia de Proyecto de Software d
  
 -----------
 
+- Denuncias:    
+
+----------
+  **/api/denuncias**
+
+  * [localhost/servidor]/api/denuncias/
+
+  Realiza la creación de una denuncia en base a los parámetros recibidos por post.
+
+  *Ver ejemplos en el archivo /request/complaints/create.rest*
+
 ## Iniciar ambiente
 
 ### Requisitos

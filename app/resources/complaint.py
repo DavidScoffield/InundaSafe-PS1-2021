@@ -22,9 +22,9 @@ from app.helpers.check_permission import check_permission
 import json
 from app.helpers.validate_coordinates import validate_coordinates
 from app.helpers.check_param_search import (
-    active_dic,
     check_param,
 )
+from app.helpers.is_admin_or_is_my_complaint import is_admin_or_is_my_complaint
 
 complaint_route = Blueprint(
     "complaint", __name__, url_prefix="/denuncias"
@@ -215,6 +215,10 @@ def update():
     
     #complaint a actualizar
     complaint = Complaint.find_by_id(args["id"])
+
+    #Si intento editar una Denuncia sin ser admin ni el asignado a esa Denuncia: abort
+    if(not is_admin_or_is_my_complaint(complaint)):
+        abort(401)
 
     args["coordinate"] = json.loads(args["coordinate"])
     # Validacion de la coordenada

@@ -11,7 +11,7 @@
   <!-- TITULO -->
   <div class="d-flex align-items-center mb-3">
 
-    <form action="{{url_for('complaint.show')}}" method="post" class="d-inline">
+    <form action="{{url_for('complaint.show', page_number=1)}}" method="post" class="d-inline">
         <input name="id_complaint" type="hidden" value="{{follow_up.complaint_id}}">
         <button type="submit" class="text-muted mr-3 p-0 border-0 bg-transparent" style="cursor: pointer"><i class="fas fa-arrow-left fa-lg"></i></button>
       </form>   

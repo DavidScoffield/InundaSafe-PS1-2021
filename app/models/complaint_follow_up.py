@@ -1,5 +1,6 @@
 from app.db import db
 import datetime
+from app.helpers.config import actual_config
 
 class ComplaintFollowUp(db.Model):
     """Modelo para los seguimientos de las denuncias"""
@@ -55,3 +56,18 @@ class ComplaintFollowUp(db.Model):
 
         db.session.delete(self)
         db.session.commit()
+    
+    @classmethod
+    def paginate(cls, id_complaint, page_number: int = 1):
+
+        follow_ups = ComplaintFollowUp.query.filter(ComplaintFollowUp.complaint_id == id_complaint)
+        "Retorna la lista de seguimientos pasados por parametro paginados"
+        ac = actual_config()
+        elements_quantity = ac.elements_quantity
+        return follow_ups.paginate( 
+            max_per_page=elements_quantity,
+            per_page=elements_quantity,
+            page=page_number,
+            error_out=False
+        )
+        

@@ -139,8 +139,7 @@ def create():
     flash("Denuncia creada correctamente", category="complaint_index")
     return redirect(url_for("complaint.index", page_number=1))
 
-
-@complaint_route.post("/show")
+@complaint_route.route("/show", methods=('GET', 'POST'))
 def show():
     "Controller para mostrar la información de una denuncia"
 
@@ -148,29 +147,40 @@ def show():
         "complaint_show"
     ):
         abort(401)
-    
-    id_complaint = request.form["id_complaint"]
+
+    if (request.method == 'POST'):
+        id_complaint = request.form["id_complaint"]
+        page_number = 1
+    else:
+        id_complaint = request.args.get('comp_id', type=int)
+        page_number = request.args.get('page_number', type=int)
+
     complaint = Complaint.find_by_id(id_complaint)
  
-    complaint_assigned_user = complaint.find_my_assigned_user()
-
     if not complaint:
         flash("No se encontró la denuncia",
                category="complaint_show")
         return redirect(url_for("complaint.index", page_number=1))
-    
+
+    complaint_assigned_user = complaint.find_my_assigned_user()
+
+    paginated_follow_ups = ComplaintFollowUp.paginate(
+        id_complaint=id_complaint,
+        page_number=page_number,
+    )
+
     lista = []
-    for a in complaint.follow_ups:
+    for a in paginated_follow_ups.items:
         author = User.find_user_by_id(a.author_id)
         lista.append(author.username) 
 
     return render_template(
         "complaint/show.html",
         complaint=complaint, 
+        paginated_follow_ups=paginated_follow_ups,
         lista=lista, 
         complaint_assigned_to=complaint_assigned_user
     )
-
 
 @complaint_route.post("/edit")
 def edit():

@@ -97,7 +97,7 @@
             </tr>
         </thead>      
       {% set i = namespace(value=0) %}
-        {% for follow_up in complaint.follow_ups %}
+        {% for follow_up in paginated_follow_ups.items %}
         <tr>           
           <td class="text-center">{{follow_up.description}}</td>
           <td class="text-center">{{lista[i.value]}}</td>
@@ -124,5 +124,31 @@
        {% endif %}
     </tbody>
   </table>
+
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      {% if paginated_follow_ups.has_prev %}
+        <li class="page-item"></li>
+        <a class="page-link" href="{{url_for('complaint.show', page_number=paginated_follow_ups.prev_num, comp_id=complaint.id)}} " tabindex="-1">Anterior</a>
+      {% else %}
+        <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1">Anterior</a>
+      {% endif %}
+      </li>
+        {% for page in paginated_follow_ups.iter_pages() %}
+            {% if page %}
+              <li class="page-item"><a class="page-link" href="{{url_for('complaint.show', page_number=page, comp_id=complaint.id)}}">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
+      {% if paginated_follow_ups.has_next %}
+        <li class="page-item"></li>
+        <a class="page-link" href="{{url_for('complaint.show', page_number=paginated_follow_ups.next_num, comp_id=complaint.id)}}">Siguiente</a>
+      {% else %}
+        <li class="page-item disabled">
+        <a class="page-link" href="#">Siguiente</a>
+      {% endif %}
+    </ul>
+  </nav>
+
 </div>
 {% endblock %}

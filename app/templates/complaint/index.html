@@ -5,6 +5,9 @@
 {% endblock %}
 {% block content %}
 
+{% set argtitle = request.args.title %}
+{% set argstate = request.args.state %}
+
   <div class="container mx-auto py-4">
     
     <!-- TITULO -->
@@ -27,6 +30,23 @@
       <div class="col d-flex justify-content-sm-center justify-content-md-start mb-sm-3 mb-md-0">
         <a class="btn btn-primary button-gradient" role="button" href="{{url_for('complaint.new')}}">Nueva</a>
       </div>
+      <div class="col-sm-12 col-md-6 d-flex justify-content-sm-center justify-content-md-end">
+        <form method="GET" action="{{url_for('complaint.index', page_number=complaints.page)}}" class="d-flex justify-content-end align-content-center">
+  
+          <input type="text" name="title" placeholder="Buscar por titulo..." class="mx-1 pl-2" 
+          {% if argtitle %} 
+            value="{{argtitle}}"
+          {% endif %}>
+          
+          <select class="rounded-sm mx-1" name="state" aria-label="seleccionador estado">
+            <option value="all" {{"selected" if argstate == "all"}}>Todos</option>
+            <option value="En Curso" {{"selected" if argstate == "En Curso"}}>En curso</option>
+            <option value="Resuelta" {{"selected" if argstate == "Resuelta"}}>Resuelta</option>
+            <option value="Cerrada" {{"selected" if argstate == "Cerrada"}}>Cerrada</option>
+          </select>
+          <button class="btn btn-dark btn-sm" aria-label="button-search"><i class="fas fa-search fa-sm"></i></button>
+        </form>
+      </div>
     </div>
 
     <br />
@@ -48,28 +68,28 @@
         {% for complaint in complaints.items %}
         <tr>
             <td class="text-center">
-                {{complaint[0].title}}
+                {{complaint.title}}
             </td>
-            <td class="text-center">{{complaint[1].name}}</td>
-            <td class="text-center">{{complaint[0].created_at}}</td>
-            <td class="text-center">{{complaint[0].state}}</td>
-            <td class="text-center">{{complaint[0].creator_email}}</td>
+            <td class="text-center">{{complaint.category.name}}</td>
+            <td class="text-center">{{complaint.created_at}}</td>
+            <td class="text-center">{{complaint.state}}</td>
+            <td class="text-center">{{complaint.creator_email}}</td>
             <td class="text-center d-flex justify-content-center">
               {% if helper_has_permission("complaint_show") %}
                 <form action="{{url_for('complaint.show')}}" method="post" class="d-inline">
-                  <input name="id_complaint" type="hidden" value="{{complaint[0].id}}">
+                  <input name="id_complaint" type="hidden" value="{{complaint.id}}">
                   <button type="submit" class="btn btn-primary button-gradient mx-1">Ver</button>
                 </form>
               {% endif %}
-              {% if helper_has_permission("complaint_edit") %}
+              {% if helper_has_permission("complaint_edit") and not complaint_is_finished(complaint) %}
                 <form action="{{url_for('complaint.edit')}}" method="post" class="d-inline">
-                  <input name="id_complaint" type="hidden" value="{{complaint[0].id}}">
+                  <input name="id_complaint" type="hidden" value="{{complaint.id}}">
                   <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
                 </form>
               {% endif %}
-              {% if helper_has_permission("complaint_destroy") %}
+              {% if helper_has_permission("complaint_destroy") and not complaint_is_finished(complaint) %}
                 <form action="{{url_for('complaint.destroy')}}" method="post" class="d-inline">
-                  <input name="id_complaint" type="hidden" value="{{complaint[0].id}}">
+                  <input name="id_complaint" type="hidden" value="{{complaint.id}}">
                   <button type="submit" onclick="return confirm('¿Está seguro que desea borrar esta denuncia?')" class="btn btn-primary button-gradient mx-1">Eliminar</button>
                 </form>
               {% endif %}
@@ -78,6 +98,15 @@
         {% endfor %}
       </tbody>
     </table>
+
+    {% if not found_complaints %}
+      <br>
+      {% with messages = get_flashed_messages(category_filter=["complaint_index_search"]) %}
+          {% for message in messages %}
+              <p class="text-center">{{message}}</p>
+          {% endfor %}
+      {% endwith %}
+    {% endif %}
 
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-center">

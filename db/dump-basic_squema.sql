@@ -444,7 +444,7 @@ DROP TABLE IF EXISTS `complaint`;
 CREATE TABLE `complaint` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
-  `category` int(11) unsigned NOT NULL,
+  `category_id` int(11) unsigned NOT NULL,
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `closed_at` datetime NULL,
   `description` varchar(500) NOT NULL,
@@ -457,9 +457,9 @@ CREATE TABLE `complaint` (
   PRIMARY KEY (`id`),
   KEY (`id`),
   KEY `assigned_to` (`assigned_to`),
-  KEY `category` (`category`),
+  KEY `category_id` (`category_id`),
   CONSTRAINT `complaint_ibfk_1` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`),
-  CONSTRAINT `complaint_ibfk_2` FOREIGN KEY (`category`) REFERENCES `category` (`id`)
+  CONSTRAINT `complaint_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

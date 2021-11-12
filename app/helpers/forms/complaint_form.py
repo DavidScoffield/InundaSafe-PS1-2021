@@ -69,10 +69,10 @@ class ComplaintForm(FlaskForm):
     state = SelectField(
         "Estado",
         choices=[
-            ("not_confirm", "Sin confirmar"),
-            ("in_course", "En curso"),
-            ("resolved", "Resuelta"),
-            ("closed", "Cerrada"),
+            ("Sin confirmar", "Sin confirmar"),
+            ("En curso", "En curso"),
+            ("Resuelta", "Resuelta"),
+            ("Cerrada", "Cerrada"),
         ],
         validators = [ 
             validators.DataRequired(

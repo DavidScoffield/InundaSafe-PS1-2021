@@ -21,6 +21,10 @@ from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
 import json
 from app.helpers.validate_coordinates import validate_coordinates
+from app.helpers.check_param_search import (
+    active_dic,
+    check_param,
+)
 
 complaint_route = Blueprint(
     "complaint", __name__, url_prefix="/denuncias"
@@ -35,13 +39,59 @@ def index(page_number):
     ):
         abort(401)
 
-    paginated_complaints = Complaint.paginate_complaints_and_their_categories(page_number)
-    #es un conjunto de tuplas con el siguiente formato: [Complaint, Category]
+    args = request.args
+    title = args.get("title")
+    state = args.get("state")
+
+    title = check_param("@complaint/title", title)
+    state = check_param("@complaint/state", state)
+
+    #if (state == "all"):
+    #    use_all = True
+    #else:
+    #    use_all = False
+
+    complaints = Complaint.search(
+        title=title,
+        state=state,
+        #use_all=use_all
+    )
+
+    if not complaints.first():
+        flash("No se encontraron resultados", category="complaint_index_search")
+        found_complaints = False
+    else:
+        found_complaints = True
+
+    #paginated_complaints = Complaint.all_complaints_paginated()
+
+    paginated_complaints = Complaint.paginate(
+        page_number=page_number,
+        complaints=complaints
+    )
+
+    # En caso que no encuentre ningun resultado se redirige a la pagina 1 con los argumentos de busqueda
+    if (
+        paginated_complaints.page != 1
+        and paginated_complaints.page > paginated_complaints.pages
+    ):
+        # Si la cantidad de paginas es 0, se redirigira a la pagina 1
+        if paginated_complaints.pages > 0:
+            page = paginated_complaints.pages
+        else:
+            page = 1
+
+        return redirect(
+            url_for(
+                "complaint.index",
+                page_number=page,
+                **request.args
+            )
+        )
 
     return render_template(
-        "complaint/index.html", complaints=paginated_complaints
+        "complaint/index.html", complaints=paginated_complaints, found_complaints=found_complaints
     )
-    
 
 @complaint_route.get("/new")
 def new():
@@ -83,6 +133,7 @@ def create():
     del args["submit"]
     del args["csrf_token"]
     del args["id"]
+
     Complaint.create_complaint(**args)
 
     flash("Denuncia creada correctamente", category="complaint_index")
@@ -101,7 +152,7 @@ def show():
     id_complaint = request.form["id_complaint"]
     complaint = Complaint.find_by_id(id_complaint)
  
-    complaint_category_and_assigned_user = complaint.find_my_category_and_assigned_user()
+    complaint_assigned_user = complaint.find_my_assigned_user()
 
     if not complaint:
         flash("No se encontró la denuncia",
@@ -117,8 +168,7 @@ def show():
         "complaint/show.html",
         complaint=complaint, 
         lista=lista, 
-        complaint_category=complaint_category_and_assigned_user[0], 
-        complaint_assigned_to=complaint_category_and_assigned_user[1]
+        complaint_assigned_to=complaint_assigned_user
     )
 
 
@@ -134,20 +184,18 @@ def edit():
     id_complaint = request.form["id_complaint"]
     complaint = Complaint.find_by_id(id_complaint)
     
-    #Estas lineas son para que por defecto muestre bien assigned_to, category y coordinate correctamente al renderizar el form
-    #complaint tiene en assigned_to el id del User (o None), WTF necesita el Objeto completo, no solo su id; similar con category.
+    #Estas lineas son para que por defecto muestre bien assigned_to y coordinate correctamente al renderizar el form
+    #complaint tiene en assigned_to el id del User (o None), WTF necesita el Objeto completo, no solo su id.
     if(complaint.assigned_to == None):
         assigned_to = None
     else:
         assigned_to = User.find_user_by_id(complaint.assigned_to)
-    category = Category.find_by_id(complaint.category)
 
     #Lat y lng son strings, los hago float para que el mapa lo pinte bien
     coord = [float(complaint.coordinate.latitude), float(complaint.coordinate.longitude)]
  
     #Le doy al form los objetos en esos campos y la coordenada formateada a float
-    form = ComplaintForm(**complaint.get_attributes(), assigned_to=assigned_to, category=category,
-        coordinate=coord)
+    form = ComplaintForm(**complaint.get_attributes(), assigned_to=assigned_to, coordinate=coord)
 
     return render_template(
         "complaint/edit.html", complaint=complaint, form=form
@@ -181,7 +229,7 @@ def update():
 
     del args["submit"]
     del args["csrf_token"]
-
+    
     #actualizo la denuncia en la BD
     complaint.update_complaint(**args)
 

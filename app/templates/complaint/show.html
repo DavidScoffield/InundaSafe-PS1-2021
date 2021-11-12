@@ -37,7 +37,7 @@
       </tr>
       <tr>
         <th scope="row">Categoría</th>
-        <td>{{complaint_category.name}}</td>
+        <td>{{complaint.category.name}}</td>
       </tr>
       <tr>
         <th scope="row">Fecha de creación</th>
@@ -79,10 +79,12 @@
   <table class="table table-striped">
     <tbody>
       <div class="w-100 row">
-        <form action="{{url_for('follow_up.new')}}" method="post" class="d-inline">
-          <input name="id_complaint" type="hidden" value="{{complaint.id}}">
-          <button type="submit" class="btn btn-primary button-gradient mx-1">Nuevo</button>
-        </form>
+        {% if not complaint_is_finished(complaint) %}
+          <form action="{{url_for('follow_up.new')}}" method="post" class="d-inline">
+            <input name="id_complaint" type="hidden" value="{{complaint.id}}">
+            <button type="submit" class="btn btn-primary button-gradient mx-1">Nuevo</button>
+          </form>
+        {% endif %}
       </div>
       <br>
       {% if complaint.follow_ups %}
@@ -101,13 +103,13 @@
           <td class="text-center">{{lista[i.value]}}</td>
           <td class="text-center">{{follow_up.created_at}}</td>
           <td class="text-center d-flex justify-content-center">
-            {% if helper_has_permission("follow_up_edit") %}
+            {% if helper_has_permission("follow_up_edit") and not complaint_is_finished(complaint) %}
               <form action="{{url_for('follow_up.edit')}}" method="post" class="d-inline">
                 <input name="id_follow_up" type="hidden" value="{{follow_up.id}}">
                 <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
               </form>
             {% endif %}
-            {% if helper_has_permission("follow_up_destroy") %}
+            {% if helper_has_permission("follow_up_destroy") and not complaint_is_finished(complaint) %}
               <form action="{{url_for('follow_up.destroy')}}" method="post" class="d-inline">
                 <input name="id_follow_up" type="hidden" value="{{follow_up.id}}">
                 <button type="submit" onclick="return confirm('¿Está seguro que desea borrar este seguimiento?')" class="btn btn-primary button-gradient mx-1">Eliminar</button>

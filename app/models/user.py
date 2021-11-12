@@ -6,6 +6,7 @@ from app.helpers.bcrypt import (
     check_password,
     generate_password_hash,
 )
+
 from app.models.user_has_roles import user_has_roles
 from app.models.role import Role
 from app.helpers.config import actual_config
@@ -298,9 +299,15 @@ class User(db.Model):
     # Baja logica
     @classmethod
     def delete_user(cls, user_id):
+        from app.models.complaint import Complaint
+
         """Eliminar de la base de datos a un usuario en base al id"""
         user = User.query.filter(User.id == user_id).first()
         user.is_deleted = 1
+
+        #Eliminar las denuncias de este usuario, si tiene
+        Complaint.delete_user_complaints(user_id)
+
         db.session.commit()
 
     @property

@@ -29,6 +29,7 @@ from app.helpers import has_role as helper_has_role
 from app.helpers import auth as helper_auth
 from app.helpers import config as helper_config
 from app.helpers import user as helper_user
+from app.helpers import complaint_is_finished as helper_complaint_is_finished
 from app.helpers.import_models import *
 
 
@@ -88,6 +89,9 @@ def create_app(environment="development"):
     )
     app.jinja_env.globals.update(
         helper_has_permission=helper_permissions.check_permission
+    )
+    app.jinja_env.globals.update(
+        complaint_is_finished=helper_complaint_is_finished.complaint_is_finished
     )
 
     # Ruta HOME

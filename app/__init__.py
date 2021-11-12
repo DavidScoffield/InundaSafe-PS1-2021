@@ -20,6 +20,7 @@ from app.resources.config import config_routes
 from app.resources.auth import auth_routes
 
 from app.resources.api.flood_zones import flood_zones_api
+from app.resources.api.complaint import complaint_api
 
 from app.helpers import handler
 from app.helpers import (
@@ -115,6 +116,7 @@ def create_app(environment="development"):
     api = Blueprint("api", __name__, url_prefix="/api")
     # Register of apis
     api.register_blueprint(flood_zones_api)
+    api.register_blueprint(complaint_api)
 
     app.register_blueprint(api)
     # Rutas página complaint (usando Blueprints)
@@ -134,6 +136,6 @@ def create_app(environment="development"):
     app.register_error_handler(
         500, handler.internal_server_error
     )
-
+    app.config['JSON_SORT_KEYS'] = False
     # Retornar la instancia de app configurada
     return app

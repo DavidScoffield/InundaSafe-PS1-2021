@@ -22,7 +22,7 @@ class ComplaintSchema(Schema):
                              validate=validate.Regexp("^[a-zA-Z0-9 ]+$"))
 
     coordinate = fields.Str(data_key="coordenadas",
-                            required = True)
+                            required = True, load_only=True)
 
     creator_first_name = fields.Str(data_key="apellido_denunciante",
                                     required = True,
@@ -71,7 +71,6 @@ class ComplaintSchema(Schema):
     def format_dump(self, data, **kwargs):
         "Formatea el dump del schema"
 
-        data["coordenadas"] = data["coordenadas"].replace("[", "").replace("]", "")
         data["categoria_id"] = data["categoria_id"].id
 
         return data

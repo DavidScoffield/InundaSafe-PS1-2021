@@ -17,6 +17,7 @@ from app.helpers.check_permission import check_permission
 from app.helpers.check_param_search import (
     check_param,
 )
+from app.helpers.validate_coordinates import validate_json_coordinate_list
 
 meeting_point = Blueprint(
     "meeting_point", __name__, url_prefix="/meeting-point"
@@ -60,20 +61,20 @@ def create():
         del args["csrf_token"]
         del args["id"]
         if MeetingPoint.exists_address(args["address"]):
-            flash(
-                "Ya existe un punto de encuentro con esa dirección",
-                category="meeting_point_new",
-            )
+            flash("Ya existe un punto de encuentro con esa dirección",
+                  category="meeting_point_new")
         else:
-            MeetingPoint.new(**args)
-            flash(
-                "Punto de encuentro agregado exitosamente",
-                category="meeting_point_new",
-            )
+            valid_coordinates, coordinate, errors = validate_json_coordinate_list(args["coordinate"], 1)
 
-    return render_template(
-        "meeting_point/new.html", form=form
-    )
+            if valid_coordinates:
+                args["coordinate"] = coordinate[0]
+                MeetingPoint.new(**args)
+                flash("Punto de encuentro agregado exitosamente",
+                    category="meeting_point_new")
+            else:
+                flash(errors, category="meeting_point_new")
+
+    return render_template("meeting_point/new.html", form=form)
 
 
 @meeting_point.get("/<int:page_number>")
@@ -192,6 +193,7 @@ def edit():
             url_for("meeting_point.index", page_number=1)
         )
 
+    coordinate = meeting_point.coordinate
     # se inicializa el formulario con los datos originales del meeting point que se desea modificar
     form = MeetingPointForm(
         **meeting_point.get_attributes()
@@ -251,11 +253,15 @@ def update():
                 category="meeting_point_update",
             )
         else:  # quiere usar la misma dirección o alguna que no existe
-            meeting_point.update(**args)
-            flash(
-                "Punto de encuentro modificado exitosamente",
-                category="meeting_point_update",
-            )
+            valid_coordinates, coordinate, errors = validate_json_coordinate_list(args["coordinate"], 1)
+
+            if valid_coordinates:
+                args["coordinate"] = coordinate[0]
+                meeting_point.update(**args)
+                flash("Punto de encuentro modificado exitosamente",
+                       category="meeting_point_update")
+            else:
+                flash(errors, category="meeting_point_update")
 
     return render_template(
         "meeting_point/edit.html",

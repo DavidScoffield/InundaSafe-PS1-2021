@@ -14,8 +14,10 @@ class EvacuationRoute(db.Model):
     state = db.Column(db.String(100))
     coordinates = relationship("Coordinate")
 
+
     def __repr__(self):
         return "<EvacuationRoute %r>" % self.name
+
 
     def __init__(self, name, description, coordinates, state):
         """Constructor del modelo"""
@@ -25,6 +27,7 @@ class EvacuationRoute(db.Model):
         self.coordinates = [Coordinate(coordinate[0], coordinate[1]) for coordinate in coordinates]
         self.state = state
 
+
     @classmethod
     def new(cls, **args):
         "Recibe los parámetros para crear el recorrido de evacuación y lo guarda en la base de datos"
@@ -32,6 +35,7 @@ class EvacuationRoute(db.Model):
         evacuation_route = EvacuationRoute(**args)
         db.session.add(evacuation_route)
         db.session.commit()
+
 
     @classmethod
     def exists_name(cls, name):
@@ -43,6 +47,7 @@ class EvacuationRoute(db.Model):
             ).first()
             is not None
         )
+
 
     @classmethod
     def search(
@@ -74,6 +79,7 @@ class EvacuationRoute(db.Model):
 
         return paginated_evacuation_routes
 
+
     @classmethod
     def paginate(
         cls,
@@ -101,9 +107,41 @@ class EvacuationRoute(db.Model):
 
         return EvacuationRoute.query.get(id)
 
+    def delete_coordinates(self):
+        "Borra las coordenadas del recorrido de evacuación"
+
+        for coordinate in self.coordinates:
+            db.session.delete(coordinate)
+        db.session.commit()
 
     def delete(self):
-        "Borra un recorrido de evacuación"
-
+        "Borra un recorrido de evacuación y sus coordenadas asociadas"
+        
+        self.delete_coordinates()
         db.session.delete(self)
+        db.session.commit()
+
+
+    def get_attributes(self, keep_instance_state = True):
+        "Retorna un diccionario con los atributos del recorrido de evacuación"
+
+        attributes = vars(self)
+        attributes["coordinates"] = self.coordinates
+        
+        if not keep_instance_state:
+            del attributes["_sa_instance_state"]
+
+        return attributes
+
+
+    def update(self, **args):
+        "Actualiza los datos del recorrido de evacuación con los recibidos por parámetro"
+
+        for attribute, value in args.items():
+            if attribute == "coordinates":
+                self.delete_coordinates()
+                self.coordinates = [Coordinate(coordinate[0], coordinate[1]) for coordinate in value]
+            else:
+                setattr(self, attribute, value)
+
         db.session.commit()

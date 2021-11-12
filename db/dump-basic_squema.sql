@@ -16,9 +16,9 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `pruebaBD` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `grupo24` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `pruebaBD`;
+USE `grupo24`;
 --
 -- Table structure for table `permissions`
 --

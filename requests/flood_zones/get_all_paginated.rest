@@ -1,0 +1,34 @@
+### Correcto - 
+GET http://localhost:5000/api/zonas-inundables HTTP/1.1
+
+
+### Correcto - Ambos parametros
+GET http://localhost:5000/api/zonas-inundables?pagina=4&por_pagina=1 HTTP/1.1
+
+
+### Correcto - Solo pagina
+GET http://localhost:5000/api/zonas-inundables?pagina=2 HTTP/1.1
+
+
+### Correcto - Solo por_pagina
+GET http://localhost:5000/api/zonas-inundables?por_pagina=4 HTTP/1.1
+
+
+### Incorrecto - String en pagina
+GET http://localhost:5000/api/zonas-inundables?pagina=a HTTP/1.1
+
+
+### Incorrecto - String en pagina
+GET http://localhost:5000/api/zonas-inundables?pagina=1a HTTP/1.1
+
+
+### Incorrecto - String en por_pagina
+GET http://localhost:5000/api/zonas-inundables?por_pagina=opa HTTP/1.1
+
+
+### Incorrecto - String en por_pagina
+GET http://localhost:5000/api/zonas-inundables?por_pagina=5p1a HTTP/1.1
+
+
+
+

@@ -11,6 +11,36 @@ Aplicación para el trabajo integrador para la materia de Proyecto de Software d
   - Email: ron@gmail.com
   - Contraseña: Operador123
 
+
+## APIs:
+
+- Zonas Inundables:    
+----------
+  **/api/zonas-inundables**  
+ 
+  @param: **pagina** -> int  
+  @param: **por_pagina** -> int
+
+  Ejemplos:
+
+  * [localhost/servidor]/api/zonas-inundables
+  * [localhost/servidor]/api/zonas-inundables?pagina=2
+  * [localhost/servidor]/api/zonas-inundables?por_pagina=15
+  * [localhost/servidor]/api/zonas-inundables?pagina=5&por_pagina=6  
+  *Ver mas ejemplos en el archivo /request/flood_zones/get_all_paginated.rest*
+
+----------
+      
+  **/api/zonas-inundables/:id**  
+ 
+  Ejemplos:
+
+  * [localhost/servidor]/api/zonas-inundables/6
+  * [localhost/servidor]/api/zonas-inundables/6a
+  *Ver mas ejemplos en el archivo /request/flood_zones/get_by_id.rest*
+ 
+-----------
+
 ## Iniciar ambiente
 
 ### Requisitos

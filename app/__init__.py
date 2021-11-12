@@ -1,5 +1,5 @@
 from os import environ
-from flask import Flask, render_template
+from flask import Flask, render_template, Blueprint
 from flask_session import Session
 from flask_bootstrap import Bootstrap
 from dotenv import load_dotenv
@@ -13,9 +13,15 @@ from app.resources.home import home as home_route
 from app.resources.meeting_point import meeting_point
 from app.resources.flood_zones import flood_zones
 from app.resources.evacuation_route import evacuation_route
+from app.resources.complaint import complaint_route
+from app.resources.complaint_follow_up import follow_up_route
 from app.resources.user import user as user_blueprint
 from app.resources.config import config_routes
 from app.resources.auth import auth_routes
+
+from app.resources.api.flood_zones import flood_zones_api
+from app.resources.api.complaint import complaint_api
+
 from app.helpers import handler
 from app.helpers import (
     check_permission as helper_permissions,
@@ -24,6 +30,8 @@ from app.helpers import has_role as helper_has_role
 from app.helpers import auth as helper_auth
 from app.helpers import config as helper_config
 from app.helpers import user as helper_user
+from app.helpers import complaint_is_finished as helper_complaint_is_finished
+from app.helpers import is_admin_or_is_my_complaint as helper_is_admin_or_is_my_complaint
 from app.helpers.import_models import *
 
 
@@ -84,6 +92,12 @@ def create_app(environment="development"):
     app.jinja_env.globals.update(
         helper_has_permission=helper_permissions.check_permission
     )
+    app.jinja_env.globals.update(
+        complaint_is_finished=helper_complaint_is_finished.complaint_is_finished
+    )
+    app.jinja_env.globals.update(
+        is_admin_or_is_my_complaint=helper_is_admin_or_is_my_complaint.is_admin_or_is_my_complaint
+    )
 
     # Ruta HOME
     app.register_blueprint(home_route)
@@ -106,7 +120,21 @@ def create_app(environment="development"):
     # Rutas página evacuation routes (usando Blueprints)
     app.register_blueprint(evacuation_route)
 
+    # APIS
+    api = Blueprint("api", __name__, url_prefix="/api")
+    # Register of apis
+    api.register_blueprint(flood_zones_api)
+    api.register_blueprint(complaint_api)
+
+    app.register_blueprint(api)
+    # Rutas página complaint (usando Blueprints)
+    app.register_blueprint(complaint_route)
+
+    # Rutas página followUp (usando Blueprints)
+    app.register_blueprint(follow_up_route)
+
     # Handlers
+    app.register_error_handler(400, handler.bad_request_error)
     app.register_error_handler(404, handler.not_found_error)
     app.register_error_handler(
         401, handler.unauthorized_error
@@ -117,6 +145,6 @@ def create_app(environment="development"):
     app.register_error_handler(
         500, handler.internal_server_error
     )
-
+    app.config['JSON_SORT_KEYS'] = False
     # Retornar la instancia de app configurada
     return app

@@ -2,27 +2,14 @@
 
 <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-gradient">
   <div>
-    <a
-      class="navbar-brand font-weight-bold d-flex align-items-center"
-      href="{{url_for('home.index')}}"
-    >
-      <img
-        src="{{ url_for('static', filename='favicon.ico') }}"
-        alt="Logo de la aplicación"
-        style="width: 32px; height: 32px; margin-right: 5px"
-      />
+    <a class="navbar-brand font-weight-bold d-flex align-items-center" href="{{url_for('home.index')}}">
+      <img src="{{ url_for('static', filename='favicon.ico') }}" alt="Logo de la aplicación"
+        style="width: 32px; height: 32px; margin-right: 5px" />
       <span> InundaSafe </span>
     </a>
   </div>
-  <button
-    class="navbar-toggler"
-    type="button"
-    data-toggle="collapse"
-    data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent"
-    aria-expanded="false"
-    aria-label="Toggle navigation"
-  >
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
@@ -36,31 +23,37 @@
       <li class="nav-item {% if bp == 'config_routes' %} active {% endif %}">
         <a class="nav-link" href="{{url_for('config_routes.index')}}">Configuración</a>
       </li>
-      {% endif %} {% if helper_has_permission("punto_encuentro_index") %}
-      <li class="nav-item {% if bp == 'meeting_point' %} active {% endif %}">
-        <a class="nav-link" href="{{url_for('meeting_point.index', page_number=1)}}"
-          >Puntos de encuentro</a
-        >
-      </li>
-      {% endif %} {% if helper_has_permission("zonas_inundables_show") %}
-      <li class="nav-item {% if bp == 'flood_zones' %} active {% endif %}">
-        <a class="nav-link" href="{{url_for('flood_zones.index', page_number=1)}}"
-          >Zonas inundables</a
-        >
-      {% endif %} {% if helper_has_permission("evacuation_route_index") %}
-      <li class="nav-item {% if bp == 'evacuation_route' %} active {% endif %}">
-        <a class="nav-link" href="{{url_for('evacuation_route.index', page_number=1)}}">Recorridos de evacuación</a>
+      {% endif %}
+      {% if helper_has_permission("complaint_index") %}
+      <li class="nav-item {% if bp == 'complaint' %} active {% endif %}">
+        <a class="nav-link" href="{{url_for('complaint.index', page_number=1)}}">Denuncias</a>
       </li>
       {% endif %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+          aria-expanded="false">
+          Más opciones
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          {% if helper_has_permission("punto_encuentro_index") %}
+          <li class="nav-item {% if bp == 'meeting_point' %} active {% endif %}">
+            <a class="dropdown-item" href="{{url_for('meeting_point.index', page_number=1)}}">Puntos de encuentro</a>
+          </li>
+          {% endif %} {% if helper_has_permission("zonas_inundables_show") %}
+          <li class="nav-item {% if bp == 'flood_zones' %} active {% endif %}">
+            <a class="dropdown-item" href="{{url_for('flood_zones.index', page_number=1)}}">Zonas inundables</a>
+            {% endif %} {% if helper_has_permission("evacuation_route_index") %}
+          <li class="nav-item {% if bp == 'evacuation_route' %} active {% endif %}">
+            <a class="dropdown-item" href="{{url_for('evacuation_route.index', page_number=1)}}">Recorridos de
+              evacuación</a>
+          </li>
+          {% endif %}
+        </ul>
+      </li>
     </ul>
     <div class="btn-group">
-      <button
-        type="button"
-        class="btn button-gradient dropdown-toggle"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
+      <button type="button" class="btn button-gradient dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">
         <i class="fa fa-user pr-2"></i>{{user.first_name}} {{user.last_name}}
       </button>
       <div class="dropdown-menu dropdown-menu-lg-right">

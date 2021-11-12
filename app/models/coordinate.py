@@ -17,9 +17,20 @@ class Coordinate(db.Model):
     )
     evacuation_route_id = db.Column(
         db.Integer,
-        db.ForeignKey("evacuation_route.id"),
+        db.ForeignKey("evacuation_route.id", ondelete="CASCADE"),
         nullable=True,
     )
+    complaint_id = db.Column(
+        db.Integer,
+        db.ForeignKey("complaint.id", ondelete="CASCADE"),
+        nullable=True,
+    )
+    meeting_point_id = db.Column(
+        db.Integer,
+        db.ForeignKey("meeting_point.id", ondelete="CASCADE"),
+        nullable=True,
+    )
+
 
     __table_args__ = (
         Index(

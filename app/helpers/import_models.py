@@ -7,3 +7,6 @@ from app.models.user import User
 from app.models.coordinate import Coordinate
 from app.models.flood_zones import FloodZones
 from app.models.evacuation_route import EvacuationRoute
+from app.models.complaint import Complaint
+from app.models.category import Category
+from app.models.complaint_follow_up import ComplaintFollowUp

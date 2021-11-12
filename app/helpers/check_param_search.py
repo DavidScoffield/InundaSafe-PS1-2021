@@ -28,6 +28,12 @@ def check_param(
         "@user/active": param
         if type(param) is int and param is not None
         else "",
+        "@complaint/title": param.strip()
+        if param is not None
+        else "",
+        "@complaint/state": param
+        if param != "all" and param is not None
+        else "",
     }.get(param_name)
 
 

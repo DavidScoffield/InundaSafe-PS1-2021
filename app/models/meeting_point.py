@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from app.db import db
 from app.helpers.config import actual_config
-
+from sqlalchemy.orm import relationship
+from app.models.coordinate import Coordinate
 
 class MeetingPoint(db.Model):
     """Modelo para el manejo de la tabla MeetingPoint de la base de datos"""
@@ -10,8 +11,7 @@ class MeetingPoint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     address = db.Column(db.String(255), nullable=False)
-    coor_X = db.Column(db.String(100))
-    coor_Y = db.Column(db.String(100))
+    coordinate = relationship("Coordinate", uselist=False)
     state = db.Column(db.String(100))
     telephone = db.Column(db.String(50))
     email = db.Column(db.String(150))
@@ -23,8 +23,7 @@ class MeetingPoint(db.Model):
         self,
         name: str = None,
         address: str = None,
-        coor_X: str = None,
-        coor_Y: str = None,
+        coordinate: list = None,
         state: str = None,
         telephone: str = None,
         email: str = None,
@@ -32,8 +31,7 @@ class MeetingPoint(db.Model):
         """Constructor del modelo"""
         self.name = name
         self.address = address
-        self.coor_X = coor_X
-        self.coor_Y = coor_Y
+        self.coordinate = Coordinate(coordinate[0], coordinate[1])
         self.state = state
         self.telephone = telephone
         self.email = email
@@ -52,11 +50,12 @@ class MeetingPoint(db.Model):
 
         return MeetingPoint.query.get(id)
 
-    def get_attributes(self):
+    def get_attributes(self, keep_instance_state = True):
         "Retorna un diccionario con los atributos del meeting point"
 
         attributes = vars(self)
-        del attributes["_sa_instance_state"]
+        if not keep_instance_state:
+            del attributes["_sa_instance_state"]
 
         return attributes
 
@@ -116,8 +115,9 @@ class MeetingPoint(db.Model):
         )
 
     def delete(self):
-        "Borra un punto de encuentro"
-
+        "Borra un punto de encuentro y su coordenada asociada"
+        
+        db.session.delete(self.coordinate)
         db.session.delete(self)
         db.session.commit()
 
@@ -125,6 +125,10 @@ class MeetingPoint(db.Model):
         "Actualiza los datos del meeting point con los recibidos por parámetro"
 
         for attribute, value in args.items():
-            setattr(self, attribute, value)
+            if attribute == "coordinate":
+                db.session.delete(self.coordinate)
+                self.coordinate = Coordinate(value[0], value[1])
+            else:
+                setattr(self, attribute, value)
 
         db.session.commit()

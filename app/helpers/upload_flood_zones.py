@@ -88,23 +88,6 @@ def remove_file_filesystem(file_path):
     os.remove(file_path)
 
 
-# Persisting data in BD
-def save_data(data: list):
-    """
-    Guarda los datos de las zonas inundables en `data` en la BD.
-    -> Actializa en caso de que ya exista
-    -> Crea una nueva de no existir
-    """
-    for item in data:
-        flood_zone = FloodZones.find_by_name(item["name"])
-        if flood_zone:
-            flood_zone.update(coordinates=item["area"])
-        else:
-            FloodZones.new(
-                name=item["name"], coordinates=item["area"]
-            )
-
-
 # Validations
 def validate_data(data: list, error: list):
     """

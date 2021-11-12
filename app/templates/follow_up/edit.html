@@ -1,0 +1,35 @@
+{% from 'bootstrap/form.html' import render_form %}
+{% extends "private_app_layout.html" %}
+{% block title %}Editar{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mx-auto py-4">
+  <!-- TITULO -->
+  <div class="d-flex align-items-center mb-3">
+
+    <form action="{{url_for('complaint.show', page_number=1)}}" method="post" class="d-inline">
+        <input name="id_complaint" type="hidden" value="{{follow_up.complaint_id}}">
+        <button type="submit" class="text-muted mr-3 p-0 border-0 bg-transparent" style="cursor: pointer"><i class="fas fa-arrow-left fa-lg"></i></button>
+      </form>   
+
+    <h1 class="font-weight-bold">Editar el seguimiento con descripción {{follow_up.description}}:</h1>
+  </div>
+
+  {% with messages = get_flashed_messages(category_filter=["follow_up_update"]) %} {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+  {% endif %} {% endwith %}
+
+  <h4>Autor del seguimiento: {{ author_follow_up.username }}</h4>
+
+  {{render_form(form, action=url_for('follow_up.update'), id='follow_up_form', method="POST")}}
+  
+  <i>* Campos obligatorios</i>
+</div>
+
+{% endblock %}

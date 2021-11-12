@@ -1,5 +1,4 @@
 import os
-
 from wtforms.fields.core import DecimalField
 from app.helpers.forms.flood_zones_form import FloodZoneForm
 from app.models.flood_zones import FloodZones
@@ -20,7 +19,6 @@ from app.helpers.upload_flood_zones import (
     allowed_file,
     read_file,
     remove_file_filesystem,
-    save_data,
     save_file_filesystem,
     validate_data,
 )
@@ -128,15 +126,12 @@ def upload_flood_zones():
             # Read file
             (data, error) = read_file(file_path)
 
-            # TODO: Chequear que se ingrasan la cantidad de paraemtros requeridos -- es necesario?
-
             # Validate data of the file
-            #  TODO: validar cada coordenada
             (data, error) = validate_data(
                 data=data, error=error
             )
 
-            save_data(data)
+            save_flood_zones(data)
 
         except Exception as err:
             logger_error(f" - ERROR: {err}")
@@ -156,7 +151,7 @@ def upload_flood_zones():
                 logger_error(f" - ERROR: {err}")
 
         flash(
-            f"{len(data)} datos guardados en el sistema. {len(error)} datos descartados por errores.",
+            message_to_inform(data, error),
             category="flood_zones_import",
         )
 
@@ -312,4 +307,37 @@ def update():
         "flood_zones/edit.html",
         form=form,
         id_flood_zone=id_flood_zone,
+    )
+
+
+# Persisting data in BD
+def save_flood_zones(data: list):
+    """
+    Guarda los datos de las zonas inundables en `data` en la BD.
+    -> Actializa en caso de que ya exista
+    -> Crea una nueva de no existir
+    """
+    for item in data:
+        flood_zone = FloodZones.find_by_name(item["name"])
+        if flood_zone:
+            flood_zone.update(coordinates=item["area"])
+        else:
+            FloodZones.new(
+                name=item["name"], coordinates=item["area"]
+            )
+
+
+def message_to_inform(data, error):
+    return f"{message_to_inform_success(data)} {message_to_inform_error(error)}"
+
+
+def message_to_inform_success(data):
+    return f"{len(data)} registros guardados en el sistema."
+
+
+def message_to_inform_error(error):
+    return (
+        "Ningún registro descartado por errores."
+        if len(error) == 0
+        else f"Los siguientes registros fueron descartados por errores: {', '.join(map(lambda e: e['name'], error))}."
     )

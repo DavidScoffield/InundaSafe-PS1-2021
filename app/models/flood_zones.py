@@ -56,6 +56,14 @@ class FloodZones(db.Model):
         return attributes
 
     @classmethod
+    def all(cls, page: int = None, per_page: int = None):
+        return cls.query.paginate(
+            per_page=per_page,
+            page=page,
+            error_out=True,
+        )
+
+    @classmethod
     def new(
         cls,
         name: str = None,

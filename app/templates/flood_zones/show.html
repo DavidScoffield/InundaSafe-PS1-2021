@@ -8,20 +8,21 @@
 
 {{ super() }}
 
-{#
+<!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
   crossorigin="" />
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
   crossorigin=""></script>
-<script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
-<script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script>
-<link rel="stylesheet" type="text/css"
-  href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css">
 
-<script type="module" src="{{url_for('static', filename='js/flood_zones/meeting-point-show-map.js')}}"></script>
-#}
+<!-- Leaflet Draw Plugin-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
+
+<!-- Own JavaScript -->
+<script type="module" src="{{url_for('static', filename='js/flood_zones/show_map.js')}}"></script>
+
 
 {% endblock %}
 
@@ -65,7 +66,8 @@
     <button type="submit" class="btn btn-primary button-gradient mx-1">Editar</button>
   </form>
 
-  <div class="map-container">
+  <div hidden id="coordinates">{{flood_zone.coordinates}}</div>
+  <div class="map-container " style="margin-top: 10px;">
     <div id="mapid" style="height:400px"></div>
   </div>
 

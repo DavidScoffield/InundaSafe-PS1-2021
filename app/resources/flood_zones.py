@@ -1,5 +1,4 @@
 import os
-
 from wtforms.fields.core import DecimalField
 from app.helpers.forms.flood_zones_form import FloodZoneForm
 from app.models.flood_zones import FloodZones
@@ -127,10 +126,7 @@ def upload_flood_zones():
             # Read file
             (data, error) = read_file(file_path)
 
-            # TODO: Chequear que se ingrasan la cantidad de paraemtros requeridos -- es necesario?
-
             # Validate data of the file
-            #  TODO: validar cada coordenada
             (data, error) = validate_data(
                 data=data, error=error
             )

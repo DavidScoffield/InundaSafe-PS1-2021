@@ -1,4 +1,4 @@
-from flask import jsonify, Blueprint, request
+from flask import jsonify, Blueprint, request, abort
 from app.models.complaint import Complaint
 from app.schemas.complaint import complaint_schema
 from marshmallow.exceptions import MarshmallowError
@@ -23,16 +23,16 @@ def create():
         json_data = complaint_schema.load(request.get_json())
         
     except MarshmallowError:
-
-        return jsonify("Por favor, verifique los datos ingresados"), 400
+        
+        abort(400)
 
     except:
 
-        return jsonify("Ocurrió un error inesperado"), 500
+        abort(500)
 
     else:
 
         complaint = Complaint.create_complaint(**json_data)
         result = complaint_schema.dump(complaint)
 
-        return jsonify(result), 201
+        return jsonify(atributos=result), 201

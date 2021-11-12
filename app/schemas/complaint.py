@@ -14,12 +14,12 @@ class ComplaintSchema(Schema):
                        required = True,
                        validate=validate.Regexp("^[a-zA-Z ]+$"))
 
-    category = fields.Int(data_key="categoria_id",
+    category = fields.Raw(data_key="categoria_id",
                           required = True)
 
     description = fields.Str(data_key="descripcion",
                              required = True,
-                             validate=validate.Regexp("^[a-zA-Z ]+$"))
+                             validate=validate.Regexp("^[a-zA-Z0-9 ]+$"))
 
     coordinate = fields.Str(data_key="coordenadas",
                             required = True)
@@ -56,8 +56,12 @@ class ComplaintSchema(Schema):
     @validates_schema
     def validate_category(self, data, **kwargs):
         "Verifica que la categoría ingresada exista"
+        
+        category = data["category"]
+        if not isinstance(category, int):
+            raise MarshmallowError
 
-        category = Category.find_by_id(data["category"])
+        category = Category.find_by_id(category)
         if not category:
             raise MarshmallowError
 
@@ -68,7 +72,8 @@ class ComplaintSchema(Schema):
         "Formatea el dump del schema"
 
         data["coordenadas"] = data["coordenadas"].replace("[", "").replace("]", "")
-        
-        return { "atributos" : data } 
+        data["categoria_id"] = data["categoria_id"].id
+
+        return data
 
 complaint_schema = ComplaintSchema(many=False)

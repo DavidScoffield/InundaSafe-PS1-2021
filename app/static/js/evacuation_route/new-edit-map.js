@@ -10,7 +10,7 @@ const submitHandler = (event, multipleMarkerMap) => {
 	* Si se marcaron al menos tres puntos, se envían las coordenadas de los mismos al servidor
  	*/
 	
-	if (!multipleMarkerMap.validRoute()) {
+	if (!multipleMarkerMap.validMap()) {
 		event.preventDefault();
 		alert('Por favor, seleccione al menos tres puntos en el mapa');
 	} else {
@@ -39,4 +39,5 @@ window.onload = () => {
 	});
 	const form = document.getElementById('evacuation_route_form');
 	form.addEventListener('submit', (event) => submitHandler(event, map));
+	
 }

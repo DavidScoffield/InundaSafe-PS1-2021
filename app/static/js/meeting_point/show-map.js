@@ -2,21 +2,18 @@ import { SingleMarkerMap } from '../SingleMarkerMap.js';
 
 window.onload = () => {
 
-	let coordinate = document.getElementById('coordinate').value
+	let coordinates = document.getElementById('coordinate').value
 
-	if (coordinate) { 
-		coordinate = JSON.parse(coordinate).flat()
+	if (coordinates) { 
+		coordinates = JSON.parse(coordinates)
 	 } else { 
-		 coordinate = []
+		 coordinates = []
 	}
 
 	new SingleMarkerMap ({
 		selector: 'mapid',
 		addSearch: false,
-		initialMarker: {
-			lat: coordinate[0],
-			lng: coordinate[1]
-		},
+		initialCoordinates: [coordinates],
 		enableMarker: false
 	});
 }

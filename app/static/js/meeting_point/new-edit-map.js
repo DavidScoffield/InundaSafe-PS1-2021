@@ -10,7 +10,7 @@ const submitHandler = (event, map) => {
 	* Si se marcó un punto, se envían las coordenadas del mismo al servidor
  	*/
 
-	if (!map.marker) {
+	if (!map.validMap()) {
 		event.preventDefault();
 		alert('Por favor, seleccione una ubicación en el mapa');
 	} else {
@@ -22,23 +22,21 @@ const submitHandler = (event, map) => {
 
 window.onload = () => {
 
-	let coordinate = document.getElementById('coordinate').value
+	let coordinates = document.getElementById('coordinate').value
 
-	if (coordinate) { 
-		coordinate = JSON.parse(coordinate).flat()
+	if (coordinates) { 
+		coordinates = [ JSON.parse(coordinates).flat() ]
 	 } else { 
-		 coordinate = []
+		 coordinates = []
 	}
 
 	const map = new SingleMarkerMap ({
 		selector: 'mapid',
 		addSearch: true,
-		initialMarker: {
-			lat: coordinate[0],
-			lng: coordinate[1]
-		},
+		initialCoordinates: coordinates,
 		enableMarker: true
 	});
 	const form = document.getElementById('meeting_point_form');
 	form.addEventListener('submit', (event) => submitHandler(event, map));
+	
 }

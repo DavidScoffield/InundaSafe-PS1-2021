@@ -103,6 +103,12 @@ def index(page_number):
         name=name,
     )
 
+    if not evacuation_routes.pages:
+        found_evacuation_routes = False
+        flash("No se encontraron resultados", category="evacuation_route_index")
+    else:
+        found_evacuation_routes = True
+    print("ENTCONTRE? ", found_evacuation_routes)
     # En caso que no encuentre ningun resultado resultado se redirige a la pagina 1 con los argumentos de busqueda
     if (
         evacuation_routes.page != 1
@@ -125,6 +131,7 @@ def index(page_number):
     return render_template(
         "evacuation_route/index.html",
         evacuation_routes=evacuation_routes,
+        found_evacuation_routes=found_evacuation_routes
     )
 
 @evacuation_route.post("/delete")

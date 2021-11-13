@@ -10,33 +10,29 @@ const submitHandler = (event, map) => {
 	 * Si se marcaron al menos dos puntos, se envían las coordenadas de los mismos al servidor
  	*/
 	
-	if (map.coordinate.length == 0) {
+	if (!map.validMap()) {
 		event.preventDefault();
 		alert('Por favor, seleccione un punto en el mapa');
 	} else {
-		let coordinate = map.coordinate;
-		coordinate = JSON.stringify(coordinate);
+		let coordinate = map.marker.getLatLng();
+		coordinate = JSON.stringify([coordinate.lat, coordinate.lng]);
 		document.getElementById("coordinate").value = coordinate;
 	}
 }
 
 window.onload = () => {
-	let coordinate = document.getElementById('coordinate').value
+	let coordinates = document.getElementById('coordinate').value
 
-	if (coordinate) { 
-		coordinate = JSON.parse(coordinate)
-		
-		//ESTA BIEN? Hago esto porque initializeMap() y addMarker() lo usan asi
-		coordinate["lat"] = coordinate[0]
-		coordinate["lng"] = coordinate[1]
+	if (coordinates) { 
+		coordinates = [ JSON.parse(coordinates) ]
 	 } else { 
-		coordinate = []
+		coordinates = []
 	}
 
 	const map = new SingleMarkerMap ({
 		selector: 'mapid',
 		addSearch: true,
-		initialMarker: coordinate,
+		initialCoordinates: coordinates,
 		enableMarker: true
 	});
 	const form = document.getElementById('complaint_form');

@@ -1,8 +1,6 @@
-const initialLat = -34.9187;												// latitud inicial
-const initialLng = -57.956;													// longitud inicial
-const mapLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';	// url de la capa del mapa
+import { Map } from './Map.js';
 
-export class MultipleMarkerMap {
+export class MultipleMarkerMap extends Map {
 
 	/*
 	* Definición de la clase que representará a un mapa con 
@@ -24,42 +22,15 @@ export class MultipleMarkerMap {
 		* 
 		* Si enableMarker es verdadero, se agrega un manejador al evento clcick para que el usuario pueda ingresar nuevos puntos en el mapa
 		*/
-		
-		this.initializeMap(selector, initialCoordinates);
-		
-		if (addSearch) {
-			this.addSearchControl();
-		}
+
+		super({selector, addSearch, initialCoordinates, enableMarker})
 
 		if (addResetButton) {
 			this.addResetCoordinatesButton()
 		}
-		
-		if (enableMarker) {
-			this.map.addEventListener('click', (e) => { this.addMarker(e.latlng) });
-		}
 
 	}
-	
-	initializeMap(selector, initialCoordinates) {
 
-		/*
-		* Método que inicializa el mapa
-		* 
-		* Renderiza el mapa en el selector indicado, y en caso de que exista un conjunto de coordenadas
-		* inicial, dibujará el polígono correspondiente
-		*/
-
-		this.map = L.map(selector).setView([initialLat, initialLng], 13);
-		L.tileLayer(mapLayerUrl).addTo(this.map);
-		this.map.polylines = L.layerGroup().addTo(this.map);
-		this.map.coordinates = []
-
-		for (var coordinate of initialCoordinates) {
-			this.addMarker({lat : coordinate[0], lng : coordinate[1]})
-		}
-		
-	}
 	
 	addMarker({lat, lng}) {
 
@@ -75,29 +46,8 @@ export class MultipleMarkerMap {
 		}
 
 	}
-	
-	addSearchControl() {
 
-		/*
-		* Método para agregar la opción de buscar una dirección en el mapa
-		*/
-
-		L.control.scale().addTo(this.map);
-		let searchControl = new L.esri.Controls.Geosearch().addTo(this.map);
-		
-		let results = new L.LayerGroup().addTo(this.map);
-		
-		searchControl.on('results', (data) => {
-			results.clearLayers();
-			
-			if (data.results.Length > 0) {
-				this.addMarker(data, results[0].lating);
-			}
-		});
-
-	}
-
-	validRoute() {
+	validMap() {
 
 		/*
 		* Método que verifica que el mapa contenga al menos 3 puntos
@@ -113,7 +63,7 @@ export class MultipleMarkerMap {
 		* Método para agregar al mapa un botón para borrar todas las coordenadas ingresadas
 		*/
 
-		L.easyButton('fa-undo', function(btn, mapa, ){
+		L.easyButton('fa-undo', function(btn, mapa){
 			if (confirm("¿Está seguro que desea borrar todas las coordenadas del recorrido de evacuación?")) {
 				mapa.coordinates = []
 				mapa.polylines.clearLayers()

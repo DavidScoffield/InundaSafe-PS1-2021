@@ -10,17 +10,21 @@ from flask_wtf import FlaskForm
 
 
 class EvacuationRouteForm(FlaskForm):
-
     "Crea el formulario para obtener datos de un recorrido de evacuación"
+
+    class Meta:
+        locales = ['es_ES', 'es']
+
+        def get_translations(self, form):
+            return super(FlaskForm.Meta, self).get_translations(form)    
 
     id = HiddenField()
 
     name = StringField(
         "Nombre (*)",
         [
-            validators.DataRequired(
-                message="Este campo es obligatorio"
-            ),
+            validators.DataRequired(),
+            validators.Length(max=255),
             validators.Regexp(
                 "^[a-zA-Z0-9 ]+$",
                 message="Por favor, ingrese un nombre válido. El nombre no puede tener caracteres especiales.",
@@ -32,7 +36,7 @@ class EvacuationRouteForm(FlaskForm):
         },
     )
 
-    description = TextAreaField("Descripción del recorrido")
+    description = TextAreaField("Descripción del recorrido", [ validators.Length(max=500) ])
 
     state = SelectField(
         "Estado",
@@ -40,9 +44,7 @@ class EvacuationRouteForm(FlaskForm):
             ("publicated", "Publicado"),
             ("despublicated", "Despublicado"),
         ],
-        validators = [ validators.DataRequired(
-                        message="Este campo es obligatorio"
-                      ), ]
+        validators = [ validators.DataRequired() ]
     )
 
     coordinates = HiddenField()

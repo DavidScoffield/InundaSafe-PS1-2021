@@ -1,11 +1,11 @@
-from marshmallow import Schema, fields, validate, validates_schema, post_dump
+from marshmallow import Schema, fields, validate, validates_schema, post_load, post_dump
 from marshmallow.exceptions import MarshmallowError
 from app.helpers.validate_coordinates import validate_coordinates
 from app.models.category import Category
+from app.models.complaint import Complaint
 import json
 
 class ComplaintSchema(Schema):
-
     """
     Definición de los atributos y validadores del schema de complaints
     """
@@ -42,6 +42,7 @@ class ComplaintSchema(Schema):
     @validates_schema
     def validate_coordinate(self, data, **kwargs):
         "Verifica que la coordenada ingresada sea válida"
+
         try:
             coordinate = data["coordinate"]
             coordinate = coordinate.replace(" ", "")
@@ -66,6 +67,10 @@ class ComplaintSchema(Schema):
             raise MarshmallowError
 
         data["category"] = category
+
+    @post_load
+    def create_complaint_object(self, data, **kwargs):
+        return Complaint.create_complaint(**data)
 
     @post_dump
     def format_dump(self, data, **kwargs):

@@ -1,5 +1,4 @@
 from flask import jsonify, Blueprint, request, abort
-from app.models.complaint import Complaint
 from app.schemas.complaint import complaint_schema
 from marshmallow.exceptions import MarshmallowError
 from werkzeug.exceptions import BadRequest
@@ -21,19 +20,14 @@ def create():
 
     try:
         
-        json_data = complaint_schema.load(request.get_json())
+        complaint = complaint_schema.load(request.get_json())
+        result = complaint_schema.dump(complaint)
+
+        return jsonify(atributos=result), 201
         
     except (MarshmallowError, BadRequest):
         
         abort(400)
 
     except:
-        
         abort(500)
-
-    else:
-
-        complaint = Complaint.create_complaint(**json_data)
-        result = complaint_schema.dump(complaint)
-
-        return jsonify(atributos=result), 201

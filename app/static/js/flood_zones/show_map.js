@@ -6,8 +6,13 @@ window.onload = () => {
 
   coordinates = coordinates ? JSON.parse(coordinates) : []
 
+  const color = document.getElementById('color').innerText || document.getElementById('color').value
+
+  console.log(color)
+
   const map = new ZoneMap({
     selector: 'mapid',
+    color: color,
     initialZone: coordinates,
     enableControls: false,
   })

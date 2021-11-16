@@ -12,7 +12,7 @@ class EvacuationRoute(db.Model):
     name = db.Column(db.String(255), nullable=False, unique=True)
     description = db.Column(db.String(500))
     state = db.Column(db.String(100))
-    coordinates = relationship("Coordinate")
+    coordinates = relationship("Coordinate", cascade="all,delete-orphan")
 
 
     def __repr__(self):
@@ -107,6 +107,7 @@ class EvacuationRoute(db.Model):
 
         return EvacuationRoute.query.get(id)
 
+
     def delete_coordinates(self):
         "Borra las coordenadas del recorrido de evacuación"
 
@@ -114,10 +115,10 @@ class EvacuationRoute(db.Model):
             db.session.delete(coordinate)
         db.session.commit()
 
+
     def delete(self):
         "Borra un recorrido de evacuación y sus coordenadas asociadas"
         
-        self.delete_coordinates()
         db.session.delete(self)
         db.session.commit()
 

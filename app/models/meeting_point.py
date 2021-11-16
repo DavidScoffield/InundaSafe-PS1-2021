@@ -11,7 +11,7 @@ class MeetingPoint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     address = db.Column(db.String(255), nullable=False)
-    coordinate = relationship("Coordinate", uselist=False)
+    coordinate = relationship("Coordinate", uselist=False, cascade="all,delete-orphan")
     state = db.Column(db.String(100))
     telephone = db.Column(db.String(50))
     email = db.Column(db.String(150))
@@ -117,7 +117,6 @@ class MeetingPoint(db.Model):
     def delete(self):
         "Borra un punto de encuentro y su coordenada asociada"
         
-        db.session.delete(self.coordinate)
         db.session.delete(self)
         db.session.commit()
 

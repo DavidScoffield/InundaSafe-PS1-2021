@@ -22,13 +22,13 @@ def check_param(
         "@flood_zones/state": param
         if param != "all" and param is not None
         else "",
-        "@user/username": param.strip()
+        "@user/username": param
         if param is not None
         else "",
         "@user/active": param
         if type(param) is int and param is not None
         else "",
-        "@complaint/title": param.strip()
+        "@complaint/title": param
         if param is not None
         else "",
         "@complaint/state": param

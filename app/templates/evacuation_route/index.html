@@ -92,6 +92,14 @@
           {% endfor %}
       </tbody>
   </table>
+  {% if not found_evacuation_routes %}
+      <br>
+      {% with messages = get_flashed_messages(category_filter=["evacuation_route_index"]) %}
+          {% for message in messages %}
+              <p class="text-center">{{message}}</p>
+          {% endfor %}
+      {% endwith %}
+  {% endif %}
   <nav aria-label="Evacuation routes page navigation">
       <ul class="pagination justify-content-center">
         {% if evacuation_routes.has_prev %}

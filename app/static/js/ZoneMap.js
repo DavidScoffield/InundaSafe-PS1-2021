@@ -4,12 +4,13 @@ const mapLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' // url 
 
 export class ZoneMap {
   #drawnItems
+  #color
   /**
    * Definición de la clase que representará a un mapa con
    * la capacidad de mostrar y marcar una zona inundable
    */
 
-  constructor({ selector, initialZone = null, enableControls = true }) {
+  constructor({ selector, initialZone = null, color = null, enableControls = true }) {
     /**
      * Constructor de la clase. Parámetros:
      
@@ -21,7 +22,7 @@ export class ZoneMap {
      * Inicializa el mapa a partir del selector y initialZone en caso de recibirlo 
      por parámetros
      */
-
+    this.#color = color || '#3388FF'
     this.#drawnItems = new L.FeatureGroup()
 
     this.#initializeMap(selector, initialZone, enableControls)
@@ -59,7 +60,7 @@ export class ZoneMap {
   }
 
   #addZone(initialZone, drawnItems, map) {
-    const polygon = new L.Polygon(initialZone)
+    const polygon = new L.Polygon(initialZone, { color: this.#color })
 
     drawnItems.addLayer(polygon)
 

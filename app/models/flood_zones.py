@@ -57,7 +57,9 @@ class FloodZones(db.Model):
 
     @classmethod
     def all(cls, page: int = None, per_page: int = None):
-        return cls.query.paginate(
+        return cls.query.filter(
+            cls.state == "publicated"
+        ).paginate(
             per_page=per_page,
             page=page,
             error_out=True,

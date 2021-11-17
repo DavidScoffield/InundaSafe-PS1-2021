@@ -95,7 +95,6 @@ class FloodZones(db.Model):
                 .filter(FloodZones.state == "publicated")
                 .first()
             )
-        print(fz)
         return fz
 
     @classmethod

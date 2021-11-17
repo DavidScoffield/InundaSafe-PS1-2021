@@ -93,7 +93,7 @@ def index(page_number):
         flash("No se encontraron resultados", category="evacuation_route_index")
     else:
         found_evacuation_routes = True
-    print("ENTCONTRE? ", found_evacuation_routes)
+
     # En caso que no encuentre ningun resultado resultado se redirige a la pagina 1 con los argumentos de busqueda
     if (
         evacuation_routes.page != 1

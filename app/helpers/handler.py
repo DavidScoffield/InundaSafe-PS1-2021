@@ -7,7 +7,7 @@ def bad_request_error(e):
     Funcion helper para redirigir a una pagina error con
     un diccionario definido en caso de obtener un error 400
     """
-    
+
     kwargs = {
         "error_name": "400 Bad Request",
         "error_description": "Por favor, verifique los datos ingresados",
@@ -20,8 +20,10 @@ def not_found_error(e):
     Funcion helper para redirigir a una pagina error
     con un diccionario definido en caso de obtener un error 404
     """
+    description = None
 
-    description = e.description
+    if hasattr(e, "custom_description"):
+        description = e.custom_description
 
     kwargs = {
         "error_name": "404 Not Found Error",

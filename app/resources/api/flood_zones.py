@@ -40,7 +40,7 @@ def getAll():
         except:
             abort(
                 404,
-                description="Los argumentos enviados son inválidos, asegurese de enviarlos correctamente.",
+                custom_description="Los argumentos enviados son inválidos, asegurese de enviarlos correctamente.",
             )
 
         try:
@@ -50,13 +50,13 @@ def getAll():
         except NotFound:
             abort(
                 404,
-                description="No hay zonas inundables en base a los parametros ingresados.",
+                custom_description="No hay zonas inundables en base a los parametros ingresados.",
             )
 
         if not flood_zones:
             abort(
                 404,
-                description="No hay zonas inundables disponibles.",
+                custom_description="No hay zonas inundables disponibles.",
             )
 
         flood_zone_dumped = (
@@ -80,7 +80,9 @@ def getById(id: int = None):
     por id (pasado por url)
     """
     try:
-        flood_zone = FloodZones.find_by_id(id)
+        flood_zone = FloodZones.find_by_id(
+            id, isActive=True
+        )
         if not flood_zone:
             abort(404)
 

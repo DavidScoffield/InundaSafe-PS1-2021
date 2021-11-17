@@ -81,7 +81,7 @@ def getById(id: int = None):
     """
     try:
         flood_zone = FloodZones.find_by_id(
-            id, isActive=True
+            id, mustBeActive=True
         )
         if not flood_zone:
             abort(404)

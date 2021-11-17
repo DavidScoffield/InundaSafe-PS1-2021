@@ -85,17 +85,21 @@ class FloodZones(db.Model):
         return flood_zone
 
     @classmethod
-    def find_by_id(cls, id: int, isActive: bool = False):
-        "Retorna la zona inundable correspondiente al id recibido por parámetro"
-        if not isActive:
-            fz = FloodZones.query.get(id)
-        else:
-            fz = (
-                FloodZones.query.filter(FloodZones.id == id)
-                .filter(FloodZones.state == "publicated")
-                .first()
-            )
-        return fz
+    def find_by_id(
+        cls, id: int, mustBeActive: bool = False
+    ):
+        """
+        Retorna la zona inundable correspondiente al id recibido por parámetro
+        @params:
+            id: Identificador a buscar. Siempre debe pasarse
+            mustBeActive: Si se pasa como True, filtrara ademas que este publicado. Opcional
+        """
+        fz = FloodZones.query.filter(FloodZones.id == id)
+
+        if mustBeActive:
+            fz = fz.filter(FloodZones.state == "publicated")
+
+        return fz.first()
 
     @classmethod
     def find_by_name(cls, name: str):

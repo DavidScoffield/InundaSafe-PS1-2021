@@ -18,8 +18,6 @@ from app.helpers.check_permission import check_permission
 from app.helpers.check_param_search import (
     check_param,
 )
-from app.helpers.validate_coordinates import validate_json_coordinate_list
-import json
 
 evacuation_route = Blueprint(
     "evacuation_route", __name__, url_prefix="/evacuation-route"
@@ -54,23 +52,10 @@ def create():
         flash("Por favor, corrija los errores",
               category="evacuation_route_new")
     else:
-        args = form.data
-        del args["submit"]
-        del args["csrf_token"]
-        del args["id"]
-        if EvacuationRoute.exists_name(args["name"]):
-            flash("Ya existe un recorrido de evacuación con ese nombre",
-                   category="evacuation_route_new")
-        else:
-            valid_coordinates, coordinates, errors = validate_json_coordinate_list(args["coordinates"])
-
-            if valid_coordinates:
-                args["coordinates"] = coordinates
-                EvacuationRoute.new(**args)
-                flash("Recorrido de evacuación agregado exitosamente",
-                       category="evacuation_route_new")
-            else:
-                flash(errors, category="evacuation_route_new")
+        args = form.evacuation_route_data()
+        EvacuationRoute.new(**args)
+        flash("Recorrido de evacuación agregado exitosamente",
+                category="evacuation_route_new")
 
     return render_template("evacuation_route/new.html", form=form)
 
@@ -184,46 +169,21 @@ def update():
         abort(401)
 
     form = EvacuationRouteForm(request.form)
-    id_evacuation_route = form.data["id"]
-
-    # ruta de evacuación que se quiere modificar
-    evacuation_route = EvacuationRoute.find_by_id(id_evacuation_route)
-    if not evacuation_route:
-        flash("No se encontró el recorrido de evacuación",
-              category="evacuation_route_update")
-        return redirect(url_for("evacuation_route.index", page_number=1))
 
     if not form.validate_on_submit():
         flash("Por favor, corrija los errores",
               category="evacuation_route_update")
     else:
-        args = form.data
-        del args["submit"]
-        del args["csrf_token"]
-        del args["id"]
-
-        form_name = args["name"].lower()                                    # el nombre que quiere cargar el usuario
-
-        if (EvacuationRoute.exists_name(form_name)
-            and form_name != evacuation_route.name.lower()):                # quiere usar un nombre que ya existe
-            flash("Ya existe un recorrido de evacuación con ese nombre",
-                   category="evacuation_route_update")
-        else:                                                               # quiere usar el mismo nombre o alguno que no existe
-
-            valid_coordinates, coordinates, errors = validate_json_coordinate_list(args["coordinates"])
-
-            if valid_coordinates:
-                args["coordinates"] = coordinates
-                evacuation_route.update(**args)
-                flash("Recorrido de evacuación modificado exitosamente",
-                       category="evacuation_route_update")
-            else:
-                flash(errors, category="evacuation_route_update")
+        args = form.evacuation_route_data()
+        evacuation_route = EvacuationRoute.find_by_id(form.data["id"])
+        evacuation_route.update(**args)
+        flash("Recorrido de evacuación modificado exitosamente",
+              category="evacuation_route_update")
 
     return render_template(
         "evacuation_route/edit.html",
         form=form,
-        id_evacuation_route=id_evacuation_route
+        id_evacuation_route=form.data["id"]
     )
 
 
@@ -238,9 +198,11 @@ def show():
 
     id_evacuation_route = request.form["id_evacuation_route"]
     evacuation_route = EvacuationRoute.find_by_id(id_evacuation_route)
+
     if not evacuation_route:
         flash("No se encontró el recorrido de evacuación",
                category="evacuation_route_show")
+
         return redirect(url_for("evacuation_route.index", page_number=1))
 
     return render_template(

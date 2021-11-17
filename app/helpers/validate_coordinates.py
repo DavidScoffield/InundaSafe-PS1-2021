@@ -9,6 +9,9 @@ def validate_coordinates(coordinates):
     'coordinates': lista que contiene la latitud y longitud
     """
 
+    if len(coordinates) != 2:
+        return False
+
     for coordinate in coordinates:
         if not re.fullmatch(
             "^-?[0-9]{1,100}(\.[0-9]+)?$", str(coordinate)

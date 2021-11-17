@@ -54,6 +54,7 @@ class MeetingPoint(db.Model):
         "Retorna un diccionario con los atributos del meeting point"
 
         attributes = vars(self)
+        attributes["coordinate"] = self.coordinate
         if not keep_instance_state:
             del attributes["_sa_instance_state"]
 

@@ -70,6 +70,8 @@ class ComplaintSchema(Schema):
 
     @post_load
     def create_complaint_object(self, data, **kwargs):
+        "Crea la denuncia a partir de los datos del schema"
+
         return Complaint.create_complaint(**data)
 
     @post_dump

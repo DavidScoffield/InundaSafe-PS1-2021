@@ -296,7 +296,7 @@ def update():
         else:  # quiere usa el mismo nombre o alguno que no existe
             flood_zone.update(**args)
             flash(
-                "Punto de encuentro modificado exitosamente",
+                "Zona inundable modificada exitosamente",
                 category="flood_zones_update",
             )
             form = FloodZoneForm(

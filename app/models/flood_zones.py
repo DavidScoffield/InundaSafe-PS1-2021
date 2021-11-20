@@ -57,12 +57,22 @@ class FloodZones(db.Model):
 
     @classmethod
     def all(cls, page: int = None, per_page: int = None):
-        return cls.query.filter(
-            cls.state == "publicated"
-        ).paginate(
-            per_page=per_page,
-            page=page,
-            error_out=True,
+        """
+        Devuelve las zonas inundables publicacas paginadas en base a los
+        parametros pasados en caso de que se pasen
+        """
+
+        ac = actual_config()
+        order = ac.order_by
+
+        return (
+            cls.query.filter(cls.state == "publicated")
+            .order_by(eval(f"FloodZones.name.{order}()"))
+            .paginate(
+                per_page=per_page,
+                page=page,
+                error_out=True,
+            )
         )
 
     @classmethod

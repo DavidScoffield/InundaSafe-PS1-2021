@@ -32,17 +32,15 @@ def getAll():
     """
     try:
         try:
-            are_valids = validate_received_params(
+            if not validate_received_params(
                 request.args.keys()
-            )
-            if not are_valids:
+            ):
                 abort(404)
 
-            page = int(request.args.get("pagina", 1))
-            per_page = request.args.get("por_pagina", None)
+            page = request.args.get("pagina", None)
 
             (page, per_page) = validate_params_pagination(
-                page, per_page
+                page
             )
         except:
             abort(

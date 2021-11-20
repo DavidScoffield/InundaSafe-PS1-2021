@@ -1,145 +1,147 @@
 {% extends "private_app_layout.html" %}
 {% block title %}Usuarios{% endblock %}
 {% block head %}
-  {{ super() }}
+{{ super() }}
 {% endblock %}
 {% block content %}
 
 {% set argname = request.args.name %}
 {% set argactive = request.args.active %}
 
-  <div class="container mx-auto py-4">
-    <!-- TITULO -->
-    <div class="d-flex align-items-center mb-3">
-      <a href="{{url_for('home.index')}}" class="text-muted p-1 mr-3" style="cursor: pointer">
-        <i class="fas fa-arrow-left fa-lg"></i>
-      </a>
-      <h1 class="font-weight-bold">Usuarios</h1>
+<div class="container mx-auto py-4">
+  <!-- TITULO -->
+  <div class="d-flex align-items-center mb-3">
+    <a href="{{url_for('home.index')}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Usuarios</h1>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="w-100 row justify-content-center">
+    <div class="col d-flex justify-content-sm-center justify-content-md-start mb-sm-3 mb-md-0">
+      <a class="btn btn-primary button-gradient" role="button" href="{{url_for('user.new')}}">Nuevo</a>
     </div>
+    <div class="col-sm-12 col-md-6 d-flex justify-content-sm-center justify-content-md-end">
+      <form method="GET" action="{{url_for('user.index', page_number=users.page)}}"
+        class="d-flex justify-content-end align-content-center">
 
-    <!-- BUTTONS -->
-    <div class="w-100 row justify-content-center">
-      <div class="col d-flex justify-content-sm-center justify-content-md-start mb-sm-3 mb-md-0">
-        <a class="btn btn-primary button-gradient" role="button" href="{{url_for('user.new')}}">Nuevo</a>
-      </div>
-      <div class="col-sm-12 col-md-6 d-flex justify-content-sm-center justify-content-md-end">
-        <form method="GET" action="{{url_for('user.index', page_number=users.page)}}" class="d-flex justify-content-end align-content-center">
-  
-          <input type="text" name="username" placeholder="Buscar por nombre usuario..." class="mx-1 pl-2" 
-          {% if argname %} 
-            value="{{argname}}"
-          {% endif %}>
-          
-          <select class="rounded-sm mx-1" name="active" aria-label="seleccionador estado">
-            <option value="all" {{"selected" if argactive == "all"}}>Todos</option>
-            <option value="publicated" {{"selected" if argactive == "publicated"}}>Activo</option>
-            <option value="despublicated" {{"selected" if argactive == "despublicated"}}>Bloqueado</option>
-          </select>
-          <button class="btn btn-dark btn-sm" aria-label="button-search"><i class="fas fa-search fa-sm"></i></button>
-        </form>
-      </div>
+        <input type="text" name="username" placeholder="Buscar por nombre usuario..." class="mx-1 pl-2" {% if argname %}
+          value="{{argname}}" {% endif %}>
+
+        <select class="rounded-sm mx-1" name="active" aria-label="seleccionador estado">
+          <option value="all" {{"selected" if argactive=="all" }}>Todos</option>
+          <option value="publicated" {{"selected" if argactive=="publicated" }}>Activo</option>
+          <option value="despublicated" {{"selected" if argactive=="despublicated" }}>Bloqueado</option>
+        </select>
+        <button class="btn btn-dark btn-sm" aria-label="button-search"><i class="fas fa-search fa-sm"></i></button>
+      </form>
     </div>
+  </div>
 
-    <br />
+  <br />
 
-    <!-- LIST -->
-    <table class="table">
-      <thead>
-          <tr>
-              <th scope="col" class="text-center">Roles</th>
-              <th scope="col" class="text-center">Nombre usuario</th>
-              <th scope="col" class="text-center">email</th>
-              <th scope="col" class="text-center">Nombre</th>
-              <th scope="col" class="text-center">Apellido</th>
-              <th scope="col" class="text-center">Estado</th>
-              <th scope="col" class="text-center">Acciones</th>
-          </tr>
-      </thead>
+  <!-- LIST -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col" class="text-center">Nombre usuario</th>
+        <th scope="col" class="text-center">email</th>
+        <th scope="col" class="text-center">Nombre</th>
+        <th scope="col" class="text-center">Apellido</th>
+        <th scope="col" class="text-center">Roles</th>
+        <th scope="col" class="text-center">Estado</th>
+        <th scope="col" class="text-center">Acciones</th>
+      </tr>
+    </thead>
 
-      <tbody>
-        {% for user in users.items %}
-        <tr>
-            <td class="text-center">
-              {% for rol in user.roles %}
-                {{format_role(rol.name)}}
-              {% endfor %}
-            </td>
-            <td class="text-center">{{user.username}}</td>
-            <td class="text-center">{{user.email}}</td>
-            <td class="text-center">{{user.first_name}}</td>
-            <td class="text-center">{{user.last_name}}</td>
-            {% if user.active == 1 %}
-              {% set buttonText = 'Bloquear' %}
-              <td class="text-center">Activo</td> 
-            {% else %} 
-              {% set buttonText = 'Desbloquear' %}
-              <td class="text-center">Bloqueado</td>  
-            {% endif %}
-            <td class="text-center d-flex justify-content-center">
-                {% if not helper_has_role(user.roles, "rol_administrador") %}
-                  <form  action="{{ url_for('user.toggle_state') }}" method="POST" class="d-inline">
-                    <input name="user_id" type="hidden" value="{{user.id}}">
-                    <input name="state" type="hidden" value="{{user.active}}">
-                    <button class="btn button-gradient" type="submit">{{buttonText}}</button>
-                  </form>
-                {% endif %}
-                <form action="{{url_for('user.show')}}" method="post" class="d-inline">
-                  <input name="id_user" type="hidden" value="{{user.id}}">
-                  <button type="submit" class="btn button-gradient mx-1">Ver</button>
-                </form>
-                <a class="btn button-gradient d-inline" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
-                <form  action="{{ url_for('user.delete') }}" method="POST" class="d-inline">
-                  <input type="hidden" name="user_id" value="{{user.id}}">
-                  <button type="submit" onclick="confirm_destroy(event)" class="btn button-gradient rounded">Eliminar</button>
-                </form>
-                
-            </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
-    {% if not found_users %}
-      <br>
-      {% with messages = get_flashed_messages(category_filter=["user_index"]) %}
-          {% for message in messages %}
-              <p class="text-center">{{message}}</p>
+    <tbody>
+      {% for user in users.items %}
+      <tr>
+        <td class="text-center">{{user.username}}</td>
+        <td class="text-center">{{user.email}}</td>
+        <td class="text-center">{{user.first_name}}</td>
+        <td class="text-center">{{user.last_name}}</td>
+        <td class="text-center">
+          {% for rol in user.roles %}
+          {{format_role(rol.name)}}
           {% endfor %}
-      {% endwith %}
-    {% endif %}
+        </td>
+        {% if user.active == 1 %}
+        {% set buttonText = 'Bloquear' %}
+        <td class="text-center">Activo</td>
+        {% else %}
+        {% set buttonText = 'Desbloquear' %}
+        <td class="text-center">Bloqueado</td>
+        {% endif %}
+        <td class="text-center d-flex justify-content-center">
+          {% if not helper_has_role(user.roles, "rol_administrador") %}
+          <form action="{{ url_for('user.toggle_state') }}" method="POST" class="d-inline">
+            <input name="user_id" type="hidden" value="{{user.id}}">
+            <input name="state" type="hidden" value="{{user.active}}">
+            <button class="btn button-gradient" type="submit">{{buttonText}}</button>
+          </form>
+          {% endif %}
+          <form action="{{url_for('user.show')}}" method="post" class="d-inline">
+            <input name="id_user" type="hidden" value="{{user.id}}">
+            <button type="submit" class="btn button-gradient mx-1">Ver</button>
+          </form>
+          <a class="btn button-gradient d-inline" href="{{url_for('user.edit', user_id=user.id)}}">Editar</a>
+          <form action="{{ url_for('user.delete') }}" method="POST" class="d-inline">
+            <input type="hidden" name="user_id" value="{{user.id}}">
+            <button type="submit" onclick="confirm_destroy(event)" class="btn button-gradient rounded">Eliminar</button>
+          </form>
 
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center">
-        {% if users.has_prev %}
-          <li class="page-item"></li>
-          <a class="page-link" href="{{url_for('user.index', page_number=users.prev_num)}}?{{request.query_string.decode()}}" tabindex="-1">Anterior</a>
-        {% else %}
-          <li class="page-item disabled">
-          <a class="page-link" href="#" tabindex="-1">Anterior</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if not found_users %}
+  <br>
+  {% with messages = get_flashed_messages(category_filter=["user_index"]) %}
+  {% for message in messages %}
+  <p class="text-center">{{message}}</p>
+  {% endfor %}
+  {% endwith %}
+  {% endif %}
+
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      {% if users.has_prev %}
+      <li class="page-item"></li>
+      <a class="page-link"
+        href="{{url_for('user.index', page_number=users.prev_num)}}?{{request.query_string.decode()}}"
+        tabindex="-1">Anterior</a>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1">Anterior</a>
         {% endif %}
-        </li>
-          {% for page in users.iter_pages() %}
-              {% if page %}
-                <li class="page-item"><a class="page-link" href="{{url_for('user.index', page_number=page)}}?{{request.query_string.decode()}}">{{ page }}</a></li>
-              {% endif %}
-          {% endfor %}
-        {% if users.has_next %}
-          <li class="page-item"></li>
-          <a class="page-link" href="{{url_for('user.index', page_number=users.next_num)}}?{{request.query_string.decode()}}">Siguiente</a>
-        {% else %}
-          <li class="page-item disabled">
-          <a class="page-link" href="#">Siguiente</a>
+      </li>
+      {% for page in users.iter_pages() %}
+      {% if page %}
+      <li class="page-item"><a class="page-link"
+          href="{{url_for('user.index', page_number=page)}}?{{request.query_string.decode()}}">{{ page }}</a></li>
+      {% endif %}
+      {% endfor %}
+      {% if users.has_next %}
+      <li class="page-item"></li>
+      <a class="page-link"
+        href="{{url_for('user.index', page_number=users.next_num)}}?{{request.query_string.decode()}}">Siguiente</a>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#">Siguiente</a>
         {% endif %}
-      </ul>
-    </nav> 
+    </ul>
+  </nav>
 </div>
 
 <script>
-  function confirm_destroy(e)
-  {
-      if(!confirm("¿Está seguro que desea borrar a este usuario? Este usuario puede tener Denuncias asignadas que seran eliminadas!")) {
-          e.preventDefault();
-      }
+  function confirm_destroy(e) {
+    if (!confirm("¿Está seguro que desea borrar a este usuario? Este usuario puede tener Denuncias asignadas que seran eliminadas!")) {
+      e.preventDefault();
+    }
   }
-  </script>
+</script>
 {% endblock %}

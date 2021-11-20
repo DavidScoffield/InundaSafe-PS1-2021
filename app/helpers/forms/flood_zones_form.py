@@ -6,6 +6,7 @@ from wtforms import (
     HiddenField,
 )
 from flask_wtf import FlaskForm
+from wtforms.widgets.html5 import ColorInput
 
 
 class FloodZoneForm(FlaskForm):
@@ -63,6 +64,7 @@ class FloodZoneForm(FlaskForm):
             "title": "El color debe ser un valor hexadecimal",
             "placeholder": "#F5FF70",
         },
+        widget=ColorInput(),
     )
 
     coordinates = HiddenField()

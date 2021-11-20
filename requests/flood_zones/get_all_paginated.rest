@@ -7,7 +7,7 @@ GET http://localhost:5000/api/zonas-inundables?pagina=4&por_pagina=1 HTTP/1.1
 
 
 ### Correcto - Solo pagina
-GET http://localhost:5000/api/zonas-inundables?pagina=2 HTTP/1.1
+GET http://localhost:5000/api/zonas-inundables?pagina=5 HTTP/1.1
 
 
 ### Correcto - Solo por_pagina
@@ -30,5 +30,5 @@ GET http://localhost:5000/api/zonas-inundables?por_pagina=opa HTTP/1.1
 GET http://localhost:5000/api/zonas-inundables?por_pagina=5p1a HTTP/1.1
 
 
-
-
+### Incorrecto - Parametro no valido
+GET http://localhost:5000/api/zonas-inundables?page=2 HTTP/1.1

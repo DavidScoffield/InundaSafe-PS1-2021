@@ -7,6 +7,7 @@ from app.schemas.flood_zones import (
 )
 from app.helpers.validators import (
     validate_params_pagination,
+    validate_received_params,
 )
 
 from app.helpers.logger import (
@@ -31,6 +32,12 @@ def getAll():
     """
     try:
         try:
+            are_valids = validate_received_params(
+                request.args.keys()
+            )
+            if not are_valids:
+                abort(404)
+
             page = int(request.args.get("pagina", 1))
             per_page = request.args.get("por_pagina", None)
 
@@ -40,7 +47,9 @@ def getAll():
         except:
             abort(
                 404,
-                custom_description="Los argumentos enviados son inválidos, asegurese de enviarlos correctamente.",
+                {
+                    "custom_description": "Los argumentos enviados son invalidos, asegurese de enviarlos correctamente."
+                },
             )
 
         try:
@@ -50,13 +59,17 @@ def getAll():
         except NotFound:
             abort(
                 404,
-                custom_description="No hay zonas inundables en base a los parametros ingresados.",
+                {
+                    "custom_description": "No hay zonas inundables en base a los parametros ingresados."
+                },
             )
 
         if not flood_zones:
             abort(
                 404,
-                custom_description="No hay zonas inundables disponibles.",
+                {
+                    "custom_description": "No hay zonas inundables disponibles."
+                },
             )
 
         flood_zone_dumped = (
@@ -65,7 +78,7 @@ def getAll():
 
         return jsonify(zonas=flood_zone_dumped)
 
-    except NotFound:
+    except NotFound as err:
         raise
     except Exception as err:
         logger_error(err)

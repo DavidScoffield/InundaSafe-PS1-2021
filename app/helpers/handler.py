@@ -22,8 +22,11 @@ def not_found_error(e):
     """
     description = None
 
-    if hasattr(e, "custom_description"):
-        description = e.custom_description
+    if (
+        isinstance(e.description, dict)
+        and "custom_description" in e.description.keys()
+    ):
+        description = e.description["custom_description"]
 
     kwargs = {
         "error_name": "404 Not Found Error",

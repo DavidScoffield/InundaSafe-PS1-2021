@@ -31,3 +31,18 @@ def validate_params_pagination(page, per_page):
         per_page = int(per_page)
 
     return (page, per_page)
+
+
+def validate_received_params(params):
+    """
+    Valida que los nombres de los parametros sean los correctos
+    """
+    valids_params = ["pagina"]
+
+    params = list(params)
+
+    for param in params:
+        if param not in valids_params:
+            return False
+
+    return True

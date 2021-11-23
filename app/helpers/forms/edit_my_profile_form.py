@@ -27,6 +27,7 @@ class EditMyProfileForm(FlaskForm):
         render_kw={
             "pattern": "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+([a-zA-ZÀ-ÿ\u00f1\u00d1 ])*$",
             "title": "El nombre solo puede contener letras",
+            "class" : "form-control",
         },
     )
 
@@ -44,6 +45,7 @@ class EditMyProfileForm(FlaskForm):
         render_kw={
             "pattern": "^[a-zA-ZÀ-ÿ\u00f1\u00d1]+([a-zA-ZÀ-ÿ\u00f1\u00d1 ])*$",
             "title": "El apellido solo puede contener letras",
+            "class" : "form-control",
         },
     )
 
@@ -57,6 +59,9 @@ class EditMyProfileForm(FlaskForm):
                 message="Este campo es obligatorio"
             ),
         ],
+        render_kw={
+            "class" : "form-control",
+        },
     )
 
     password = PasswordField(
@@ -71,6 +76,7 @@ class EditMyProfileForm(FlaskForm):
         render_kw={
             "pattern": "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$",
             "title": "La contraseña debe tener al menos 8 caracteres, una letra y un número",
+            "class" : "form-control",
         },
     )
 

@@ -33,25 +33,39 @@
   <form action={{url_for("user.update_my_profile")}} method="post">
     {{ form.csrf_token }}
     {{form.first_name.label() }}{{form.first_name(size=150)}}<br/>
+    {% for error in form.first_name.errors %}
+      <span style="color: red;">{{ error }}</span>
+      <br/>
+    {% endfor %}
     {{form.last_name.label() }}{{form.last_name(size=150)}}<br/>
+    {% for error in form.last_name.errors %}
+      <span style="color: red;">{{ error }}</span>
+      <br/>
+    {% endfor %}
     {{form.email.label() }}{{form.email(size=150)}}<br/>
+    {% for error in form.email.errors %}
+      <span style="color: red;">{{ error }}</span>
+      <br/>
+    {% endfor %}
     {{form.password.label() }}{{form.password(size=150)}}<br/>
-
-  <div {% if not helper_has_role(user.roles, "rol_administrador") %} class="hide" {% endif %}>
+    {% for error in form.password.errors %}
+      <span style="color: red;">{{ error }}</span>
+      <br/>
+    {% endfor %}
+    <div {% if not helper_has_role(user.roles, "rol_administrador") %} class="hide" {% endif %}>
       {{form.rol_label.label() }}{{form.rol_label()}}<br/>
       {{form.rol_administrador.label() }}{{form.rol_administrador()}}<br/>
       {{form.rol_operador.label() }}{{form.rol_operador()}}<br/>
-  </div>
-   
-    
-        <br/>
-        {{form.submit()}}
-</form>
+    </div>
+
+    {{form.submit()}}
+  </form>
 
   <i>* Campos obligatorios</i>
 
-
 </div>
+
+
   <script>
     function confirm_uncheck_admin(e)
     {

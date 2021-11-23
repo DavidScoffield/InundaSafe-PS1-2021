@@ -156,7 +156,7 @@ def show():
         page_number = request.args.get('page_number', type=int)
 
     complaint = Complaint.find_by_id(id_complaint)
- 
+
     if not complaint:
         flash("No se encontró la denuncia",
                category="complaint_show")

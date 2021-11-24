@@ -8,7 +8,7 @@ window.onload = () => {
 
   const color = document.getElementById('color').innerText || document.getElementById('color').value
 
-  console.log(color)
+  console.log('Color Mapa: ' + color)
 
   const map = new ZoneMap({
     selector: 'mapid',

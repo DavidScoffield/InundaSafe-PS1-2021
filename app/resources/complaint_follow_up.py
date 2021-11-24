@@ -62,7 +62,7 @@ def create():
     form = FollowUpForm(request.form)
     args = form.data
     complaint_id = args["id_complaint"]
-    
+
     user = User.find_user_by_id(session["user"])
     
     # Validacion de los campos
@@ -77,7 +77,7 @@ def create():
     ComplaintFollowUp.create_follow_up(description, session["user"], complaint_id)
 
     flash("Seguimiento creado correctamente", category="follow_up_new")
-    return render_template("follow_up/new.html", form=form, user=user, id_complaint=complaint_id)
+    return redirect(url_for("complaint.show", comp_id=complaint_id)) #En complaint.show entra como un GET.
 
   
 @follow_up_route.post("/edit")
@@ -130,9 +130,12 @@ def update():
     follow_up.update_follow_up(args["description"])
 
     flash("Seguimiento actualizado correctamente", category="follow_up_update")
-    return render_template(
-        "follow_up/edit.html", follow_up=follow_up, form=form, author_follow_up=author_follow_up
-    )
+    
+    return redirect(url_for("complaint.show", comp_id=follow_up.complaint_id)) #En complaint.show entra como un GET.
+    
+    #return render_template(
+    #    "follow_up/edit.html", follow_up=follow_up, form=form, author_follow_up=author_follow_up
+    #)
     
 
 @follow_up_route.post("/destroy")

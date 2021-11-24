@@ -18,8 +18,23 @@ def validate_coordinates(coordinates):
         ):
             return False
 
+    if ( not check_coordinate_range(coordinates[0])
+          or not check_coordinate_range(coordinates[1]) ):
+        return False
+
     return True
 
+def check_coordinate_range(coordinate, min_value = -100.0, max_value = 100.0):
+    """
+    Verifica si la componente de la coordenada se encuentra
+    en un rango determinado.
+
+    'coordinate': latitud o longitud de la coordenada
+    'min_value': valor mínimo
+    'max_value': valor máximo
+    """
+
+    return min_value <= float(coordinate) <= max_value 
 
 def validate_json_coordinate_list(json_coordinate_list, points_needed = 3):
     """

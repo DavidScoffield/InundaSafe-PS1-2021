@@ -12,6 +12,13 @@ class Config(object):
     UPLOAD_EXTENSIONS = [".csv"]
     UPLOAD_FOLDER = "app/static/uploads"
 
+    # Google api configuration
+    GOOGLE_CLIENT_ID = environ.get("GOOGLE_CLIENT_ID", None)
+    GOOGLE_CLIENT_SECRET = environ.get(
+        "GOOGLE_CLIENT_SECRET", None
+    )
+    GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
+
     @staticmethod
     def configure(app):
         # Implement this method to do further configuration on your app.

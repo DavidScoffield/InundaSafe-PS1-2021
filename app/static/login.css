@@ -4,6 +4,7 @@
 
 .login-cards {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
   gap: 20px;
@@ -15,6 +16,7 @@
   justify-content: center;
   align-items: center;
   width: 160px;
+  min-width: 160px;
   gap: 10px;
   border: 1px solid rgba(0, 0, 0, 0.096);
   border-radius: 5px;

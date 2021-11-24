@@ -15,9 +15,7 @@
   {% endfor %}
   {% endwith %}
   {{render_form(form, action=url_for('auth_routes.auth_authenticate'), method="POST")}}
-  <div class="mt-2">
-    <a href="#">¿No tienes usuario? Solicitar ser usuario</a>
-  </div>
+  <!-- Login with social media -->
   <hr>
   <div class="login-cards">
     <a href="#" class="login-card">
@@ -26,6 +24,21 @@
     </a>
     <a href="#" class="login-card">
       <p>Iniciar sesión con Twitter</p>
+      <i class="fa fa-twitter fa-2x"></i>
+    </a>
+  </div>
+  <!-- Register with social media -->
+  <hr>
+  <div class="m-2 d-flex justify-content-center">
+    <strong>¿No tienes usuario aún?</strong>
+  </div>
+  <div class="login-cards">
+    <a href="#" class="login-card">
+      <p>Registrarse con Google</p>
+      <i class="fa fa-google fa-2x"></i>
+    </a>
+    <a href="#" class="login-card">
+      <p>Registrarse con Twitter</p>
       <i class="fa fa-twitter fa-2x"></i>
     </a>
   </div>

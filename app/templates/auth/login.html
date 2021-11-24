@@ -2,18 +2,32 @@
 {% extends "layout.html" %}
 {% block title %}Login{% endblock %}
 {% block head %}
-  {{ super() }}
-  <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 {% endblock %}
 {% block content %}
-  <main class="container mx-auto login">
-    <h1>Iniciar sesión</h1>
-    {% with messages = get_flashed_messages(category_filter=["login_error"]) %}
-    <br>
-    {% for message in messages %}
-        <p>{{message}}</p>
-    {% endfor %}
-    {% endwith %}
-    {{render_form(form, action=url_for('auth_routes.auth_authenticate'), method="POST")}}
-  </main>
+<main class="container mx-auto login">
+  <h1>Iniciar sesión</h1>
+  {% with messages = get_flashed_messages(category_filter=["login_error"]) %}
+  <br>
+  {% for message in messages %}
+  <p>{{message}}</p>
+  {% endfor %}
+  {% endwith %}
+  {{render_form(form, action=url_for('auth_routes.auth_authenticate'), method="POST")}}
+  <div class="mt-2">
+    <a href="#">¿No tienes usuario? Solicitar ser usuario</a>
+  </div>
+  <hr>
+  <div class="login-cards">
+    <a href="#" class="login-card">
+      <p>Iniciar sesión con Google</p>
+      <i class="fa fa-google fa-2x"></i>
+    </a>
+    <a href="#" class="login-card">
+      <p>Iniciar sesión con Twitter</p>
+      <i class="fa fa-twitter fa-2x"></i>
+    </a>
+  </div>
+</main>
 {% endblock %}

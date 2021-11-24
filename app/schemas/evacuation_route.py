@@ -30,7 +30,7 @@ class EvacuationRoutePaginateSchema(Schema):
     items = fields.Nested(
         evacuation_route_schema,
         many=True,
-        data_key="zonas",
+        data_key="recorridos",
     )
 
 

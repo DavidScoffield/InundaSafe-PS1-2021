@@ -28,7 +28,6 @@ def getAll():
     Se pagina en base a la configuracion del sistema
     @params:
         - pagina: int
-        - por_pagina: int
     """
     try:
         try:

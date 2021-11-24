@@ -26,6 +26,9 @@ from app.resources.api.complaint import complaint_api
 from app.resources.api.evacuation_route import (
     evacuation_route_api,
 )
+from app.resources.api.meeting_point import (
+    meeting_point_api,
+)
 
 from app.helpers import handler
 from app.helpers import (
@@ -135,6 +138,7 @@ def create_app(environment="development"):
     api.register_blueprint(flood_zones_api)
     api.register_blueprint(complaint_api)
     api.register_blueprint(evacuation_route_api)
+    api.register_blueprint(meeting_point_api)
 
     app.register_blueprint(api)
     # Rutas página complaint (usando Blueprints)

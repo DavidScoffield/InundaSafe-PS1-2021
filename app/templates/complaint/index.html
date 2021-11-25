@@ -44,6 +44,12 @@
             <option value="Resuelta" {{"selected" if argstate == "Resuelta"}}>Resuelta</option>
             <option value="Cerrada" {{"selected" if argstate == "Cerrada"}}>Cerrada</option>
           </select>
+
+          <label for="fecha_inicio">Start date:</label>
+          <input type="date" id="fecha_inicio" name="init_date" min="1900-01-01" max="2500-12-31">
+          <label for="fecha_fin">Start date:</label>
+          <input type="date" id="fecha_fin" name="end_date" min="1900-01-01" max="2500-12-31">
+
           <button class="btn btn-dark btn-sm" aria-label="button-search"><i class="fas fa-search fa-sm"></i></button>
         </form>
       </div>

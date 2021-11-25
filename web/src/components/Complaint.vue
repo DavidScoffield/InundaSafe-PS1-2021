@@ -11,7 +11,7 @@
         :url="url"
       />
       <div v-for="(complaint, index) in complaints" :key="`complaints-${index}`">
-        <l-marker :lat-lng="complaint.coordinate">
+        <l-marker :lat-lng="complaint.coordenadas">
           <l-popup>
             <div @click="innerClick">
               <strong>Titulo:</strong> {{complaint.titulo}}<br>
@@ -60,26 +60,7 @@ export default {
       center: latLng(-34.9187, -57.956),
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       showDescription: false,
-      complaints : [
-        {
-          titulo: "Titulo denuncia 1",
-          categoria: "Categoria 1",
-          estado: "Estado 1",
-          email_denunciante: "Email del creador de la denuncia 1",
-          telcel_denunciante: "Telefono del creador 1",
-          descripcion: "Descripción para la denuncia numero 1",
-          coordinate: [-34.91521472314688, -57.97890472516883]
-        },
-        {
-          titulo: "Titulo denuncia 2",
-          categoria: "Categoria 2",
-          estado: "Estado 2",
-          email_denunciante: "Email del creador de la denuncia 2",
-          telcel_denunciante: "Telefono del creador 2",
-          descripcion: "Descripción para la denuncia numero 2",
-          coordinate: [-34.9029674883098, -57.97890472516883]
-        }
-      ]
+      complaints: []
     };
   },
   methods: {
@@ -87,6 +68,19 @@ export default {
       this.showDescription = !this.showDescription;
     }
   },
+  created() {
+    fetch("http://localhost:5000/api/denuncias?pagina=1")
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      this.complaints = json.items
+      console.log(json)
+    })
+    .catch((e) => {
+      console.log(e)
+    })
+  }
 };
 
 </script>

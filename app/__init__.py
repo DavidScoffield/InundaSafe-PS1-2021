@@ -45,7 +45,7 @@ from app.helpers import (
     is_admin_or_is_my_complaint as helper_is_admin_or_is_my_complaint,
 )
 from app.helpers.import_models import *
-
+from flask_cors import CORS
 
 # ----- Logger -----
 # import logging
@@ -60,6 +60,8 @@ load_dotenv()  # take environment variables from .env.
 def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
+
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # Setea bootstrap para la aplicacion
     bootstrap = Bootstrap(app)

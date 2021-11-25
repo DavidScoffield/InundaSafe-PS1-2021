@@ -57,10 +57,15 @@ class ComplaintForm(FlaskForm):
                 "^[a-zA-Z0-9 ]+$",
                 message="Por favor, ingrese una descripción válida. La descripción no puede tener caracteres especiales.",
             ),
+            validators.Length(
+                max=400, 
+                message="La descripción no puede ser tan larga"
+            ),
         ],
         render_kw={
             "pattern": "^[a-zA-Z0-9 ]+$",
-            "title": "La descripción no puede tener caracteres especiales",
+            "title": "La descripción no puede contener tantos caracteres",
+            "maxlength": "400",
         },
     )
 

@@ -29,6 +29,13 @@
 </div>
 <br>
 
+  {% with messages = get_flashed_messages(category_filter=["follow_up_new", "follow_up_update"]) %}
+    <br>
+    {% for message in messages %}
+      <p>{{message}}</p>
+    {% endfor %}
+  {% endwith %}
+
 <table class="table table-striped">
     <tbody>
       <tr>
@@ -41,7 +48,7 @@
       </tr>
       <tr>
         <th scope="row">Fecha de creación</th>
-        <td>{{complaint.created_at}}</td>
+        <td>{{complaint.created_at.day}}-{{complaint.created_at.month}}-{{complaint.created_at.year}}</td>
       </tr>
       <tr>
         <th scope="row">Descripción</th>
@@ -101,7 +108,7 @@
         <tr>           
           <td class="text-center">{{follow_up.description}}</td>
           <td class="text-center">{{lista[i.value]}}</td>
-          <td class="text-center">{{follow_up.created_at}}</td>
+          <td class="text-center">{{follow_up.created_at.day}}-{{follow_up.created_at.month}}-{{follow_up.created_at.year}}</td>
           <td class="text-center d-flex justify-content-center">
             {% if helper_has_permission("follow_up_edit") and not complaint_is_finished(complaint) %}
               <form action="{{url_for('follow_up.edit')}}" method="post" class="d-inline">

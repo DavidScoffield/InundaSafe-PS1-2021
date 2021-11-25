@@ -52,9 +52,9 @@ def get():
     """
 
     try:
-        
-        if not validate_received_params(request.args.keys()):
-            raise NotFound
+
+        if not validate_received_params(request.args):
+            raise BadRequest
 
         page = request.args.get("pagina", None)
 
@@ -66,11 +66,15 @@ def get():
 
         return jsonify(complaints)
 
-    except (NotFound, ValueError):
+    except (BadRequest, ValueError):
+        
+        abort(400)
+
+    except NotFound:
 
         abort(404, {"custom_description": 
-                        "Los argumentos enviados son invalidos, asegurese de enviarlos correctamente."})
+                        "No se encontró la página solicitada"})
 
     except:
-        
+
         abort(500)

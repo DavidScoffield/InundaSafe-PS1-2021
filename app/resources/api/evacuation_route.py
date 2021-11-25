@@ -33,7 +33,7 @@ def getAll():
     try:
         try:
             if not validate_received_params(
-                request.args.keys()
+                request.args
             ):
                 abort(404)
 

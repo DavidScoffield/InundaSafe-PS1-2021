@@ -14,13 +14,13 @@
         <l-marker :lat-lng="complaint.coordinate">
           <l-popup>
             <div @click="innerClick">
-              <strong>Titulo:</strong> {{complaint.title}}<br>
-              <strong>Categoría:</strong> {{complaint.category}}<br>
-              <strong>Estado:</strong> {{complaint.state}}<br>
-              <strong>Email del denunciante:</strong> {{complaint.creator_email}}<br>
-              <strong>Teléfono del denunciante:</strong> {{complaint.creator_telephone}}<br>
+              <strong>Titulo:</strong> {{complaint.titulo}}<br>
+              <strong>Categoría:</strong> {{complaint.categoria}}<br>
+              <strong>Estado:</strong> {{complaint.estado}}<br>
+              <strong>Email del denunciante:</strong> {{complaint.email_denunciante}}<br>
+              <strong>Teléfono del denunciante:</strong> {{complaint.telcel_denunciante}}<br>
               <p v-show="showDescription">
-                {{complaint.description}}
+                {{complaint.descripcion}}
               </p>
               <strong>
                 <i>
@@ -62,21 +62,21 @@ export default {
       showDescription: false,
       complaints : [
         {
-          title: "Titulo denuncia 1",
-          category: "Categoria 1",
-          state: "Estado 1",
-          creator_email: "Email del creador de la denuncia 1",
-          creator_telephone: "Telefono del creador 1",
-          description: "Descripción para la denuncia numero 1",
+          titulo: "Titulo denuncia 1",
+          categoria: "Categoria 1",
+          estado: "Estado 1",
+          email_denunciante: "Email del creador de la denuncia 1",
+          telcel_denunciante: "Telefono del creador 1",
+          descripcion: "Descripción para la denuncia numero 1",
           coordinate: [-34.91521472314688, -57.97890472516883]
         },
         {
-          title: "Titulo denuncia 2",
-          category: "Categoria 2",
-          state: "Estado 2",
-          creator_email: "Email del creador de la denuncia 2",
-          creator_telephone: "Telefono del creador 2",
-          description: "Descripción para la denuncia numero 2",
+          titulo: "Titulo denuncia 2",
+          categoria: "Categoria 2",
+          estado: "Estado 2",
+          email_denunciante: "Email del creador de la denuncia 2",
+          telcel_denunciante: "Telefono del creador 2",
+          descripcion: "Descripción para la denuncia numero 2",
           coordinate: [-34.9029674883098, -57.97890472516883]
         }
       ]

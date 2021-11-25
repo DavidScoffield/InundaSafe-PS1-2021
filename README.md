@@ -52,6 +52,10 @@ Aplicación para el trabajo integrador para la materia de Proyecto de Software d
 
   *Ver ejemplos en el archivo /request/complaints/create.md*
 
+## Comentarios sobre Mapa
+- Hemos encontrado un bug en los **mapas de zonas inundables**, en donde en algunos telefonos celulares el mismo no se muestra, mientras que en otros si. En base a la informacion recolectada, concluimos que sea algun tipo de bug con el pluggin `Draw de Leaflet` incorporado para la implementacion del mismo. En navegadores web por su parte, en cualquier tipo de resolucion el mismo funciona correctamente. 
+
+
 ## Iniciar ambiente
 
 ### Requisitos

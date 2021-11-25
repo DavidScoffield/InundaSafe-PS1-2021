@@ -113,3 +113,6 @@ coc-settings.json
 
 # docker
 docker-compose.yml
+
+# file
+client_secret_OAuth.json

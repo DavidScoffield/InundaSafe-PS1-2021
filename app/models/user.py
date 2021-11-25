@@ -10,7 +10,10 @@ from app.helpers.bcrypt import (
 from app.models.user_has_roles import user_has_roles
 from app.models.role import Role
 from app.helpers.config import actual_config
-from app.helpers.from_intState_to_stringState import active_dic
+from app.helpers.from_intState_to_stringState import (
+    active_dic,
+)
+
 
 class User(db.Model):
     """Modelo para el manejo de la tabla User de la base de datos"""
@@ -63,21 +66,28 @@ class User(db.Model):
         self.active = active
         self.is_deleted = is_deleted
 
+    @staticmethod
+    def get(user_id):
+        ######## retornar valores del user
+
+        return ("id", "name", "email", "username")
+
     def get_attributes(self):
         "Retorna un diccionario con los atributos del usuario"
-        
+
         attributes = vars(self)
-        #del attributes["_sa_instance_state"]
+        # del attributes["_sa_instance_state"]
 
-        #Convierte de 1 a 'activo' o de 0 a 'bloqueado' para el WTF
-        attributes["active"] = active_dic(attributes["active"])
+        # Convierte de 1 a 'activo' o de 0 a 'bloqueado' para el WTF
+        attributes["active"] = active_dic(
+            attributes["active"]
+        )
 
-        #Roles por defecto que tiene el user, los agrego para que matcheen con WTF
+        # Roles por defecto que tiene el user, los agrego para que matcheen con WTF
         for rol in attributes["roles"]:
             attributes[rol.name] = True
 
         return attributes
-
 
     @classmethod
     def find_by_email_and_pass(cls, email, password):
@@ -155,13 +165,15 @@ class User(db.Model):
         )
 
     @classmethod
-    def update_user(cls, user_id, data, selectedRoles, update_password):
+    def update_user(
+        cls, user_id, data, selectedRoles, update_password
+    ):
         """Actualizar usuario en la base de datos con los datos pasados por parametros"""
         user = User.find_user_by_id(user_id)
         user.first_name = data["first_name"]
         user.last_name = data["last_name"]
         user.email = data["email"]
-        if(update_password):
+        if update_password:
             user.password = data["password"]
         if (
             data["active"] == "activo"
@@ -177,12 +189,17 @@ class User(db.Model):
 
     @classmethod
     def update_profile(
-        cls, user, data, selectedRoles, isAdmin, update_password
+        cls,
+        user,
+        data,
+        selectedRoles,
+        isAdmin,
+        update_password,
     ):
         user.first_name = data["first_name"]
         user.last_name = data["last_name"]
         user.email = data["email"]
-        if(update_password):
+        if update_password:
             user.password = data["password"]
         db.session.commit()
 
@@ -305,7 +322,7 @@ class User(db.Model):
         user = User.query.filter(User.id == user_id).first()
         user.is_deleted = 1
 
-        #Eliminar las denuncias de este usuario, si tiene
+        # Eliminar las denuncias de este usuario, si tiene
         Complaint.delete_user_complaints(user_id)
 
         db.session.commit()

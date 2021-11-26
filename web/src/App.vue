@@ -1,17 +1,20 @@
 <template>
   <div>
-    <FormNewComplaint/>
+    Main:
+    <div id="nav">
+      <router-link to="/complaints">Denuncias</router-link>
+    </div>
+    <router-view />
   </div>
 </template>
 
 <script>
-import FormNewComplaint from './components/FormNewComplaint.vue'
+//import Complaint from './components/Complaint.vue'
+
 
 export default {
+  //components: { Complaint },
   name: 'App',
-  components: {
-    FormNewComplaint
-  }
 }
 </script>
 

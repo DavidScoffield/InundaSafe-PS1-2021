@@ -20,9 +20,10 @@ class ComplaintSchema(Schema):
     description = fields.Str(data_key="descripcion",
                              required = True,
                              validate=validate.Regexp("^[a-zA-Z0-9 ]+$"))
+    
+    state = fields.Str(data_key="estado")
 
-    coordinate = fields.Str(data_key="coordenadas",
-                            required = True, load_only=True)
+    coordinate = fields.Str(data_key="coordenadas", required = True)
 
     creator_first_name = fields.Str(data_key="nombre_denunciante",
                                     required = True,
@@ -38,6 +39,11 @@ class ComplaintSchema(Schema):
 
     creator_email = fields.Email(data_key="email_denunciante",
                                  required = True)
+
+    def __init__(self, post_schema = False, **args):
+        self.post_schema = post_schema
+        super().__init__()
+
 
     @validates_schema
     def validate_coordinate(self, data, **kwargs):
@@ -78,8 +84,25 @@ class ComplaintSchema(Schema):
     def format_dump(self, data, **kwargs):
         "Formatea el dump del schema"
 
-        data["categoria_id"] = data["categoria_id"].id
+        if not self.post_schema:
+            data["categoria_id"] = data["categoria_id"].id
+            del data["coordenadas"]
+        else:
+            data["categoria"] = data["categoria_id"].name
+            data["coordenadas"] = json.loads(data["coordenadas"])
+            del data["categoria_id"]
 
         return data
 
-complaint_schema = ComplaintSchema(many=False)
+complaint_post_schema = ComplaintSchema(many=False)
+
+complaint_get_schema = ComplaintSchema(post_schema = True, many=False)
+
+class PaginatedComplaintSchema(Schema):
+    total = fields.Int()
+    page = fields.Int(data_key="pagina")
+    pages = fields.Int(data_key="paginas")
+    per_page = fields.Int(data_key="por_pagina")
+    items = fields.Nested(complaint_get_schema, many=True)
+
+paginated_complaints_schema = PaginatedComplaintSchema()

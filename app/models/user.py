@@ -30,6 +30,9 @@ class User(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Integer, nullable=False)
+    created_by_social_media = db.Column(
+        db.Integer, nullable=False, default=0
+    )  # 1 = True | 0 = False
     is_deleted = db.Column(db.Integer, nullable=False)
     created_at = db.Column(
         db.DateTime, default=datetime.datetime.utcnow

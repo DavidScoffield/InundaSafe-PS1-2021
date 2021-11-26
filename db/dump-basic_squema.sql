@@ -271,6 +271,7 @@ CREATE TABLE `users` (
   `last_name` varchar(50) NOT NULL,
   `active` tinyint(1) NOT NULL,
   `is_deleted` tinyint(1) NOT NULL,
+  `created_by_social_media` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -288,8 +289,8 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` VALUES
 -- Las contraseñas de estos usuarios son "123123"
-  (1,'admin@gmail.com','administrador','$2a$12$NqYB/2oRmZEuuWmACDX4cuM/g5Ez1JCsHN20zo/Ds4mTtX6zT806O','Cosme','Fulanito',1,0,'2021-10-02 14:46:18','2021-10-02 14:46:18'),
-  (2,'ron@gmail.com','operador1','$2a$12$nAy4sJ2yWS14H2TiMROS..Df52NS72jLwJbsOHJ9nYVumxn9n/LRe','Ron','Perez',1,0,'2021-10-02 14:46:18','2021-10-02 14:46:18');
+  (1,'admin@gmail.com','administrador','$2a$12$NqYB/2oRmZEuuWmACDX4cuM/g5Ez1JCsHN20zo/Ds4mTtX6zT806O','Cosme','Fulanito',1,0,0,'2021-10-02 14:46:18','2021-10-02 14:46:18'),
+  (2,'ron@gmail.com','operador1','$2a$12$nAy4sJ2yWS14H2TiMROS..Df52NS72jLwJbsOHJ9nYVumxn9n/LRe','Ron','Perez',1,0,0,'2021-10-02 14:46:18','2021-10-02 14:46:18');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 

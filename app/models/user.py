@@ -59,6 +59,7 @@ class User(db.Model):
         last_name: str = None,
         active: int = None,
         is_deleted: int = 0,
+        created_by_social_media: int = 0,
     ):
         """Constructor del modelo"""
         self.email = email
@@ -68,6 +69,9 @@ class User(db.Model):
         self.last_name = last_name
         self.active = active
         self.is_deleted = is_deleted
+        self.created_by_social_media = (
+            created_by_social_media
+        )
 
     @staticmethod
     def get(user_id):
@@ -101,9 +105,11 @@ class User(db.Model):
         - Caso contrario retorna None
         """
 
-        user_find = User.query.filter(
-            User.email == email
-        ).first()
+        user_find = (
+            User.query.filter(User.email == email)
+            .filter(User.created_by_social_media == 0)
+            .first()
+        )
         return (
             user_find
             if (

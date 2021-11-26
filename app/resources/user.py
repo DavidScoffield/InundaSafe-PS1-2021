@@ -161,6 +161,10 @@ def create():
                     category="user_create"
                 )
                 return redirect(url_for("user.new"))
+            
+        # TODO: Chequear que el email no este en la tabla de usuarios en espera
+        
+            
         if (
             state == "activo"
         ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd

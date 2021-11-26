@@ -567,6 +567,22 @@ UNLOCK TABLES;
 
 
 
+DROP TABLE IF EXISTS `users_waiting`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users_waiting` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `email` varchar(150) NOT NULL,
+  `suggested_username` varchar(50) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
 --
 -- Dumping routines for database 'pruebabd'
 --

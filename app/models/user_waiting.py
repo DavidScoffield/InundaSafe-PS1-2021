@@ -57,3 +57,13 @@ class UserWaiting(db.Model):
 
         db.session.delete(self)
         db.session.commit()
+
+    @classmethod
+    def check_existing_email(
+        cls,
+        email: str = None,
+    ):
+        """Comprobar si algun usuario con determinado email"""
+        return cls.query.filter(
+            cls.email == email,
+        ).first()

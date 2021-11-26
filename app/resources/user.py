@@ -11,6 +11,7 @@ from flask import (
 
 from app.models.user import User
 from app.models.role import Role
+from app.models.user_waiting import UserWaiting
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
 from app.helpers.has_role import has_role
@@ -20,8 +21,12 @@ from app.helpers.check_param_search import (
 )
 
 from app.helpers.forms.new_user_form import NewUserForm
-from app.helpers.forms.edit_other_user_form import EditOtherUserForm
-from app.helpers.forms.edit_my_profile_form import EditMyProfileForm
+from app.helpers.forms.edit_other_user_form import (
+    EditOtherUserForm,
+)
+from app.helpers.forms.edit_my_profile_form import (
+    EditMyProfileForm,
+)
 
 user = Blueprint("user", __name__, url_prefix="/usuarios")
 
@@ -60,7 +65,10 @@ def index(page_number):
     users = User.exclude_user(users, this_user_id)
 
     if not users.first():
-        flash("No se encontraron resultados", category="user_index")
+        flash(
+            "No se encontraron resultados",
+            category="user_index",
+        )
         found_users = False
     else:
         found_users = True
@@ -90,7 +98,9 @@ def index(page_number):
         )
 
     return render_template(
-        "user/index.html", users=paginated_users, found_users=found_users
+        "user/index.html",
+        users=paginated_users,
+        found_users=found_users,
     )
 
 
@@ -143,7 +153,10 @@ def create():
     # custom validate_rol_label() definido en la clase que chequea que se haya clickeado
     # al menos un checkbox.
     if not form.validate_on_submit():
-        flash("Por favor, corrija los errores", category="user_create")
+        flash(
+            "Por favor, corrija los errores",
+            category="user_create",
+        )
         return render_template("user/new.html", form=form)
     else:
         user = User.check_existing_email_or_username(
@@ -152,19 +165,31 @@ def create():
 
         if user:
             if user.email == email:
-                flash("Ya existe un usuario con ese email", category="user_create")
+                flash(
+                    "Ya existe un usuario con ese email",
+                    category="user_create",
+                )
                 return redirect(url_for("user.new"))
 
             if user.username == username:
                 flash(
                     "Ya existe un usuario con ese nombre de usuario",
-                    category="user_create"
+                    category="user_create",
                 )
                 return redirect(url_for("user.new"))
-            
-        # TODO: Chequear que el email no este en la tabla de usuarios en espera
-        
-            
+
+        # Chequear que el email no este en la tabla de usuarios en espera
+        user_waiting = UserWaiting.check_existing_email(
+            email
+        )
+
+        if user_waiting:
+            flash(
+                "Ya existe un usuario con ese email",
+                category="user_create",
+            )
+            return redirect(url_for("user.new"))
+
         if (
             state == "activo"
         ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
@@ -173,7 +198,7 @@ def create():
             state = 0
 
         # Si esta creando a un admin, lo seteo como Activo, para que no pueda crearlo Bloqueado
-        if("rol_administrador" in selectedRoles):
+        if "rol_administrador" in selectedRoles:
             state = 1
 
         User.insert_user(
@@ -186,7 +211,10 @@ def create():
             selectedRoles,
         )  # inserto al usuario en la bd
 
-    flash("Usuario creado correctamente", category="user_create")
+    flash(
+        "Usuario creado correctamente",
+        category="user_create",
+    )
     return redirect(url_for("user.index", page_number=1))
 
 
@@ -237,7 +265,7 @@ def edit(user_id):
     user = User.find_user_by_id_not_deleted(user_id)
 
     # Si intenta acceder por URL con un id que no existe o que esta eliminado aborta.
-    if(not user):
+    if not user:
         abort(404)
 
     form = EditOtherUserForm(**user.get_attributes())
@@ -270,9 +298,18 @@ def update(user_id):
             selectedRoles += [rol]
 
     user = User.find_user_by_id(user_id)
-    if not form.validate_on_submit():       #validaciones del back WTF
-        flash("Por favor, corrija los errores", category="update_user")
-        return render_template("user/edit_other_user.html", user=user, form=form)
+    if (
+        not form.validate_on_submit()
+    ):  # validaciones del back WTF
+        flash(
+            "Por favor, corrija los errores",
+            category="update_user",
+        )
+        return render_template(
+            "user/edit_other_user.html",
+            user=user,
+            form=form,
+        )
 
     # este if está por si dos admins se intentan sacar el permiso de admin mutuamente al mismo tiempo
     roles = Role.find_roles_from_strings(selectedRoles)
@@ -284,13 +321,12 @@ def update(user_id):
             user_was_admin = True
 
     # Por si se deshabilita el chequeo del front e intenta bloquear a un Admin al editarlo
-    if(user_was_admin):
+    if user_was_admin:
         params["active"] = "activo"
-
 
     update_password = True
     # Si la contraseña se envia vacia, no la queria editar: La dejo como estaba en la BD
-    if(not params["password"]):
+    if not params["password"]:
         update_password = False
 
     if (
@@ -310,7 +346,8 @@ def update(user_id):
             lista.count("rol_administrador") <= 1
         ):  # si hay 1 admin entonces no es posible dejar de ser admin porque no puede dejar de haber
             flash(
-                "No puede dejar de ser administrador ya que usted es el único existente", category="update_user"
+                "No puede dejar de ser administrador ya que usted es el único existente",
+                category="update_user",
             )
             return redirect(
                 url_for("user.edit", user_id=user_id)
@@ -323,14 +360,20 @@ def update(user_id):
     )
     if user_email:
         if user_email.email == email:
-            flash("Ya existe un usuario con ese email", category="update_user")
+            flash(
+                "Ya existe un usuario con ese email",
+                category="update_user",
+            )
             return redirect(
                 url_for("user.edit", user_id=user_id)
             )
 
-    User.update_user(user_id, params, selectedRoles, update_password)
+    User.update_user(
+        user_id, params, selectedRoles, update_password
+    )
     flash(
-        "Usuario editado correctamente", category="update_user"
+        "Usuario editado correctamente",
+        category="update_user",
     )
 
     return redirect(url_for("user.edit", user_id=user_id))
@@ -366,7 +409,7 @@ def update_my_profile():
         abort(401)
 
     form = EditMyProfileForm(request.form)
-   
+
     params = form.data
 
     selectedRoles = []
@@ -374,18 +417,25 @@ def update_my_profile():
     for rol in ["rol_administrador", "rol_operador"]:
         if params[rol]:
             selectedRoles += [rol]
-    
+
     user = User.find_user_by_id(session["user"])
 
-    if not form.validate_on_submit():       #validaciones del back WTF
-        flash("Por favor, corrija los errores", category="user_my_profile")
-        return render_template("user/my_profile.html", user=user, form=form)
+    if (
+        not form.validate_on_submit()
+    ):  # validaciones del back WTF
+        flash(
+            "Por favor, corrija los errores",
+            category="user_my_profile",
+        )
+        return render_template(
+            "user/my_profile.html", user=user, form=form
+        )
 
     email = params["email"]
 
     update_password = True
     # Si la contraseña se envia vacia, no la queria editar: La dejo como estaba en la BD
-    if(not params["password"]):
+    if not params["password"]:
         update_password = False
 
     isAdmin = has_role(user.roles, "rol_administrador")
@@ -427,10 +477,15 @@ def update_my_profile():
         return redirect(url_for("user.edit_my_profile"))
 
     User.update_profile(
-        user, params, selectedRoles, isAdmin, update_password
+        user,
+        params,
+        selectedRoles,
+        isAdmin,
+        update_password,
     )
     flash(
-        "Perfil actualizado correctamente", category="user_my_profile"
+        "Perfil actualizado correctamente",
+        category="user_my_profile",
     )
 
     return redirect(url_for("user.edit_my_profile"))

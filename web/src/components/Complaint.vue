@@ -12,7 +12,7 @@
       />
       <div v-for="(complaint, index) in complaints.items" :key="`complaints-${index}`">
         <l-marker :lat-lng="complaint.coordenadas">
-          <l-popup>
+          <l-popup :options="{ maxHeight: 300 }">
             <div @click="innerClick">
               <strong>Titulo:</strong> {{complaint.titulo}}<br>
               <strong>Categoría:</strong> {{complaint.categoria}}<br>

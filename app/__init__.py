@@ -20,6 +20,9 @@ from app.resources.complaint_follow_up import (
     follow_up_route,
 )
 from app.resources.user import user as user_blueprint
+from app.resources.user_waiting import (
+    user_waiting as user_waiting_blueprint,
+)
 from app.resources.config import config_routes
 from app.resources.auth import auth_routes
 
@@ -150,6 +153,9 @@ def create_app(environment="development"):
 
     # # Rutas de Usuarios
     app.register_blueprint(user_blueprint)
+
+    # # Rutas de Usuarios en espera de aprobacion
+    app.register_blueprint(user_waiting_blueprint)
 
     # Rutas pagina configuracion(usando Blueprints)
     app.register_blueprint(config_routes)

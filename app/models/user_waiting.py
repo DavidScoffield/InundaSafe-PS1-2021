@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from app.db import db
+from app.helpers.config import actual_config
 
 
 class UserWaiting(db.Model):
@@ -67,3 +68,57 @@ class UserWaiting(db.Model):
         return cls.query.filter(
             cls.email == email,
         ).first()
+
+    @classmethod
+    def search_paginate(
+        cls,
+        page_number: int = 1,
+        email: str = "",
+    ):
+        """
+        Retorna una lista con todos los usuarios, teniendo en cuenta los filtros
+        pasados por parametro, en caso que estos sean vacio retorna todos los usuarios.
+        Pagina el resultado
+        """
+        ordered_users = cls.search(email=email)
+        paginated_users = cls.paginate(
+            ordered_users, page_number
+        )
+        return paginated_users
+
+    @classmethod
+    def search(
+        cls,
+        email: str = "",
+    ):
+        """
+        Retorna una lista con todos los usuarios, teniendo en cuenta los filtros
+        pasados por parametro, en caso que estos sean vacio retorna todos los usuarios.
+        """
+
+        ac = actual_config()
+        order = ac.order_by
+        return cls.query.filter(
+            cls.email.contains(email)
+        ).order_by(eval(f"UserWaiting.email.{order}()"))
+
+    @classmethod
+    def paginate(
+        cls,
+        users,
+        page_number: int = 1,
+    ):
+        "Retorna la lista de usuarios pasados por parametro paginados"
+        ac = actual_config()
+        elements_quantity = ac.elements_quantity
+        return users.paginate(
+            max_per_page=elements_quantity,
+            per_page=elements_quantity,
+            page=page_number,
+            error_out=False,
+        )
+
+    @classmethod
+    def find_user_by_id(cls, user_id):
+        """Buscar usuario en la base de datos por id"""
+        return cls.query.filter(cls.id == user_id).first()

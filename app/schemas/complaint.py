@@ -21,8 +21,7 @@ class ComplaintSchema(Schema):
                              required = True,
                              validate=validate.Regexp("^[a-zA-Z0-9 ]+$"))
     
-    state = fields.Str(data_key="estado",
-                             validate=validate.Regexp("^[a-zA-Z ]+$"))
+    state = fields.Str(data_key="estado")
 
     coordinate = fields.Str(data_key="coordenadas", required = True)
 

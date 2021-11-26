@@ -1,16 +1,19 @@
 <template>
   <div>
     Main:
-    <Complaint/>
+    <div id="nav">
+      <router-link to="/complaints">Denuncias</router-link>
+    </div>
+    <router-view />
   </div>
 </template>
 
 <script>
-import Complaint from './components/Complaint.vue'
+//import Complaint from './components/Complaint.vue'
 
 
 export default {
-  components: { Complaint },
+  //components: { Complaint },
   name: 'App',
 }
 </script>

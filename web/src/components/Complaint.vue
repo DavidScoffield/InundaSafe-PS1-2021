@@ -10,7 +10,7 @@
       <l-tile-layer
         :url="url"
       />
-      <div v-for="(complaint, index) in complaints" :key="`complaints-${index}`">
+      <div v-for="(complaint, index) in complaints.items" :key="`complaints-${index}`">
         <l-marker :lat-lng="complaint.coordenadas">
           <l-popup>
             <div @click="innerClick">
@@ -24,7 +24,7 @@
               </p>
               <strong>
                 <i>
-                  Click para 
+                  Haga click para 
                   <div style="display: inline" v-if="!showDescription">ver</div> 
                   <div style="display: inline" v-else>ocultar</div> 
                   la descripción
@@ -35,8 +35,15 @@
         </l-marker>
       </div>
       
-      
     </l-map>
+
+    <div v-if="currentPage < complaints.paginas">
+      <button @click="movePage(1)">Siguiente</button>
+    </div>
+    <div v-if="currentPage > 1">
+      <button @click="movePage(-1)">Anterior</button>
+    </div>
+
   </div>
   
 </template>
@@ -60,26 +67,34 @@ export default {
       center: latLng(-34.9187, -57.956),
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       showDescription: false,
-      complaints: []
+      complaints: [],
+      currentPage: 1
     };
   },
   methods: {
     innerClick() {
       this.showDescription = !this.showDescription;
+    },
+    movePage(next) {
+      this.currentPage += next
+      this.fetchNextPage()
+    },
+    fetchNextPage() {
+      fetch(`http://localhost:5000/api/denuncias?pagina=${this.currentPage}`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        this.complaints = json
+        console.log(json)
+      })
+      .catch((e) => {
+        console.log(e)
+      })
     }
   },
   created() {
-    fetch("http://localhost:5000/api/denuncias?pagina=1")
-    .then((response) => {
-      return response.json();
-    })
-    .then((json) => {
-      this.complaints = json.items
-      console.log(json)
-    })
-    .catch((e) => {
-      console.log(e)
-    })
+    this.fetchNextPage()
   }
 };
 

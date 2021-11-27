@@ -61,7 +61,7 @@ def getAll():
                 },
             )
 
-        if not meeting_points:
+        if meeting_points.total == 0:
             abort(
                 404,
                 {

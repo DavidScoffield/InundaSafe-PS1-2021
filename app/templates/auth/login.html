@@ -17,6 +17,11 @@
   {{render_form(form, action=url_for('auth_routes.auth_authenticate'), method="POST")}}
   <!-- Login with social media -->
   <hr>
+  {% with messages = get_flashed_messages(category_filter=["auth_google_login"]) %}
+  {% for message in messages %}
+  <p class="text-center"><strong>{{message}}</strong></p>
+  {% endfor %}
+  {% endwith %}
   <div class="login-cards">
     <a href="{{url_for('auth_routes.auth_google_routes.login')}}" class="login-card">
       <p>Iniciar sesión con Google</p>
@@ -32,8 +37,13 @@
   <div class="m-2 d-flex justify-content-center">
     <strong>¿No tienes usuario aún?</strong>
   </div>
+  {% with messages = get_flashed_messages(category_filter=["auth_google_register"]) %}
+  {% for message in messages %}
+  <p class="text-center"><strong>{{message}}</strong></p>
+  {% endfor %}
+  {% endwith %}
   <div class="login-cards">
-    <a href="#" class="login-card">
+    <a href="{{url_for('auth_routes.auth_google_routes.register')}}" class="login-card">
       <p>Registrarse con Google</p>
       <i class="fa fa-google fa-2x"></i>
     </a>

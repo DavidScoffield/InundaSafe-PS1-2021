@@ -15,6 +15,7 @@ from flask import (
 
 # from app.db import connection
 from app.models.user import User
+from app.models.user_waiting import UserWaiting
 from app.helpers.auth import get_google_provider_cfg
 
 from oauthlib.oauth2 import WebApplicationClient
@@ -36,15 +37,111 @@ auth_google_routes = Blueprint(
 )
 
 
-# client = WebApplicationClient(GOOGLE_CLIENT_ID)
-
-
-@auth_google_routes.get("/")
+# ---- LOGIN
+@auth_google_routes.get("/iniciar_sesion")
 def login():
+    """
+    Controller para la redireccion a la pagina para logearse con google
+    """
+    request_uri = use_auth_google(
+        redirect_uri="REDIRECT_LOGIN_URI_GOOGLE"
+    )
+    return redirect(request_uri)
+
+
+@auth_google_routes.get("/iniciar_sesion/callback")
+def callback_login():
+    """
+    - Controller para manejar el callback del inicio de sesion con Google.
+    - Verifica los datos devueltos y logea al usuario o informa reportes
+    dependiendo las condiciones del sistema en base a los datos recuperados
+    """
+    userinfo_response = callback_auth_google(request)
+
+    return redirect(url_for("auth_routes.auth_login"))
+
+
+# -----------
+
+# ---- REGISTER
+@auth_google_routes.get("/registro")
+def register():
+    """
+    Controller para la redireccion a la pagina para registrarse con google
+    """
+    request_uri = use_auth_google(
+        redirect_uri="REDIRECT_REGISTER_URI_GOOGLE"
+    )
+    return redirect(request_uri)
+
+
+@auth_google_routes.get("/registro/callback")
+def callback_register():
+    """
+    - Controller para manejar el callback del registro con Google.
+    - Verifica los datos devueltos y regitra al usuario o informa reportes
+    dependiendo las condiciones del sistema en base a los datos recuperados
+    """
+    userinfo_response = callback_auth_google(request)
+
+    # Comprobar si ya esta registrado el usuario
+    user_logged = User.check_existing_email_or_username(
+        email=userinfo_response["email"]
+    )
+
+    if user_logged:
+        if user_logged.created_by_social_media == 1:
+            flash(
+                "Ya está registrado con este usuario, intente iniciando sesión!",
+                category="auth_google_register",
+            )
+        else:
+            flash(
+                "El email con el que quiere registrarse ya está en uso en el sistema, intente con otra cuenta.",
+                category="auth_google_register",
+            )
+        return redirect(url_for("auth_routes.auth_login"))
+
+    # Comprobar si ya a la espera de aprobación
+    user_with_email = UserWaiting.check_existing_email(
+        email=userinfo_response["email"]
+    )
+
+    if user_with_email:
+        flash(
+            "Ya se encuentra a la espera de aprobación de un administrador!",
+            category="auth_google_register",
+        )
+        return redirect(url_for("auth_routes.auth_login"))
+
+    email = userinfo_response["email"]
+    first_name = userinfo_response["given_name"]
+    last_name = userinfo_response["family_name"]
+    suggested_username = f"{userinfo_response['given_name']}{userinfo_response['family_name']}"
+
+    logger_info(
+        {email, first_name, last_name, suggested_username}
+    )
+
+    # Se guarda los datos del usuario para esperar aprobacion
+    UserWaiting.new(
+        email, suggested_username, first_name, last_name
+    )
+
+    flash(
+        "¡Su solicitud de aprobación fue existosamente enviada, cuando un administrador lo habilite podrá comenzar a utilizar el sistema!",
+        category="auth_google_register",
+    )
+
+    return redirect(url_for("auth_routes.auth_login"))
+
+
+# -----------
+
+
+def use_auth_google(redirect_uri: str):
     client = current_app.client
-    REDIRECT_URI_GOOGLE = current_app.config[
-        "REDIRECT_URI_GOOGLE"
-    ]
+    REDIRECT_URI_GOOGLE = current_app.config[redirect_uri]
 
     # Find out what URL to hit for Google login
     google_provider_cfg = get_google_provider_cfg()
@@ -59,11 +156,11 @@ def login():
         redirect_uri=REDIRECT_URI_GOOGLE,
         scope=["openid", "email", "profile"],
     )
-    return redirect(request_uri)
+
+    return request_uri
 
 
-@auth_google_routes.get("/iniciar_sesion/callback")
-def callback():
+def callback_auth_google(request):
     client = current_app.client
     GOOGLE_CLIENT_ID = current_app.config[
         "GOOGLE_CLIENT_ID"
@@ -112,12 +209,12 @@ def callback():
         picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
     else:
-        return (
-            "El email del usuario no esta disponible o no ha sido verificado por Google.",
+        abort(
             400,
+            {
+                "custom_description": "El email del usuario no esta disponible o no ha sido verificado por Google.",
+            },
         )
-
-    logger_info(userinfo_response.json())
 
     # Chequeo de existencia de usuario
     # stored_user = User
@@ -140,11 +237,7 @@ def callback():
 
     # Begin user session by logging the user in
     # login_user(user)
-
-    # Send user back to homepage
-    return redirect(
-        url_for("auth_routes.auth_google_routes.bienvenido")
-    )
+    return userinfo_response.json()
 
 
 @auth_google_routes.get("/bienvenido")

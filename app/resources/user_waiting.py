@@ -216,6 +216,7 @@ def approve(user_id):
             last_name,
             state,
             selectedRoles,
+            created_by_social_media=1,
         )  # inserto al usuario en la bd
 
         # Eliminar user de tabla de users_waiting

@@ -58,7 +58,52 @@ def callback_login():
     """
     userinfo_response = callback_auth_google(request)
 
-    return redirect(url_for("auth_routes.auth_login"))
+    # Comprobar si ya esta registrado el usuario
+    user_logged = User.find_by_email_for_social_media(
+        email=userinfo_response["email"]
+    )
+
+    if not user_logged:
+        # Comprobar si ya a la espera de aprobación
+        user_with_email = UserWaiting.check_existing_email(
+            email=userinfo_response["email"]
+        )
+
+        if user_with_email:
+            flash(
+                "No está registrado, pero se encuentra a la espera de aprobación de un administrador. Inténtelo mas tarde!",
+                category="auth_google_login",
+            )
+        else:
+            flash(
+                "Debe registrarse para poder iniciar sesión",
+                category="auth_google_login",
+            )
+        return redirect(url_for("auth_routes.auth_login"))
+
+    # Iniciar sesion
+
+    if user_logged.active == 0:
+        flash(
+            "El usuario esta bloqueado",
+            category="auth_google_login",
+        )
+        return redirect(url_for("auth_routes.auth_login"))
+
+    permisos = []
+    for rol in user_logged.roles:
+        for permiso in rol.permissions:
+            permisos.append(permiso.name)
+    permisos = set(permisos)
+
+    session["user"] = user_logged.id
+    session["permissions"] = permisos
+
+    flash(
+        "La sesión se inició correctamente.",
+        category="login_succeful",
+    )
+    return redirect(url_for("home.index"))
 
 
 # -----------
@@ -118,10 +163,6 @@ def callback_register():
     first_name = userinfo_response["given_name"]
     last_name = userinfo_response["family_name"]
     suggested_username = f"{userinfo_response['given_name']}{userinfo_response['family_name']}"
-
-    logger_info(
-        {email, first_name, last_name, suggested_username}
-    )
 
     # Se guarda los datos del usuario para esperar aprobacion
     UserWaiting.new(

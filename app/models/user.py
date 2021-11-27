@@ -120,6 +120,20 @@ class User(db.Model):
         )
 
     @classmethod
+    def find_by_email_for_social_media(cls, email):
+        """
+        - Busca en la base de datos a un usuario que tenga el mismo mail
+        y que haya sido creado via red social, y devuelve al usuario encontrado
+        - Caso contrario retorna None
+        """
+
+        return (
+            User.query.filter(User.email == email)
+            .filter(User.created_by_social_media == 1)
+            .first()
+        )
+
+    @classmethod
     def update_state(cls, user_id, new_state):
         """Actualizar estado del usuario"""
         user = User.query.filter(User.id == user_id).first()

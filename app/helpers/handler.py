@@ -2,15 +2,30 @@ from flask import render_template, request, jsonify
 from app.helpers.logger import logger_exception, logger_info
 
 
+def get_description(e):
+    description = None
+    if (
+        isinstance(e.description, dict)
+        and "custom_description" in e.description.keys()
+    ):
+        description = e.description["custom_description"]
+
+    return description
+
+
 def bad_request_error(e):
     """
     Funcion helper para redirigir a una pagina error con
     un diccionario definido en caso de obtener un error 400
     """
 
+    description = get_description(e)
+
     kwargs = {
         "error_name": "400 Bad Request",
-        "error_description": "Por favor, verifique los datos ingresados",
+        "error_description": "Por favor, verifique los datos ingresados"
+        if description is None
+        else description,
     }
     return make_response(kwargs, 400)
 
@@ -20,13 +35,7 @@ def not_found_error(e):
     Funcion helper para redirigir a una pagina error
     con un diccionario definido en caso de obtener un error 404
     """
-    description = None
-
-    if (
-        isinstance(e.description, dict)
-        and "custom_description" in e.description.keys()
-    ):
-        description = e.description["custom_description"]
+    description = get_description(e)
 
     kwargs = {
         "error_name": "404 Not Found Error",

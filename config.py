@@ -36,7 +36,8 @@ class ProductionConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
-    REDIRECT_URI_GOOGLE = "https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/auth/google/iniciar_sesion/callback"
+    REDIRECT_LOGIN_URI_GOOGLE = "https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/auth/google/iniciar_sesion/callback"
+    REDIRECT_REGISTER_URI_GOOGLE = "https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/auth/google/registro/callback"
 
 
 class DevelopmentConfig(Config):
@@ -51,7 +52,8 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-    REDIRECT_URI_GOOGLE = "https://127.0.0.1:5000/auth/google/iniciar_sesion/callback"
+    REDIRECT_LOGIN_URI_GOOGLE = "https://127.0.0.1:5000/auth/google/iniciar_sesion/callback"
+    REDIRECT_REGISTER_URI_GOOGLE = "https://127.0.0.1:5000/auth/google/registro/callback"
 
 
 class TestingConfig(Config):

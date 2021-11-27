@@ -33,6 +33,13 @@ class UserWaiting(db.Model):
         self.first_name = first_name
         self.last_name = last_name
 
+    def get_attributes(self):
+        "Retorna un diccionario con los atributos del usuario"
+
+        attributes = vars(self)
+        # del attributes["_sa_instance_state"]
+        return attributes
+
     @classmethod
     def new(
         cls,

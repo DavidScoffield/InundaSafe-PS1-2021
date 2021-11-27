@@ -34,6 +34,15 @@
   </div>
 
   <br />
+  {% with messages = get_flashed_messages(category_filter=["user_waiting_approve"]) %}
+  {% if messages %}
+
+  {% for message in messages %}
+  {{ message }}
+  {% endfor %}
+
+  {% endif %}
+  {% endwith %}
 
   <!-- LIST -->
   <table class="table">

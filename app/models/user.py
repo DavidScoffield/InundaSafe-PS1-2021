@@ -151,7 +151,7 @@ class User(db.Model):
 
     @classmethod
     def check_existing_email_or_username(
-        cls, email, username
+        cls, email: str = "", username: str = ""
     ):
         """Comprobar si algun usuario con determinado email o nombre de usuario"""
         return User.query.filter(

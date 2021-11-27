@@ -10,23 +10,14 @@ from flask import (
 )
 
 from app.models.user import User
-from app.models.role import Role
 from app.models.user_waiting import UserWaiting
 from app.helpers.auth import authenticated
 from app.helpers.check_permission import check_permission
-from app.helpers.has_role import has_role
 from app.helpers.check_param_search import (
-    active_dic,
     check_param,
 )
 
-from app.helpers.forms.new_user_form import NewUserForm
-from app.helpers.forms.edit_other_user_form import (
-    EditOtherUserForm,
-)
-from app.helpers.forms.edit_my_profile_form import (
-    EditMyProfileForm,
-)
+from app.helpers.forms.approve_user import ApproveUserForm
 
 user_waiting = Blueprint(
     "user_waiting",
@@ -96,152 +87,27 @@ def index(page_number):
     )
 
 
-# @user_waiting.get("/nuevo")
-# def new():
-#     "Controller para mostrar el formulario para el alta de un usuario"
+@user_waiting.post("/rechazar")
+def refuse():
+    "Controller para rechazar la solicitud de aprobacion de un usuario"
 
-#     if not authenticated(session):
-#         abort(401)
+    if not authenticated(session) or not check_permission(
+        "usuario_waiting_refuse"
+    ):
+        abort(401)
 
-#     if not check_permission("usuario_show"):
-#         abort(401)
+    user = UserWaiting.find_user_by_id(
+        request.form["user_id"]
+    )
 
-#     form = NewUserForm()
+    if not user:
+        abort(404)
 
-#     return render_template("user/new.html", form=form)
+    user.delete()
 
-
-# @user_waiting.post("/nuevo")
-# def create():
-#     "Controller para crear un usuario en base a los datos enviados en el formulario"
-
-#     if not authenticated(session):
-#         abort(401)
-
-#     if not check_permission("usuario_new"):
-#         abort(401)
-
-#     form = NewUserForm(request.form)
-
-#     params = form.data
-
-#     first_name = params["first_name"]
-#     last_name = params["last_name"]
-#     username = params["username"]
-#     email = params["email"]
-#     password = params["password"]
-#     state = request.form.get("active")
-#     # selectedRoles = request.form.getlist("rol")
-
-#     selectedRoles = []
-
-#     # genero una lista de strings con los roles seleccionados en el form
-#     for rol in ["rol_administrador", "rol_operador"]:
-#         if params[rol]:
-#             selectedRoles += [rol]
-
-#     # validaciones back: validate_on_submit() llama a los validators.DataRequired()
-#     # de todos los campos (chequea que no esten vacios) y llama ademas al validador
-#     # custom validate_rol_label() definido en la clase que chequea que se haya clickeado
-#     # al menos un checkbox.
-#     if not form.validate_on_submit():
-#         flash(
-#             "Por favor, corrija los errores",
-#             category="user_create",
-#         )
-#         return render_template("user/new.html", form=form)
-#     else:
-#         user = User.check_existing_email_or_username(
-#             email, username
-#         )
-
-#         if user:
-#             if user.email == email:
-#                 flash(
-#                     "Ya existe un usuario con ese email",
-#                     category="user_create",
-#                 )
-#                 return redirect(url_for("user.new"))
-
-#             if user.username == username:
-#                 flash(
-#                     "Ya existe un usuario con ese nombre de usuario",
-#                     category="user_create",
-#                 )
-#                 return redirect(url_for("user.new"))
-
-#         # Chequear que el email no este en la tabla de usuarios en espera
-#         user_waiting = UserWaiting.check_existing_email(
-#             email
-#         )
-
-#         if user_waiting:
-#             flash(
-#                 "Ya existe un usuario con ese email",
-#                 category="user_create",
-#             )
-#             return redirect(url_for("user.new"))
-
-#         if (
-#             state == "activo"
-#         ):  # depende cual sea el estado pongo un int 1 o 0 para q quede acorde con bd
-#             state = 1
-#         else:
-#             state = 0
-
-#         # Si esta creando a un admin, lo seteo como Activo, para que no pueda crearlo Bloqueado
-#         if "rol_administrador" in selectedRoles:
-#             state = 1
-
-#         User.insert_user(
-#             email,
-#             username,
-#             password,
-#             first_name,
-#             last_name,
-#             state,
-#             selectedRoles,
-#         )  # inserto al usuario en la bd
-
-#     flash(
-#         "Usuario creado correctamente",
-#         category="user_create",
-#     )
-#     return redirect(url_for("user.index", page_number=1))
-
-
-# @user_waiting.post("/toggle_state")
-# def toggle_state():
-#     "Controller para menejar el cambio de estado de un usuario"
-
-#     if not authenticated(session):
-#         abort(401)
-
-#     if not check_permission("usuario_update"):
-#         abort(401)
-
-#     user_id = request.form["user_id"]
-#     state = request.form["state"]
-
-#     # Si su estado era Activo (1), hay que ponerlo en 0 (Bloqueado). Si era Bloqueado hay que ponerlo en 1
-#     new_state = 0 if int(state) == 1 else 1
-
-#     User.update_state(user_id, new_state)
-
-#     return redirect(url_for("user.index", page_number=1))
-
-
-# @user_waiting.post("/editar")
-# def delete():
-#     "Controller para eliminar un usuario"
-
-#     if not authenticated(session) or not check_permission(
-#         "usuario_destroy"
-#     ):
-#         abort(401)
-
-#     User.delete_user(request.form["user_id"])
-#     return redirect(url_for("user.index", page_number=1))
+    return redirect(
+        url_for("user_waiting.index", page_number=1)
+    )
 
 
 @user_waiting.get("/administrar/<int:user_id>")
@@ -263,7 +129,7 @@ def manage(user_id):
     if not user:
         abort(404)
 
-    form = EditOtherUserForm(**user.get_attributes())
+    form = ApproveUserForm(**user.get_attributes())
 
     return render_template(
         "user_waiting/manage.html",
@@ -272,244 +138,93 @@ def manage(user_id):
     )
 
 
-# @user_waiting.post("/editar/<int:user_id>")
-# def update(user_id):
-#     "Controller para editar un usuario en base a los datos del formulario"
+@user_waiting.post("/aprobar/<int:user_id>")
+def approve(user_id):
+    "Controller para aprobar un usuario"
 
-#     if not authenticated(session):
-#         abort(401)
+    if not authenticated(session):
+        abort(401)
 
-#     if not check_permission("usuario_update"):
-#         abort(401)
+    if not check_permission("usuario_waiting_approve"):
+        abort(401)
 
-#     form = EditOtherUserForm(request.form)
+    form = ApproveUserForm(request.form)
+    params = form.data
 
-#     params = form.data
+    username = params["suggested_username"]
+    state = request.form.get("active")
 
-#     email = params["email"]
+    selectedRoles = []
+    # genero una lista de strings con los roles seleccionados en el form
+    for rol in ["rol_administrador", "rol_operador"]:
+        if params[rol]:
+            selectedRoles += [rol]
 
-#     selectedRoles = []
-#     # genero una lista de strings con los roles seleccionados en el form
-#     for rol in ["rol_administrador", "rol_operador"]:
-#         if params[rol]:
-#             selectedRoles += [rol]
+    # validaciones back: validate_on_submit() llama a los validators.DataRequired()
+    # de todos los campos (chequea que no esten vacios) y llama ademas al validador
+    # custom validate_rol_label() definido en la clase que chequea que se haya clickeado
+    # al menos un checkbox.
+    if not form.validate_on_submit():
+        user = UserWaiting.find_user_by_id(user_id)
+        flash(
+            "Por favor, corrija los errores",
+            category="user_waiting_manage",
+        )
+        return render_template(
+            "user_waiting/manage.html", form=form, user=user
+        )
+    else:
+        # Comprobar unicidad nombre de usuario
+        user = User.check_existing_email_or_username(
+            username=username
+        )
 
-#     user = User.find_user_by_id(user_id)
-#     if (
-#         not form.validate_on_submit()
-#     ):  # validaciones del back WTF
-#         flash(
-#             "Por favor, corrija los errores",
-#             category="update_user",
-#         )
-#         return render_template(
-#             "user/edit_other_user.html",
-#             user=user,
-#             form=form,
-#         )
+        if user:
+            flash(
+                "Ya existe un usuario con ese nombre de usuario",
+                category="user_waiting_manage",
+            )
 
-#     # este if está por si dos admins se intentan sacar el permiso de admin mutuamente al mismo tiempo
-#     roles = Role.find_roles_from_strings(selectedRoles)
+            return render_template(
+                "user_waiting/manage.html",
+                user=user,
+                form=form,
+            )
 
-#     user = User.find_user_by_id(user_id)
-#     user_was_admin = False
-#     for rol in user.roles:
-#         if rol.name == "rol_administrador":
-#             user_was_admin = True
+        # depende cual sea el estado pongo un int 1 o 0 para q quede
+        # acorde con bd
+        state = 1 if state == "activo" else 0
 
-#     # Por si se deshabilita el chequeo del front e intenta bloquear a un Admin al editarlo
-#     if user_was_admin:
-#         params["active"] = "activo"
+        # Si esta habilitando a un admin, lo seteo como Activo, para que no
+        # pueda habilitarlo Bloqueado
+        if "rol_administrador" in selectedRoles:
+            state = 1
 
-#     update_password = True
-#     # Si la contraseña se envia vacia, no la queria editar: La dejo como estaba en la BD
-#     if not params["password"]:
-#         update_password = False
+        # Juntar datos finales
+        user = UserWaiting.find_user_by_id(user_id)
 
-#     if (
-#         not has_role(roles, "rol_administrador")
-#         and user_was_admin
-#     ):  # si NO está chequeado el admin, entonces
-#         all_users = (
-#             User.find_all_users()
-#         )  # busco a todos los usuarios
-#         lista = []
-#         for u in all_users:
-#             for r in u.roles:
-#                 lista.append(
-#                     r.name
-#                 )  # y armo una lista con todos los roles de todos los usuarios
-#         if (
-#             lista.count("rol_administrador") <= 1
-#         ):  # si hay 1 admin entonces no es posible dejar de ser admin porque no puede dejar de haber
-#             flash(
-#                 "No puede dejar de ser administrador ya que usted es el único existente",
-#                 category="update_user",
-#             )
-#             return redirect(
-#                 url_for("user.edit", user_id=user_id)
-#             )
+        email = user.email
+        first_name = user.first_name
+        last_name = user.last_name
+        password = "RegistradoConRedSocial123"
 
-#     user_email = (
-#         User.check_existing_email_with_different_id(
-#             email, user_id
-#         )
-#     )
-#     if user_email:
-#         if user_email.email == email:
-#             flash(
-#                 "Ya existe un usuario con ese email",
-#                 category="update_user",
-#             )
-#             return redirect(
-#                 url_for("user.edit", user_id=user_id)
-#             )
+        User.insert_user(
+            email,
+            username,
+            password,
+            first_name,
+            last_name,
+            state,
+            selectedRoles,
+        )  # inserto al usuario en la bd
 
-#     User.update_user(
-#         user_id, params, selectedRoles, update_password
-#     )
-#     flash(
-#         "Usuario editado correctamente",
-#         category="update_user",
-#     )
+        # Eliminar user de tabla de users_waiting
+        user.delete()
 
-#     return redirect(url_for("user.edit", user_id=user_id))
-
-
-# @user_waiting.get("/miPerfil")
-# def edit_my_profile():
-#     "Controller para mostrar el formulario de edicion de perfil para el usuario logeado"
-
-#     if not authenticated(session):
-#         abort(401)
-
-#     if not check_permission("usuario_show_my_profile"):
-#         abort(401)
-
-#     user = User.find_user_by_id(session["user"])
-
-#     form = EditMyProfileForm(**user.get_attributes())
-
-#     return render_template(
-#         "user/my_profile.html", user=user, form=form
-#     )
-
-
-# @user_waiting.post("/miPerfil")
-# def update_my_profile():
-#     "Controller para editar el perfil del usuario logeado"
-
-#     if not authenticated(session):
-#         abort(401)
-
-#     if not check_permission("usuario_update_my_profile"):
-#         abort(401)
-
-#     form = EditMyProfileForm(request.form)
-
-#     params = form.data
-
-#     selectedRoles = []
-#     # genero una lista de strings con los roles seleccionados en el form
-#     for rol in ["rol_administrador", "rol_operador"]:
-#         if params[rol]:
-#             selectedRoles += [rol]
-
-#     user = User.find_user_by_id(session["user"])
-
-#     if (
-#         not form.validate_on_submit()
-#     ):  # validaciones del back WTF
-#         flash(
-#             "Por favor, corrija los errores",
-#             category="user_my_profile",
-#         )
-#         return render_template(
-#             "user/my_profile.html", user=user, form=form
-#         )
-
-#     email = params["email"]
-
-#     update_password = True
-#     # Si la contraseña se envia vacia, no la queria editar: La dejo como estaba en la BD
-#     if not params["password"]:
-#         update_password = False
-
-#     isAdmin = has_role(user.roles, "rol_administrador")
-#     if isAdmin:
-#         roles = Role.find_roles_from_strings(selectedRoles)
-#         if not has_role(
-#             roles, "rol_administrador"
-#         ):  # si NO está chequeado el admin, entonces
-#             all_users = (
-#                 User.find_all_users()
-#             )  # busco a todos los usuarios
-#             lista = []
-#             for u in all_users:
-#                 for r in u.roles:
-#                     lista.append(
-#                         r.name
-#                     )  # y armo una lista con todos los roles de todos los usuarios
-#             if (
-#                 lista.count("rol_administrador") <= 1
-#             ):  # si hay 1 admin entonces no es posible dejar de ser admin porque no puede dejar de haber
-#                 flash(
-#                     "No puede dejar de ser administrador ya que usted es el único existente",
-#                     category="user_my_profile",
-#                 )
-#                 return redirect(
-#                     url_for("user.edit_my_profile")
-#                 )
-
-#     user_email = (
-#         User.check_existing_email_with_different_id(
-#             email, user.id
-#         )
-#     )
-#     if user_email:
-#         flash(
-#             "Ya existe un usuario con ese email",
-#             category="user_my_profile",
-#         )
-#         return redirect(url_for("user.edit_my_profile"))
-
-#     User.update_profile(
-#         user,
-#         params,
-#         selectedRoles,
-#         isAdmin,
-#         update_password,
-#     )
-#     flash(
-#         "Perfil actualizado correctamente",
-#         category="user_my_profile",
-#     )
-
-#     return redirect(url_for("user.edit_my_profile"))
-
-
-# @user_waiting.post("/show")
-# def show():
-#     "Controller para mostrar la información de un usuario"
-
-#     if not authenticated(session) or not check_permission(
-#         "usuario_show"
-#     ):
-#         abort(401)
-
-#     id_user = request.form["id_user"]
-#     user = User.find_user_by_id_not_deleted(id_user)
-#     if not user:
-#         # flash(
-#         #     "No se encontró el usuario especificado",
-#         #     category="user_show",
-#         # )
-#         # return redirect(
-#         #     url_for("user.index", page_number=1)
-#         # )
-#         abort(404)
-
-#     return render_template(
-#         "user/show.html",
-#         user=user,
-#     )
+    flash(
+        "Usuario habilitado en el sistema correctamente",
+        category="user_waiting_approve",
+    )
+    return redirect(
+        url_for("user_waiting.index", page_number=1)
+    )

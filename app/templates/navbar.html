@@ -34,6 +34,7 @@
       {% endif %}
       #}
 
+      {% if helper_has_permission("usuario_index") or helper_has_permission("usuario_waiting_index") %}
       <li class="nav-item dropdown {% if bp == 'user' or bp == 'user_waiting' %} active {% endif %}"">
         <a class=" nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
         aria-expanded="false">
@@ -52,6 +53,7 @@
           {% endif %}
         </ul>
       </li>
+      {% endif %}
 
       <li
         class="nav-item dropdown {% if bp == 'meeting_point' or bp == 'flood_zones' or bp == 'evacuation_route' %} active {% endif %}">

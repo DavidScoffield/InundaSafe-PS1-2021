@@ -230,6 +230,7 @@ class User(db.Model):
         last_name,
         state,
         selectedRoles,
+        created_by_social_media: int = 0,
     ):
         """Insertar un nuevo usuario en la base de datos con los datos pasados por parametro"""
         new_user = User(
@@ -239,6 +240,7 @@ class User(db.Model):
             first_name,
             last_name,
             state,
+            created_by_social_media,
         )
         db.session.add(new_user)
         db.session.commit()

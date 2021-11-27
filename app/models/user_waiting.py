@@ -45,7 +45,6 @@ class UserWaiting(db.Model):
         cls,
         email,
         suggested_username,
-        password,
         first_name,
         last_name,
     ):
@@ -53,7 +52,6 @@ class UserWaiting(db.Model):
         new_user = UserWaiting(
             email,
             suggested_username,
-            password,
             first_name,
             last_name,
         )

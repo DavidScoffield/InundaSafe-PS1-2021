@@ -1,6 +1,10 @@
 <template>
 
   <div style="height: 500px; width: 100%">
+    <div id="nav">
+      <router-link to="/newComplaint">Nueva denuncia</router-link>
+    </div>
+    <router-view /> 
     Denuncias:
     <l-map
       :zoom="zoom"
@@ -9,7 +13,7 @@
     >
       <l-tile-layer
         :url="url"
-      />
+      />  
       <div v-for="(complaint, index) in complaints.items" :key="`complaints-${index}`">
         <l-marker :lat-lng="complaint.coordenadas">
           <l-popup :options="{ maxHeight: 300 }">

@@ -38,7 +38,7 @@
     </l-map>
 
     <div v-if="currentPage < complaints.paginas">
-      <button @click="movePage(1)">Siguiente</button>
+      <button class="button-gradient" @click="movePage(1)">Siguiente</button>
     </div>
     <div v-if="currentPage > 1">
       <button @click="movePage(-1)">Anterior</button>
@@ -99,8 +99,3 @@ export default {
 };
 
 </script>
-
-
-<style>
-
-</style>

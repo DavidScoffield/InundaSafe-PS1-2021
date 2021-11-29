@@ -358,6 +358,7 @@ def update(user_id):
             email, user_id
         )
     )
+
     if user_email:
         if user_email.email == email:
             flash(
@@ -367,6 +368,20 @@ def update(user_id):
             return redirect(
                 url_for("user.edit", user_id=user_id)
             )
+
+    # TODO chequear que el email no este en la tabla "users_waiting". COMPROBAR QUE FUNCIONE
+    user_email_waiting = UserWaiting.check_existing_email(
+        email
+    )
+
+    if user_email_waiting:
+        flash(
+            "Ya existe un usuario con ese email",
+            category="update_user",
+        )
+        return redirect(
+            url_for("user.edit", user_id=user_id)
+        )
 
     User.update_user(
         user_id, params, selectedRoles, update_password
@@ -470,6 +485,18 @@ def update_my_profile():
         )
     )
     if user_email:
+        flash(
+            "Ya existe un usuario con ese email",
+            category="user_my_profile",
+        )
+        return redirect(url_for("user.edit_my_profile"))
+
+    # TODO chequear que el email no este en la tabla "users_waiting". COMPROBAR QUE FUNCIONE
+    user_email_waiting = UserWaiting.check_existing_email(
+        email
+    )
+
+    if user_email_waiting:
         flash(
             "Ya existe un usuario con ese email",
             category="user_my_profile",

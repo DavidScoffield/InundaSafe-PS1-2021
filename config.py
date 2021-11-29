@@ -1,4 +1,4 @@
-from os import environ
+from os import environ, urandom
 
 
 class Config(object):
@@ -11,6 +11,14 @@ class Config(object):
     SECRET_KEY = "secret"
     UPLOAD_EXTENSIONS = [".csv"]
     UPLOAD_FOLDER = "app/static/uploads"
+
+    # Google api configuration
+    GOOGLE_CLIENT_ID = environ.get("GOOGLE_CLIENT_ID", None)
+    GOOGLE_CLIENT_SECRET = environ.get(
+        "GOOGLE_CLIENT_SECRET", None
+    )
+    GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
+    SECRET_KEY = environ.get("SECRET_KEY", urandom(24))
 
     @staticmethod
     def configure(app):
@@ -28,6 +36,9 @@ class ProductionConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
+    REDIRECT_LOGIN_URI_GOOGLE = "https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/auth/google/iniciar_sesion/callback"
+    REDIRECT_REGISTER_URI_GOOGLE = "https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/auth/google/registro/callback"
+
 
 class DevelopmentConfig(Config):
     """Development configuration."""
@@ -40,6 +51,9 @@ class DevelopmentConfig(Config):
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+    REDIRECT_LOGIN_URI_GOOGLE = "https://127.0.0.1:5000/auth/google/iniciar_sesion/callback"
+    REDIRECT_REGISTER_URI_GOOGLE = "https://127.0.0.1:5000/auth/google/registro/callback"
 
 
 class TestingConfig(Config):

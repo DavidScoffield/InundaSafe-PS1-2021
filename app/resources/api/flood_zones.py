@@ -61,7 +61,7 @@ def getAll():
                 },
             )
 
-        if not flood_zones:
+        if flood_zones.total == 0:
             abort(
                 404,
                 {

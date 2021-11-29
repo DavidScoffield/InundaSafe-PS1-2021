@@ -8,6 +8,8 @@ from app.helpers.format_role import (
 )
 from config import config
 from app import db
+
+# Controllers
 from app.resources import auth
 from app.resources.home import home as home_route
 from app.resources.meeting_point import meeting_point
@@ -18,9 +20,13 @@ from app.resources.complaint_follow_up import (
     follow_up_route,
 )
 from app.resources.user import user as user_blueprint
+from app.resources.user_waiting import (
+    user_waiting as user_waiting_blueprint,
+)
 from app.resources.config import config_routes
 from app.resources.auth import auth_routes
 
+# Controllers API
 from app.resources.api.flood_zones import flood_zones_api
 from app.resources.api.complaint import complaint_api
 from app.resources.api.evacuation_route import (
@@ -30,6 +36,7 @@ from app.resources.api.meeting_point import (
     meeting_point_api,
 )
 
+# Helpers
 from app.helpers import handler
 from app.helpers import (
     check_permission as helper_permissions,
@@ -44,8 +51,20 @@ from app.helpers import (
 from app.helpers import (
     is_admin_or_is_my_complaint as helper_is_admin_or_is_my_complaint,
 )
+
+# Models
 from app.helpers.import_models import *
 
+
+# Google API
+from oauthlib.oauth2 import WebApplicationClient
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
 
 # ----- Logger -----
 # import logging
@@ -74,6 +93,21 @@ def create_app(environment="development"):
     # Server Side session
     app.config["SESSION_TYPE"] = "filesystem"
     Session(app)
+
+    # GOOGLE API
+    app.secret_key = app.config["SECRET_KEY"]
+
+    # OAuth 2 client setup
+    app.client = WebApplicationClient(
+        app.config["GOOGLE_CLIENT_ID"]
+    )
+
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.get(user_id)
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(
@@ -119,6 +153,9 @@ def create_app(environment="development"):
 
     # # Rutas de Usuarios
     app.register_blueprint(user_blueprint)
+
+    # # Rutas de Usuarios en espera de aprobacion
+    app.register_blueprint(user_waiting_blueprint)
 
     # Rutas pagina configuracion(usando Blueprints)
     app.register_blueprint(config_routes)

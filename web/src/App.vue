@@ -18,7 +18,7 @@ export default {
     }
   },
   created() {
-    fetch("http://localhost:5000/api/colors")
+    fetch("https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/api/colors")
       .then((response) => {
         //let myRules = document.styleSheets[4].cssRules; //nuestra hoja de estilos personalizada (button-gradient, ...)
         //console.log(myRules);

@@ -36,9 +36,13 @@ def validate_received_params(params):
     """
     Valida que los nombres de los parametros sean los correctos
     """
+
     valids_params = ["pagina"]
 
-    params = list(params)
+    if len(params.getlist("pagina")) > 1:
+        return False
+
+    params = list(params.keys())
 
     for param in params:
         if param not in valids_params:

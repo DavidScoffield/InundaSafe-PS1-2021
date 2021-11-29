@@ -1,7 +1,14 @@
 from flask import jsonify, Blueprint, request, abort
-from app.schemas.complaint import complaint_schema
+from app.models.complaint import Complaint
+from app.schemas.complaint import (complaint_post_schema as complaint_schema, 
+                                   paginated_complaints_schema)
 from marshmallow.exceptions import MarshmallowError
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, NotFound
+from app.helpers.validators import (
+    validate_params_pagination,
+    validate_received_params,
+)
+import json
 
 complaint_api = Blueprint("complaint", __name__, url_prefix="/denuncias")
 
@@ -30,4 +37,44 @@ def create():
         abort(400)
 
     except:
+        
+        abort(500)
+
+
+@complaint_api.get("/")
+def get():
+    """
+    Controller de la api para recuperar denuncias confirmadas (en curso, resueltas o cerradas).
+    Se pagina en base a la configuración del sistema.
+
+    @params:
+        - pagina (int): número de página que se desea obtener (por defecto se envía la página 1)
+    """
+
+    try:
+
+        if not validate_received_params(request.args):
+            raise BadRequest
+
+        page = request.args.get("pagina", None)
+
+        page, per_page = validate_params_pagination(page)
+
+        complaints = Complaint.all(page=page)
+
+        complaints = paginated_complaints_schema.dump(complaints)
+
+        return jsonify(complaints)
+
+    except (BadRequest, ValueError):
+        
+        abort(400)
+
+    except NotFound:
+
+        abort(404, {"custom_description": 
+                        "No se encontró la página solicitada"})
+
+    except:
+
         abort(500)

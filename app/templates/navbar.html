@@ -15,11 +15,7 @@
 
   <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      {% if helper_has_permission("usuario_index") %}
-      <li class="nav-item {% if bp == 'user' %} active {% endif %}">
-        <a class="nav-link" href="{{url_for('user.index', page_number=1)}}">Administrar usuarios</a>
-      </li>
-      {% endif %} {% if helper_has_permission("config_show") %}
+      {% if helper_has_permission("config_show") %}
       <li class="nav-item {% if bp == 'config_routes' %} active {% endif %}">
         <a class="nav-link" href="{{url_for('config_routes.index')}}">Configuración</a>
       </li>
@@ -29,7 +25,38 @@
         <a class="nav-link" href="{{url_for('complaint.index', page_number=1)}}">Denuncias</a>
       </li>
       {% endif %}
-      <li class="nav-item dropdown">
+
+      {#
+      {% if helper_has_permission("usuario_index") %}
+      <li class="nav-item {% if bp == 'user' %} active {% endif %}">
+        <a class="nav-link" href="{{url_for('user.index', page_number=1)}}">Administrar usuarios</a>
+      </li>
+      {% endif %}
+      #}
+
+      {% if helper_has_permission("usuario_index") or helper_has_permission("usuario_waiting_index") %}
+      <li class="nav-item dropdown {% if bp == 'user' or bp == 'user_waiting' %} active {% endif %}"">
+        <a class=" nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+        aria-expanded="false">
+        Usuarios
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          {% if helper_has_permission("usuario_index") %}
+          <li class="nav-item {% if bp == 'user' %} active {% endif %}">
+            <a class="dropdown-item" href="{{url_for('user.index', page_number=1)}}">Usuarios del sistema</a>
+          </li>
+          {% endif %}
+          {% if helper_has_permission("usuario_waiting_index") %}
+          <li class="nav-item {% if bp == 'user_waiting' %} active {% endif %}">
+            <a class="dropdown-item" href="{{url_for('user_waiting.index', page_number=1)}}">Aprobación de usuarios</a>
+          </li>
+          {% endif %}
+        </ul>
+      </li>
+      {% endif %}
+
+      <li
+        class="nav-item dropdown {% if bp == 'meeting_point' or bp == 'flood_zones' or bp == 'evacuation_route' %} active {% endif %}">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
           aria-expanded="false">
           Más opciones

@@ -74,6 +74,23 @@ class Complaint(db.Model):
         return attributes
 
     @classmethod
+    def all(cls, page: int = None):
+        """
+        Devuelve todas las denuncias confirmadas paginadas en base a los
+        parametros recibidos
+        """
+
+        ac = actual_config()
+        order = ac.order_by
+        per_page = ac.elements_quantity
+
+        return (Complaint.query.filter(cls.state != "Sin Confirmar")
+                .order_by(eval(f"Complaint.title.{order}()"))
+                .paginate(per_page=per_page,
+                          page=page,
+                          error_out=True))
+
+    @classmethod
     def all_complaints_paginated(cls, page_number: int = 1):
         ac = actual_config()
         elements_quantity = ac.elements_quantity
@@ -145,6 +162,8 @@ class Complaint(db.Model):
     @classmethod
     def search(
         cls,
+        init_date,
+        end_date,
         title: str = "",
         state: int = 1,      
     ):
@@ -159,6 +178,7 @@ class Complaint(db.Model):
             Complaint.query
             .filter(Complaint.title.contains(title))
             .filter(Complaint.state.startswith(state))
+            .filter(Complaint.created_at >= init_date, Complaint.created_at <= end_date)
             .order_by(eval(f"Complaint.title.{order}()"))
         )
 

@@ -25,10 +25,12 @@ from app.helpers.check_param_search import (
     check_param,
 )
 from app.helpers.is_admin_or_is_my_complaint import is_admin_or_is_my_complaint
+import datetime
 
 complaint_route = Blueprint(
     "complaint", __name__, url_prefix="/denuncias"
 )
+
 
 @complaint_route.get("/<int:page_number>")
 def index(page_number):
@@ -43,18 +45,44 @@ def index(page_number):
     title = args.get("title")
     state = args.get("state")
 
+    """
+       Busqueda por fechas:
+       Recibe las fechas, las formatea para crear el objeto datetime
+       Si no recibe la fecha minima la setea como la minima fecha representable (0001-01-01 00:00:00)
+       Si no recibe la fecha maxima la setea como la maxima fecha representable (9999-12-31 23:59:59.999999)
+       Si el usuario envia la fecha fin < fecha inicio, las invierte
+    """
+    init_date = args.get("init_date") #String: 2021-12-15. Si no cargan nada es un String vacio ''
+    if(init_date):
+        string_init_date = init_date.split('-') #List de Strings: ['2021', '12', '15']
+        integer_map = map(int, string_init_date)
+        int_init_date = list(integer_map) #List de Ints: [2021, 12, 15]
+        init_date = datetime.datetime(int_init_date[0], int_init_date[1], int_init_date[2]) #Objeto datetime (time en 0)
+    else:
+        init_date = datetime.datetime.min
+
+    end_date = args.get("end_date")
+    if(end_date):
+        string_end_date = end_date.split('-')
+        integer_map = map(int, string_end_date)
+        int_end_date = list(integer_map)
+        end_date = datetime.datetime(int_end_date[0], int_end_date[1], int_end_date[2])
+    else:
+        end_date = datetime.datetime.max
+
+    if(init_date > end_date):
+        aux = init_date
+        init_date = end_date
+        end_date = aux
+
     title = check_param("@complaint/title", title)
     state = check_param("@complaint/state", state)
-
-    #if (state == "all"):
-    #    use_all = True
-    #else:
-    #    use_all = False
 
     complaints = Complaint.search(
         title=title,
         state=state,
-        #use_all=use_all
+        init_date=init_date,
+        end_date=end_date,
     )
 
     if not complaints.first():
@@ -62,8 +90,6 @@ def index(page_number):
         found_complaints = False
     else:
         found_complaints = True
-
-    #paginated_complaints = Complaint.all_complaints_paginated()
 
     paginated_complaints = Complaint.paginate(
         page_number=page_number,

@@ -29,6 +29,7 @@ from app.resources.auth import auth_routes
 # Controllers API
 from app.resources.api.flood_zones import flood_zones_api
 from app.resources.api.complaint import complaint_api
+from app.resources.api.color import color_api
 from app.resources.api.evacuation_route import (
     evacuation_route_api,
 )
@@ -54,7 +55,7 @@ from app.helpers import (
 
 # Models
 from app.helpers.import_models import *
-
+from flask_cors import CORS
 
 # Google API
 from oauthlib.oauth2 import WebApplicationClient
@@ -79,6 +80,8 @@ load_dotenv()  # take environment variables from .env.
 def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
+
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # Setea bootstrap para la aplicacion
     bootstrap = Bootstrap(app)
@@ -176,6 +179,7 @@ def create_app(environment="development"):
     api.register_blueprint(complaint_api)
     api.register_blueprint(evacuation_route_api)
     api.register_blueprint(meeting_point_api)
+    api.register_blueprint(color_api)
 
     app.register_blueprint(api)
     # Rutas página complaint (usando Blueprints)

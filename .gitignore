@@ -116,3 +116,4 @@ docker-compose.yml
 
 # file
 client_secret_OAuth.json
+vetur.config.js

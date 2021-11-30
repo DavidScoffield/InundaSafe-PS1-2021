@@ -89,7 +89,7 @@ class MeetingPointForm(FlaskForm):
             ("despublicated", "Despublicado"),
         ],
         validators=[validators.DataRequired()],
-        render_kw={"size": 2, "class": "no-scroll"},
+        # render_kw={"size": 2, "class": "no-scroll"},
         # default="publicated",
     )
 

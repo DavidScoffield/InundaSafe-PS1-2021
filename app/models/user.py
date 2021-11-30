@@ -254,7 +254,7 @@ class User(db.Model):
             first_name,
             last_name,
             state,
-            created_by_social_media,
+            created_by_social_media=created_by_social_media,
         )
         db.session.add(new_user)
         db.session.commit()

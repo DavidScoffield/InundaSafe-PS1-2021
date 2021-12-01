@@ -202,7 +202,7 @@
       fetchMeetingPointPage(page=1) {
         // consulta a la api de puntos de encuentro para obtener la página solicitada
 
-        fetch(`http://localhost:5000/api/puntos-encuentro?pagina=${page}`)
+        fetch(`https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/api/puntos-encuentro?pagina=${page}`)
           .then((response) => {
               return response.json();
           })
@@ -217,7 +217,7 @@
       fetchEvacuationRoutePage(page=1) {
         // consulta a la api de recorridos de evacuación para obtener la página solicitada
 
-        fetch(`http://localhost:5000/api/recorridos-evacuacion?pagina=${page}`)
+        fetch(`https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/api/recorridos-evacuacion?pagina=${page}`)
           .then((response) => {
               return response.json();
           })

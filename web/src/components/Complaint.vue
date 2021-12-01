@@ -19,7 +19,7 @@
               <strong>Estado:</strong> {{complaint.estado}}<br>
               <strong>Email del denunciante:</strong> {{complaint.email_denunciante}}<br>
               <strong>Teléfono del denunciante:</strong> {{complaint.telcel_denunciante}}<br>
-              <p v-show="showDescription">
+              <p v-show="showDescription" style="overflow-wrap: break-word">
                 {{complaint.descripcion}}
               </p>
               <strong>

@@ -13,9 +13,13 @@ class Config(object):
     UPLOAD_FOLDER = "app/static/uploads"
 
     # Google api configuration
-    GOOGLE_CLIENT_ID = environ.get("GOOGLE_CLIENT_ID", None)
+    GOOGLE_CLIENT_ID = environ.get(
+        "GOOGLE_CLIENT_ID",
+        "490573936443-640sou2iqeeo7nuo5cevneoj8ol0etho.apps.googleusercontent.com",
+    )
     GOOGLE_CLIENT_SECRET = environ.get(
-        "GOOGLE_CLIENT_SECRET", None
+        "GOOGLE_CLIENT_SECRET",
+        "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",
     )
     GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
     SECRET_KEY = environ.get("SECRET_KEY", urandom(24))

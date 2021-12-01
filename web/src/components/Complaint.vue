@@ -80,7 +80,7 @@ export default {
       this.fetchNextPage()
     },
     fetchNextPage() {
-      fetch(`http://localhost:5000/api/denuncias?pagina=${this.currentPage}`)
+      fetch(`https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/api/denuncias?pagina=${this.currentPage}`)
       .then((response) => {
         return response.json();
       })

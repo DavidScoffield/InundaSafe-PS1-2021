@@ -35,12 +35,12 @@
       #}
 
       {% if helper_has_permission("usuario_index") or helper_has_permission("usuario_waiting_index") %}
-      <li class="nav-item dropdown {% if bp == 'user' or bp == 'user_waiting' %} active {% endif %}"">
-        <a class=" nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-        aria-expanded="false">
-        Usuarios
+      <li class="nav-item dropdown {% if bp == 'user' or bp == 'user_waiting' %} active {% endif %}">
+        <a class=" nav-link dropdown-toggle" href="#" id="navbarDropdownUsers" role="button" data-toggle="dropdown"
+          aria-expanded="false">
+          Usuarios
         </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownUsers">
           {% if helper_has_permission("usuario_index") %}
           <li class="nav-item {% if bp == 'user' %} active {% endif %}">
             <a class="dropdown-item" href="{{url_for('user.index', page_number=1)}}">Usuarios del sistema</a>
@@ -56,12 +56,12 @@
       {% endif %}
 
       <li
-        class="nav-item dropdown {% if bp == 'meeting_point' or bp == 'flood_zones' or bp == 'evacuation_route' %} active {% endif %}">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+        class="nav-item dropdown {% if bp == 'meeting_point' or bp == 'flood_zones' or bp == 'evacuation_route' %} active{% endif %}">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOther" role="button" data-toggle="dropdown"
           aria-expanded="false">
           Más opciones
         </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownOther">
           {% if helper_has_permission("punto_encuentro_index") %}
           <li class="nav-item {% if bp == 'meeting_point' %} active {% endif %}">
             <a class="dropdown-item" href="{{url_for('meeting_point.index', page_number=1)}}">Puntos de encuentro</a>

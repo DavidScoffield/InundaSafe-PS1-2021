@@ -3,6 +3,7 @@
     Main:
     <div id="nav" style="display: inline">
       <router-link to="/complaints">Denuncias</router-link>
+      <router-link to="/puntos-recorrdidos">Puntos de encuentro y recorridos de evacuación</router-link>
     </div>
     <router-view />
   </div>
@@ -39,16 +40,18 @@ export default {
         console.log(this.colors)
       })
   }
-}
+
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
+  #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
+  }
+
 </style>

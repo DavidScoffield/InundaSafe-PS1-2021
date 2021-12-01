@@ -1,11 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Complaint from '../components/Complaint.vue'
+import MeetingPointsEvacuationRoutes from '../components/MeetingPointsEvacuationRoutes.vue'
 
 const routes = [
     {
         path: '/complaints',
         name: 'Complaints',
         component: Complaint
+    },
+    {
+        path: '/puntos-recorrdidos',
+        name: 'MeetingPointsEvacuationRoutes',
+        component: MeetingPointsEvacuationRoutes
     }
 ]
 

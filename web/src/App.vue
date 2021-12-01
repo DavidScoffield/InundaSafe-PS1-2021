@@ -1,46 +1,69 @@
 <template>
-  <div>
-    Main:
-    <div id="nav" style="display: inline">
-      <router-link to="/complaints">Denuncias</router-link>
-      <router-link to="/puntos-recorrdidos">Puntos de encuentro y recorridos de evacuación</router-link>
-    </div>
+  <!-- NAVBAR -->
+  <Navbar />
+  <!-- CONTENT -->
+  <div class="w-100 content-center">
     <router-view />
   </div>
+  <!-- FOOTER -->
+  <Footer />
 </template>
 
 <script>
+import Navbar from "./components/Navbar.vue";
+import Footer from "./components/Footer.vue";
 
 export default {
-  name: 'App',
-  data() { 
+  name: "App",
+
+  components: {
+    Navbar,
+    Footer,
+  },
+
+  data() {
     return {
-      colors: []
-    }
+      colors: [],
+    };
   },
   created() {
-    fetch("https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/api/colors")
+    fetch("https://localhost:5000/api/colors")
       .then((response) => {
         //let myRules = document.styleSheets[4].cssRules; //nuestra hoja de estilos personalizada (button-gradient, ...)
         //console.log(myRules);
         return response.json();
       })
       .then((json) => {
-        this.colors = json
-      
-        document.documentElement.style.setProperty('--color-1', this.colors.color_1);
-        document.documentElement.style.setProperty('--color-2', this.colors.color_2);
-        document.documentElement.style.setProperty('--color-3', this.colors.color_3);
-        document.documentElement.style.setProperty('--color-4', this.colors.color_4);
-        document.documentElement.style.setProperty('--color-5', this.colors.color_5);
+        this.colors = json;
+
+        document.documentElement.style.setProperty(
+          "--color-1",
+          this.colors.color_1
+        );
+        document.documentElement.style.setProperty(
+          "--color-2",
+          this.colors.color_2
+        );
+        document.documentElement.style.setProperty(
+          "--color-3",
+          this.colors.color_3
+        );
+        document.documentElement.style.setProperty(
+          "--color-4",
+          this.colors.color_4
+        );
+        document.documentElement.style.setProperty(
+          "--color-5",
+          this.colors.color_5
+        );
       })
       .catch((e) => {
-        console.log("CATCH!")
-        console.log(e)
-        console.log(this.colors)
-      })
-  }
-}
+        console.log("CATCH!");
+        console.log(e);
+        console.log(this.colors);
+      });
+  },
+};
 </script>
 
 <style>
@@ -50,6 +73,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  min-height: 100vh;
 }
 </style>

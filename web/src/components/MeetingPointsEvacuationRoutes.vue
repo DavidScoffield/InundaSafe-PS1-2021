@@ -1,9 +1,9 @@
 <template>
-  <div style="height: 500px; width: 70%; margin: auto">
+  <div style="height: auto; width: 70%; margin: auto">
     <h1>Puntos de encuentro y recorridos de evacuación</h1>
     <br />
 
-    <l-map :zoom="zoom" :center="center" style="height: 100%">
+    <l-map :zoom="zoom" :center="center" style="height: 500px">
       <l-tile-layer :url="url" />
 
       <!-- Se dibujan los puntos de encuentro -->

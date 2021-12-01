@@ -12,7 +12,7 @@
               alt="Logo de la aplicación"
               style="width: 32px; height: 32px; margin-right: 5px"
             />
-            <strong> InundaSafe </strong>
+            <strong> InundaSafe - Pública </strong>
           </router-link>
         </div>
         <button

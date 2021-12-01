@@ -44,24 +44,30 @@ class MeetingPoint(db.Model):
         self.email = email
 
     @classmethod
-    def all(cls, page: int = None, per_page: int = None):
+    def all(cls, page: int = None, lat=None, long=None):
         """
-        Devuelve los puntos de encuentro publicacos, paginados en base a los
-        parametros pasados, en caso de que se pasen
+        Devuelve los puntos de encuentro publicados, paginados en base a la
+        configuración del sistema.
+
+        En caso de que se reciba una latitud y una longitud, retornará los puntos
+        de encuentro más cercanos a tal ubicación.
         """
 
         ac = actual_config()
         order = ac.order_by
 
-        return (
-            cls.query.filter(cls.state == "publicated")
-            .order_by(eval(f"MeetingPoint.name.{order}()"))
-            .paginate(
-                per_page=per_page,
-                page=page,
-                error_out=True,
-            )
-        )
+        if lat and long:
+            return (db.session.query(MeetingPoint).filter(cls.state == "publicated")
+                    .join(MeetingPoint.coordinate).order_by(Coordinate.distance_between(lat, long))
+                    .paginate(per_page=per_page,
+                              page=page,
+                              error_out=True))
+
+        return (cls.query.filter(cls.state == "publicated")
+                .order_by(eval(f"MeetingPoint.name.{order}()"))
+                .paginate(per_page=per_page,
+                          page=page,
+                          error_out=True))
 
     @classmethod
     def new(cls, **args):

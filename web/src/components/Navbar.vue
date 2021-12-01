@@ -53,7 +53,7 @@
               target="_blank"
               class="btn button-gradient"
             >
-              <i class="fa fa-user pr-2"></i>Iniciar Sesión
+              <i class="fa fa-user pr-2"></i> Iniciar Sesión
             </a>
           </div>
         </div>

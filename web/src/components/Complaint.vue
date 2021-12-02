@@ -1,9 +1,9 @@
 <template>
   <div style="height: 500px; width: 100%">
-    <div id="nav">
-      <router-link to="/newComplaint">Nueva denuncia</router-link>
+    <div>
+      <router-link class="button-gradient btn" to="/newComplaint">Nueva denuncia</router-link>
     </div>
-    <router-view /> 
+
     Denuncias:
     <l-map
       :zoom="zoom"

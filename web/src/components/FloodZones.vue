@@ -8,30 +8,32 @@
       <l-tile-layer :url="url" />
 
       <!-- Se dibujan las zonas inundables -->
-      <div v-for="zone in floodZones.zonas" :key="zone.id">
-        <l-polygon
-          :lat-lngs="getCoordinateList(zone.coordenadas)"
-          :color="zone.color"
-          :fill="true"
-          :fillColor="zone.color"
-          :fillOpacity="0.5"
-        >
-          <l-popup :options="{ maxHeight: 300 }">
-            <ul>
-              <li><strong>Nombre:</strong> {{ zone.nombre }}</li>
-              <li><strong>Codigo:</strong> {{ zone.codigo }}</li>
-              <li>
-                <strong>Estado:</strong>
-                <span class="text-capitalize"> {{ zone.estado }}</span>
-              </li>
-              <li>
-                <strong>Cantidad de puntos: </strong>
-                {{ zone.cantidad_coordenadas }}
-              </li>
-            </ul>
-          </l-popup></l-polygon
-        >
-      </div>
+      <template v-if="emptyZones === null">
+        <div v-for="zone in floodZones.zonas" :key="zone.id">
+          <l-polygon
+            :lat-lngs="getCoordinateList(zone.coordenadas)"
+            :color="zone.color"
+            :fill="true"
+            :fillColor="zone.color"
+            :fillOpacity="0.5"
+          >
+            <l-popup :options="{ maxHeight: 300 }">
+              <ul>
+                <li><strong>Nombre:</strong> {{ zone.nombre }}</li>
+                <li><strong>Codigo:</strong> {{ zone.codigo }}</li>
+                <li>
+                  <strong>Estado:</strong>
+                  <span class="text-capitalize"> {{ zone.estado }}</span>
+                </li>
+                <li>
+                  <strong>Cantidad de puntos: </strong>
+                  {{ zone.cantidad_coordenadas }}
+                </li>
+              </ul>
+            </l-popup></l-polygon
+          >
+        </div>
+      </template>
     </l-map>
 
     <!-- LISTADO -->
@@ -46,62 +48,70 @@
           </tr>
         </thead>
 
-        <tbody class="text-center">
-          <tr v-for="zone in floodZones.zonas" :key="zone.id">
-            <th>{{ zone.nombre }}</th>
-            <td>{{ zone.codigo }}</td>
-            <td>
-              <span class="text-capitalize">{{ zone.estado }}</span>
-            </td>
-            <td>
-              <router-link
-                :to="'/zonas-inundables/' + zone.id"
-                class="btn button-gradient"
-                >Detalle</router-link
-              >
-            </td>
-          </tr>
-        </tbody>
+        <template v-if="emptyZones === null">
+          <tbody class="text-center">
+            <tr v-for="zone in floodZones.zonas" :key="zone.id">
+              <th>{{ zone.nombre }}</th>
+              <td>{{ zone.codigo }}</td>
+              <td>
+                <span class="text-capitalize">{{ zone.estado }}</span>
+              </td>
+              <td>
+                <router-link
+                  :to="'/zonas-inundables/' + zone.id"
+                  class="btn button-gradient"
+                  >Detalle</router-link
+                >
+              </td>
+            </tr>
+          </tbody>
+        </template>
       </table>
 
+      <p v-if="emptyZones" class="w-100">
+        {{ emptyZones }}
+      </p>
+
       <!-- Barra de navegación  -->
-      <nav aria-label="Pagina de navegacion para zonas inundables">
-        <ul class="pagination justify-content-center">
-          <li v-if="floodZones.pagina > 1" class="page-item">
-            <button
-              class="page-link"
-              tabindex="-1"
-              @click="fetchFloodZonesPage(floodZones.pagina - 1)"
+      <template v-if="emptyZones === null">
+        <nav aria-label="Pagina de navegacion para zonas inundables">
+          <ul class="pagination justify-content-center">
+            <li v-if="floodZones.pagina > 1" class="page-item">
+              <button
+                class="page-link"
+                tabindex="-1"
+                @click="fetchFloodZonesPage(floodZones.pagina - 1)"
+              >
+                Anterior
+              </button>
+            </li>
+            <li v-else class="page-item disabled">
+              <button class="page-link" tabindex="-1">Anterior</button>
+            </li>
+            <li
+              v-for="page in [...Array(floodZones.paginas).keys()]"
+              :key="`page-${page}`"
+              class="page-item"
+              v-bind:class="{ active: floodZones.pagina == page + 1 }"
             >
-              Anterior
-            </button>
-          </li>
-          <li v-else class="page-item disabled">
-            <button class="page-link" tabindex="-1">Anterior</button>
-          </li>
-          <li
-            v-for="page in [...Array(floodZones.paginas).keys()]"
-            :key="`page-${page}`"
-            class="page-item"
-            v-bind:class="{ active: floodZones.pagina == page + 1 }"
-          >
-            <button class="page-link" @click="fetchFloodZonesPage(page + 1)">
-              {{ page + 1 }}
-            </button>
-          </li>
-          <li v-if="floodZones.pagina < floodZones.paginas" class="page-item">
-            <button
-              class="page-link"
-              @click="fetchFloodZonesPage(floodZones.pagina + 1)"
-            >
-              Siguiente
-            </button>
-          </li>
-          <li v-else class="page-item disabled">
-            <button class="page-link" href="#">Siguiente</button>
-          </li>
-        </ul>
-      </nav>
+              <button class="page-link" @click="fetchFloodZonesPage(page + 1)">
+                {{ page + 1 }}
+              </button>
+            </li>
+            <li v-if="floodZones.pagina < floodZones.paginas" class="page-item">
+              <button
+                class="page-link"
+                @click="fetchFloodZonesPage(floodZones.pagina + 1)"
+              >
+                Siguiente
+              </button>
+            </li>
+            <li v-else class="page-item disabled">
+              <button class="page-link" href="#">Siguiente</button>
+            </li>
+          </ul>
+        </nav>
+      </template>
     </div>
   </div>
 </template>
@@ -126,6 +136,7 @@ export default {
       center: latLng(-34.9187, -57.956),
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       floodZones: [],
+      emptyZones: null,
     };
   },
 
@@ -134,14 +145,18 @@ export default {
       // consulta a la api de zonas inundables para obtener la página solicitada
       fetch(`${process.env.VUE_APP_BASE_URL}/zonas-inundables?pagina=${page}`)
         .then((response) => {
+          if (!response.ok) {
+            return response.json().then((r) => {
+              throw Error(r.error_description);
+            });
+          }
           return response.json();
         })
-        .then(({ zonas }) => {
-          console.log(zonas);
-          this.floodZones = zonas;
+        .then((json) => {
+          this.floodZones = json.zonas;
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(({ message }) => {
+          this.emptyZones = message;
         });
     },
 

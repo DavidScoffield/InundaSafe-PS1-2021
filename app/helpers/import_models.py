@@ -10,3 +10,4 @@ from app.models.evacuation_route import EvacuationRoute
 from app.models.complaint import Complaint
 from app.models.category import Category
 from app.models.complaint_follow_up import ComplaintFollowUp
+from app.models.user_waiting import UserWaiting

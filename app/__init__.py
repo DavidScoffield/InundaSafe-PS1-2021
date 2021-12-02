@@ -66,6 +66,8 @@ from flask_login import (
     login_user,
     logout_user,
 )
+from flask_cors import CORS
+
 
 # ----- Logger -----
 # import logging
@@ -81,6 +83,7 @@ def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
 
+    #Cross Origin Resource Sharing (CORS) handling para las apis
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # Setea bootstrap para la aplicacion

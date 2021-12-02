@@ -23,6 +23,10 @@ class FloodZoneSchema(Schema):
             else "despublicado"
         )
 
+        data["cantidad_coordenadas"] = len(
+            data["coordenadas"]
+        )
+
         return data
 
 

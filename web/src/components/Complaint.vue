@@ -1,7 +1,8 @@
 <template>
-  <div style="height: 500px; width: 100%">
-    Denuncias:
-    <l-map :zoom="zoom" :center="center" style="height: 100%">
+  <div class="container">
+    <h2>Denuncias</h2>
+    
+    <l-map :zoom="zoom" :center="center" style="height: 80%">
       <l-tile-layer :url="url" />
       <div
         v-for="(complaint, index) in complaints.items"
@@ -21,10 +22,10 @@
                 {{ complaint.descripcion }}
               </p>
               <strong>
-                <i>
+                <i style="cursor: pointer">
                   Haga click para
-                  <div style="display: inline" v-if="!showDescription">ver</div>
-                  <div style="display: inline" v-else>ocultar</div>
+                  <div style="display: inline; cursor: pointer" v-if="!showDescription">ver</div>
+                  <div style="display: inline; cursor: pointer" v-else>ocultar</div>
                   la descripción
                 </i>
               </strong>
@@ -34,12 +35,44 @@
       </div>
     </l-map>
 
-    <div v-if="currentPage < complaints.paginas">
-      <button class="button-gradient" @click="movePage(1)">Siguiente</button>
-    </div>
-    <div v-if="currentPage > 1">
-      <button @click="movePage(-1)">Anterior</button>
-    </div>
+    <!-- Barra de navegación para denuncias -->
+    <nav aria-label="Complaints page navigation" class="mt-1">
+      <ul class="pagination justify-content-center">
+        <li v-if="complaints.pagina > 1" class="page-item">
+          <button
+            class="page-link button-gradient"
+            tabindex="-1"
+            @click="fetchNextPage(complaints.pagina - 1)"
+            >Anterior</button
+          >
+        </li>
+        <li v-else class="page-item disabled">
+          <a class="page-link" tabindex="-1">Anterior</a>
+        </li>
+        <li
+          v-for="page in [...Array(complaints.paginas).keys()]"
+          :key="`page-${page}`"
+          class="page-item button-gradient"
+          v-bind:class="{ active: complaints.pagina == page + 1 }"
+        >
+          <button
+            class="page-link"
+            @click="fetchNextPage(page + 1)"
+            >{{ page + 1 }}</button
+          >
+        </li>
+        <li v-if="complaints.pagina < complaints.paginas" class="page-item">
+          <button
+            class="page-link button-gradient"
+            @click="fetchNextPage(complaints.pagina + 1)"
+            >Siguiente</button
+          >
+        </li>
+        <li v-else class="page-item disabled">
+          <a class="page-link" href="#">Siguiente</a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
@@ -62,35 +95,29 @@ export default {
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       showDescription: false,
       complaints: [],
-      currentPage: 1,
+      currentPage: 0,
     }
   },
   methods: {
     innerClick() {
       this.showDescription = !this.showDescription
     },
-    movePage(next) {
-      this.currentPage += next
-      this.fetchNextPage()
-    },
-    fetchNextPage() {
-      fetch(
-        `${process.env.VUE_APP_BASE_URL}/denuncias?pagina=${this.currentPage}`
-      )
+    fetchNextPage(page = 1) {
+      fetch(`${process.env.VUE_APP_BASE_URL}/denuncias?pagina=${page}`)
         .then((response) => {
           return response.json()
         })
         .then((json) => {
           this.complaints = json
-          console.log(json)
         })
         .catch((e) => {
+          console.log("CATCH! complaint index")
           console.log(e)
         })
     },
   },
   created() {
-    this.fetchNextPage()
+    this.fetchNextPage(1)
   },
 }
 </script>

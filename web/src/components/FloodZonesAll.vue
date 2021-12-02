@@ -1,6 +1,6 @@
 <template>
   <div style="height: auto; width: 100%; margin: 0 auto">
-    <h1>Zonas inundables</h1>
+    <Title>Zonas inundables</Title>
     <br />
 
     <!-- MAPA -->
@@ -96,6 +96,7 @@
 import { latLng } from "leaflet";
 import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
 import ListPolygonZones from "./ListPolygonZones.vue";
+import Title from "./Title.vue";
 
 export default {
   name: "FloodZonesAll",
@@ -104,6 +105,7 @@ export default {
     LMap,
     LTileLayer,
     ListPolygonZones,
+    Title,
   },
 
   data() {

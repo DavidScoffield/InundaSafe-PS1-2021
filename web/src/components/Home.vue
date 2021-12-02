@@ -19,31 +19,37 @@
 
         <div class="col-sm-4">
           <div class="card" style="width: 23rem;">
-            <img height="230" class="card-img-top" :src="imagenDenuncias" alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title">Denuncias</h5>
-              <p class="card-text">Ayudanos a prevenir emergencias realizando denuncias sobre puntos peligrosos de la ciudad</p>
-            </div>
+            <router-link to="/complaints" style="text-decoration: none; color: inherit;">
+              <img height="230" class="card-img-top" :src="imagenDenuncias" alt="Imagen de denuncias">
+              <div class="card-body">
+                <h5 class="card-title">Denuncias</h5>
+                <p class="card-text">Ayudanos a prevenir emergencias realizando denuncias sobre puntos peligrosos de la ciudad</p>
+              </div>
+            </router-link>
           </div>
         </div>
 
         <div class="col-sm-4">
           <div class="card" style="width: 23rem;">
-            <img height="230" class="card-img-top" :src="imagenZonasInundables" alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title">Zonas Inundables</h5>
-              <p class="card-text">Conoce las zonas peligrosas de la ciudad para estar informado ante una emergencia</p>
-            </div>
+            <router-link to="/zonas-inundables" style="text-decoration: none; color: inherit;">
+              <img height="230" class="card-img-top" :src="imagenZonasInundables" alt="Imagen de zonas inundables">
+              <div class="card-body">
+                <h5 class="card-title">Zonas Inundables</h5>
+                <p class="card-text">Conoce las zonas peligrosas de la ciudad para estar informado ante una emergencia</p>
+              </div>
+            </router-link>
           </div>
         </div>
 
         <div class="col-sm-4">
           <div class="card" style="width: 23rem;">
-            <img height="230" class="card-img-top" :src="imagenRecorridos" alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title">Puntos de Encuentro y Recorridos de evacuación</h5>
-              <p class="card-text">Puntos de encuentro para reunir grupos ante una emergencia y recorridos para evacuar la zona de forma segura</p>
-            </div>
+            <router-link to="/puntos-recorridos" style="text-decoration: none; color: inherit;">
+              <img height="230" class="card-img-top" :src="imagenRecorridos" alt="Imagen de recorridos de evacuación y puntos de encuentro">
+              <div class="card-body">
+                <h5 class="card-title">Puntos de Encuentro y Recorridos de evacuación</h5>
+                <p class="card-text">Puntos de encuentro para reunir grupos ante una emergencia y recorridos para evacuar la zona de forma segura</p>
+              </div>
+            </router-link>
           </div>
         </div>
 
@@ -54,7 +60,7 @@
 
 
 <script>
-import imagenRecorridos from "../assets/icons/recorridos_y_puntos2.png";
+import imagenRecorridos from "../assets/icons/recorridos_y_puntos3.png";
 import imagenZonasInundables from "../assets/icons/zonas_inundables_sin_texto.png";
 import imagenDenuncias from "../assets/icons/Denuncias.png";
 

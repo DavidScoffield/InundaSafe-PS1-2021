@@ -43,7 +43,7 @@
       <ul class="pagination justify-content-center">
         <li v-if="complaints.pagina > 1" class="page-item">
           <button
-            class="page-link button-gradient"
+            class="page-link"
             tabindex="-1"
             @click="fetchNextPage(complaints.pagina - 1)"
             >Anterior</button
@@ -55,7 +55,7 @@
         <li
           v-for="page in [...Array(complaints.paginas).keys()]"
           :key="`page-${page}`"
-          class="page-item button-gradient"
+          class="page-item"
           v-bind:class="{ active: complaints.pagina == page + 1 }"
         >
           <button
@@ -66,7 +66,7 @@
         </li>
         <li v-if="complaints.pagina < complaints.paginas" class="page-item">
           <button
-            class="page-link button-gradient"
+            class="page-link"
             @click="fetchNextPage(complaints.pagina + 1)"
             >Siguiente</button
           >

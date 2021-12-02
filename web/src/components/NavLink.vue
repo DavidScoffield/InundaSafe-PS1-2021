@@ -1,6 +1,7 @@
 <template>
   <router-link
     :to="'/' + to"
+    exact
     v-slot="{ href, navigate, isActive, isExactActive }"
     custom
   >

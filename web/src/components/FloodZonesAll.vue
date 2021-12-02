@@ -8,32 +8,7 @@
       <l-tile-layer :url="url" />
 
       <!-- Se dibujan las zonas inundables -->
-      <template v-if="emptyZones === null">
-        <div v-for="zone in floodZones.zonas" :key="zone.id">
-          <l-polygon
-            :lat-lngs="getCoordinateList(zone.coordenadas)"
-            :color="zone.color"
-            :fill="true"
-            :fillColor="zone.color"
-            :fillOpacity="0.5"
-          >
-            <l-popup :options="{ maxHeight: 300 }">
-              <ul>
-                <li><strong>Nombre:</strong> {{ zone.nombre }}</li>
-                <li><strong>Codigo:</strong> {{ zone.codigo }}</li>
-                <li>
-                  <strong>Estado:</strong>
-                  <span class="text-capitalize"> {{ zone.estado }}</span>
-                </li>
-                <li>
-                  <strong>Cantidad de puntos: </strong>
-                  {{ zone.cantidad_coordenadas }}
-                </li>
-              </ul>
-            </l-popup></l-polygon
-          >
-        </div>
-      </template>
+      <ListPolygonZones v-if="emptyZones === null" :floodZones="floodZones" />
     </l-map>
 
     <!-- LISTADO -->
@@ -59,6 +34,7 @@
               <td>
                 <router-link
                   :to="'/zonas-inundables/' + zone.id"
+                  exact
                   class="btn button-gradient"
                   >Detalle</router-link
                 >
@@ -118,16 +94,16 @@
 
 <script>
 import { latLng } from "leaflet";
-import { LMap, LTileLayer, LPopup, LPolygon } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
+import ListPolygonZones from "./ListPolygonZones.vue";
 
 export default {
-  name: "FloodZones",
+  name: "FloodZonesAll",
 
   components: {
     LMap,
     LTileLayer,
-    LPolygon,
-    LPopup,
+    ListPolygonZones,
   },
 
   data() {
@@ -175,15 +151,6 @@ export default {
 </script>
 
 <style scoped>
-ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-ul > li {
-  display: list-item;
-}
-
 tbody {
   vertical-align: middle !important;
 }

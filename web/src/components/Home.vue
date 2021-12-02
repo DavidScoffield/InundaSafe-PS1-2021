@@ -2,8 +2,8 @@
   <div class="container-fluid text-center">    
     <div class="welcome">
       <div>
-        <h1 style="color:black">Bienvenido a InundaSafe</h1>      
-        <p class="mx-5" style="color:black">
+        <h1 style="color:black; font-weight: 600">Bienvenido a InundaSafe</h1>      
+        <p class="mx-5" style="color:black; font-weight: 600">
           En este sitio podras acceder a toda la información necesaria conocer las zonas con peligro de 
           inundación y las acciones a llevar a cabo en caso de suceder tal evento, como los puntos de encuentro en cada sector y los 
           recorridos de evacuación cercanos a tu localidad.

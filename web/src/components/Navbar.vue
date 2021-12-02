@@ -35,15 +35,8 @@
             class="navbar-nav col-12 col-lg-auto d-flex align-items-start"
             style="margin-left: 15px"
           >
-            <li class="nav-item">
-              <router-link to="/complaints" class="nav-link"
-                >Denuncias</router-link
-              >
-            </li>
-            <li class="nav-item">
-              <router-link to="/puntos-recorridos" class="nav-link"
-                >Puntos de encuentro y recorridos de evacuación</router-link
-              >
+            <li class="nav-item" v-for="url in urls" :key="url.label">
+              <NavLink :to="url.to">{{ url.label }}</NavLink>
             </li>
           </ul>
           <div class="btn-group col-auto">
@@ -64,14 +57,33 @@
 
 <script>
 import logoApp from "../assets/logo.png";
+import NavLink from "../components/NavLink.vue";
 
 export default {
   name: "Navbar",
+
+  components: {
+    NavLink,
+  },
 
   data() {
     return {
       logoApp: logoApp,
       state: false,
+      urls: [
+        {
+          label: "Denuncias",
+          to: "complaints",
+        },
+        {
+          label: "Zonas inundables",
+          to: "zonas-inundables",
+        },
+        {
+          label: "Puntos de encuentro y recorridos de evacuación",
+          to: "puntos-recorridos",
+        },
+      ],
     };
   },
 };

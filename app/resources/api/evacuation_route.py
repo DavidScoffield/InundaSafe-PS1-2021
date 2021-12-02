@@ -62,7 +62,7 @@ def getAll():
                 },
             )
 
-        if not evacuation_routes:
+        if not evacuation_routes or not evacuation_routes.total:
             abort(
                 404,
                 {

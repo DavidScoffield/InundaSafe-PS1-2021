@@ -14,6 +14,8 @@ from app.helpers.logger import (
     logger_exception,
 )
 
+from app.helpers.validate_coordinates import validate_coordinates
+
 meeting_point_api = Blueprint(
     "meeting_point",
     __name__,
@@ -32,15 +34,23 @@ def getAll():
     try:
         try:
             if not validate_received_params(
-                request.args
+                request.args, validate_coordinate = True
             ):
                 abort(404)
 
             page = request.args.get("pagina", None)
+            lat = request.args.get("lat", None)
+            long = request.args.get("long", None)
 
-            (page, per_page) = validate_params_pagination(
-                page
-            )
+            (page, per_page) = validate_params_pagination(page)
+
+            if lat or long:
+                if not(validate_coordinates([lat, long])):
+                    raise
+                else:
+                    lat = float(lat)
+                    long = float(long)
+
         except:
             abort(
                 404,
@@ -50,9 +60,7 @@ def getAll():
             )
 
         try:
-            meeting_points = MeetingPoint.all(
-                page=page, per_page=per_page
-            )
+            meeting_points = MeetingPoint.all(page=page, lat=lat, long=long)
         except NotFound:
             abort(
                 404,

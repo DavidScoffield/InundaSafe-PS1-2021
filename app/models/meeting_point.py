@@ -55,6 +55,7 @@ class MeetingPoint(db.Model):
 
         ac = actual_config()
         order = ac.order_by
+        per_page = ac.elements_quantity
 
         if lat and long:
             return (db.session.query(MeetingPoint).filter(cls.state == "publicated")

@@ -93,6 +93,7 @@
             <ul class="pagination justify-content-center">
               <li v-if="meetingPoints.pagina > 1" class="page-item">
                 <a
+                  style="cursor:pointer"
                   class="page-link"
                   tabindex="-1"
                   @click="fetchMeetingPointPage(meetingPoints.pagina - 1)"
@@ -108,7 +109,7 @@
                 class="page-item"
                 v-bind:class="{ active: meetingPoints.pagina == page + 1 }"
               >
-                <a class="page-link" @click="fetchMeetingPointPage(page + 1)">{{
+                <a style="cursor:pointer" class="page-link" @click="fetchMeetingPointPage(page + 1)">{{
                   page + 1
                 }}</a>
               </li>
@@ -117,6 +118,7 @@
                 class="page-item"
               >
                 <a
+                  style="cursor:pointer"
                   class="page-link"
                   @click="fetchMeetingPointPage(meetingPoints.pagina + 1)"
                   >Siguiente</a
@@ -157,6 +159,7 @@
             <ul class="pagination justify-content-center">
               <li v-if="evacuationRoutes.pagina > 1" class="page-item">
                 <a
+                  style="cursor:pointer"
                   class="page-link"
                   tabindex="-1"
                   @click="fetchEvacuationRoutePage(evacuationRoutes.pagina - 1)"
@@ -173,6 +176,7 @@
                 v-bind:class="{ active: evacuationRoutes.pagina == page + 1 }"
               >
                 <a
+                  style="cursor:pointer"
                   class="page-link active"
                   active="{{evacuationRoutes.pagina == page}}"
                   @click="fetchEvacuationRoutePage(page + 1)"
@@ -184,6 +188,7 @@
                 class="page-item"
               >
                 <a
+                  style="cursor:pointer"
                   class="page-link"
                   @click="fetchEvacuationRoutePage(evacuationRoutes.pagina + 1)"
                   >Siguiente</a
@@ -251,7 +256,7 @@ export default {
       // consulta a la api de puntos de encuentro para obtener la página solicitada
 
       fetch(
-        `https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/api/puntos-encuentro?pagina=${page}`
+        `${process.env.VUE_APP_BASE_URL}/puntos-encuentro?pagina=${page}`
       )
         .then((response) => {
           return response.json();
@@ -268,7 +273,7 @@ export default {
       // consulta a la api de recorridos de evacuación para obtener la página solicitada
 
       fetch(
-        `https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/api/recorridos-evacuacion?pagina=${page}`
+        `${process.env.VUE_APP_BASE_URL}/recorridos-evacuacion?pagina=${page}`
       )
         .then((response) => {
           return response.json();

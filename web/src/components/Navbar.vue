@@ -5,6 +5,7 @@
         <div>
           <router-link
             to="/"
+            exact
             class="navbar-brand font-weight-bold d-flex align-items-center"
           >
             <img

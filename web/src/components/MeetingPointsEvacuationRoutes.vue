@@ -1,11 +1,11 @@
 <template >
 
-  <div style="height: auto; width: 70%; margin: auto">
+  <div style="height: auto; width: 85%; margin: 0 auto">
 
-    <h1> Puntos de encuentro y recorridos de evacuación </h1><br>
+    <br><h1> Puntos de encuentro y recorridos de evacuación </h1><br>
 
     <p v-if="!fetchedMeetingPoints || !fetchedEvacuationRoutes">Cargando mapa...
-       <img style='height:50px; width:70px' src='../assets/loading.gif'> </p>
+       <img style='height: 50px; width: 70px' src='../assets/icons/loading.gif'> </p>
 
     <l-map :zoom="zoom" :center="center" style="height: 500px">
 
@@ -14,7 +14,7 @@
       <!-- Marcador de la ubicación del usuario o ubicación por defecto -->
       <l-marker :lat-lng="this.userLatLong ? [this.userLatLong.lat, this.userLatLong.long] : this.center">
 
-          <l-icon :icon-url="require('../assets/initial_location.png')"
+          <l-icon :icon-url="require('../assets/icons/initial_location.png')"
                   :icon-size="[20, 30]"/>
 
           <l-popup :options="{ maxHeight: 350 }">
@@ -27,7 +27,7 @@
       <l-marker v-for="(meetingPoint, index) in meetingPoints.puntos_encuentro" :key="index"
                 :lat-lng="[meetingPoint.coordenada.lat, meetingPoint.coordenada.long]">
 
-        <l-icon :icon-url="require('../assets/meeting_point.png')"
+        <l-icon :icon-url="require('../assets/icons/meeting_point.png')"
                 :icon-size="[30, 40]"/>
 
         <l-popup :options="{ maxHeight: 350 }">
@@ -47,13 +47,15 @@
         <!-- Marcador de inicio del recorrido -->
         <l-marker :lat-lng="[evacuationRoute.coordenadas[0].lat, evacuationRoute.coordenadas[0].long]">
 
-          <l-icon :icon-url="require('../assets/evacuation_route_start.png')"
+          <l-icon :icon-url="require('../assets/icons/evacuation_route_start.png')"
                   :icon-size="[35, 45]"/>
 
           <l-popup :options="{ maxHeight: 350 }">
               <p style="color:green; text-align:center">Recorrido de evacuación</p>
               <strong>Nombre:</strong> {{evacuationRoute.nombre}}<br>
-              <p style="display:inline-block" v-show="showDescription"><strong> Descripcion: </strong> {{evacuationRoute.descripcion}}</p><br>
+              <p style="display:inline-block" v-show="showDescription">
+                <strong> Descripcion: </strong> {{evacuationRoute.descripcion}}
+              </p><br>
               <strong>
                 <i @click="innerClick">
                   Haga click para 
@@ -68,7 +70,7 @@
 
         <!-- Marcador de fin del recorrido -->
         <l-marker :lat-lng="getEvacuationRouteEndPoint(evacuationRoute.coordenadas)">
-          <l-icon :icon-url="require('../assets/evacuation_route_end.png')"
+          <l-icon :icon-url="require('../assets/icons/evacuation_route_end.png')"
                   :icon-size="[20, 30]"/>
         </l-marker>
 
@@ -82,7 +84,8 @@
 
             <div class="col-sm">
 
-                <h3>Puntos de encuentro</h3><br>
+                <h3> <img style='height: 40px; width: 35px' src='../assets/icons/meeting_point.png'>
+                      Puntos de encuentro {{userLatLong ? "cercanos al usuario" : ""}}</h3><br>
 
                 <!-- Tabla de puntos de encuentro -->
                 <table v-if="fetchedMeetingPoints" class="table table-striped">
@@ -104,7 +107,7 @@
                     </tbody>
                 </table><br>
 
-                <p v-if="!fetchedMeetingPoints">Cargando puntos de encuentro...<img style='height:50px; width:70px' src='../assets/loading.gif'> </p>
+                <p v-if="!fetchedMeetingPoints">Buscando puntos de encuentro...<img style='height:50px; width:70px' src='../assets/icons/loading.gif'> </p>
 
                 <!-- Barra de navegación para puntos de encuentro -->
                 <nav v-if="meetingPoints.puntos_encuentro.length" aria-label="Meeting points page navigation">
@@ -132,24 +135,27 @@
 
             <div class="col-sm">
 
-                <h3>Recorridos de evacuación</h3><br>
+                <h3><img style='height: 40px; width: 35px' src='../assets/icons/evacuation_route_start.png'>
+                    Recorridos de evacuación</h3><br>
 
                 <!-- Tabla de recorridos de evacuación -->
                 <table v-if="fetchedEvacuationRoutes" class="table table-striped">
                     <thead>
                         <tr>
                             <th>{{evacuationRoutes.recorridos.length ? "Nombre" : "No se encontraron recorridos de evacuación"}}</th>
+                            <th v-if="evacuationRoutes.recorridos.length">Descripción</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <tr v-for="(evacuationRoute, index) in evacuationRoutes.recorridos" :key="index">
                             <th scope="row">{{ evacuationRoute.nombre }}</th>  
+                            <th scope="row">{{ evacuationRoute.descripcion }}</th>
                         </tr>
                     </tbody>
                 </table><br>
 
-                <p v-if="!fetchedEvacuationRoutes">Cargando recorridos de evacuación...<img style='height:50px; width:70px' src='../assets/loading.gif'> </p>
+                <p v-if="!fetchedEvacuationRoutes">Buscando recorridos de evacuación...<img style='height:50px; width:70px' src='../assets/icons/loading.gif'> </p>
 
                 <!-- Barra de navegación para recorridos de evacuación -->
                 <nav v-if="evacuationRoutes.recorridos.length" aria-label="Evacuation route page navigation">

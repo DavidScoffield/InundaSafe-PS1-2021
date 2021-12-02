@@ -132,7 +132,9 @@ export default {
           this.floodZones = json.zonas;
         })
         .catch(({ message }) => {
-          this.emptyZones = message;
+          // this.emptyZones = message;
+          console.log({ message });
+          this.emptyZones = "No hay zonas inundables disponibles.";
         });
     },
 

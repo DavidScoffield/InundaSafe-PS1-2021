@@ -27,7 +27,7 @@ export default {
     }
   },
   created() {
-    fetch('https://localhost:5000/api/colors')
+    fetch(`${process.env.VUE_APP_BASE_URL}/colors`)
       .then((response) => {
         //let myRules = document.styleSheets[4].cssRules; //nuestra hoja de estilos personalizada (button-gradient, ...)
         //console.log(myRules);

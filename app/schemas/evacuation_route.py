@@ -6,7 +6,7 @@ class EvacuationRouteSchema(Schema):
     id = fields.Int()
     state = fields.Str()
     name = fields.Str(data_key="nombre")
-    description = fields.Str()
+    description = fields.Str(data_key="descripcion")
     coordinates = fields.Nested(
         coordinate_schema, many=True, data_key="coordenadas"
     )

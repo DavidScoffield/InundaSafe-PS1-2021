@@ -32,7 +32,7 @@ def getAll():
     try:
         try:
             if not validate_received_params(
-                request.args.keys()
+                request.args
             ):
                 abort(404)
 
@@ -61,7 +61,7 @@ def getAll():
                 },
             )
 
-        if not meeting_points:
+        if meeting_points.total == 0:
             abort(
                 404,
                 {

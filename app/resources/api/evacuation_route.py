@@ -12,7 +12,6 @@ from app.helpers.validators import (
 from app.helpers.logger import (
     logger_error,
     logger_exception,
-    
 )
 
 evacuation_route_api = Blueprint(
@@ -33,7 +32,7 @@ def getAll():
     try:
         try:
             if not validate_received_params(
-                request.args.keys()
+                request.args
             ):
                 abort(404)
 
@@ -62,7 +61,7 @@ def getAll():
                 },
             )
 
-        if not evacuation_routes:
+        if evacuation_routes.total == 0:
             abort(
                 404,
                 {

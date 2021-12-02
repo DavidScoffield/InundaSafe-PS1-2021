@@ -1,0 +1,117 @@
+{% extends "private_app_layout.html" %}
+{% block title %}Usuarios para aprobación{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+{% set argemail = request.args.email %}
+
+<div class="container mx-auto py-4">
+  <!-- TITULO -->
+  <div class="d-flex align-items-center mb-3">
+    <a href="{{url_for('home.index')}}" class="text-muted p-1 mr-3" style="cursor: pointer">
+      <i class="fas fa-arrow-left fa-lg"></i>
+    </a>
+    <h1 class="font-weight-bold">Usuarios para aprobación</h1>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="w-100 row justify-content-center">
+    <!-- <div class="col d-flex justify-content-sm-center justify-content-md-start mb-sm-3 mb-md-0">
+      <a class="btn btn-primary button-gradient" role="button" href="{{url_for('user.new')}}">Nuevo</a>
+    </div> -->
+    <div class="col-12 d-flex justify-content-end">
+      <form method="GET" action="{{url_for('user_waiting.index', page_number=users.page)}}"
+        class="d-flex justify-content-end align-content-center">
+
+        <input type="text" name="email" placeholder="Buscar por email..." class="mx-1 pl-2" {% if argemail %}
+          value="{{argemail}}" {% endif %}>
+
+        <button class="btn btn-dark btn-sm" aria-label="button-search"><i class="fas fa-search fa-sm"></i></button>
+      </form>
+    </div>
+  </div>
+
+  <br />
+  {% with messages = get_flashed_messages(category_filter=["user_waiting_approve"]) %}
+  {% if messages %}
+
+  {% for message in messages %}
+  {{ message }}
+  {% endfor %}
+
+  {% endif %}
+  {% endwith %}
+
+  <!-- LIST -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col" class="text-center">Email</th>
+        <th scope="col" class="text-center">Nombre usuario sugerido</th>
+        <th scope="col" class="text-center">Nombre</th>
+        <th scope="col" class="text-center">Apellido</th>
+        <th scope="col" class="text-center">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for user in users.items %}
+      <tr>
+        <td class="text-center">{{user.email}}</td>
+        <td class="text-center">{{user.suggested_username}}</td>
+        <td class="text-center">{{user.first_name}}</td>
+        <td class="text-center">{{user.last_name}}</td>
+
+        <td class="text-center d-flex justify-content-center">
+          <a class="btn button-gradient d-inline"
+            href="{{url_for('user_waiting.manage', user_id=user.id)}}">Administrar</a>
+
+
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if not found_users %}
+  {% with messages = get_flashed_messages(category_filter=["user_waiting_index"]) %}
+  {% for message in messages %}
+  <p class="text-center">{{message}}</p>
+  {% endfor %}
+  {% endwith %}
+  {% endif %}
+
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      {% if users.has_prev %}
+      <li class="page-item"></li>
+      <a class="page-link"
+        href="{{url_for('user_waiting.index', page_number=users.prev_num)}}?{{request.query_string.decode()}}"
+        tabindex="-1">Anterior</a>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1">Anterior</a>
+        {% endif %}
+      </li>
+      {% for page in users.iter_pages() %}
+      {% if page %}
+      <li class="page-item"><a class="page-link"
+          href="{{url_for('user_waiting.index', page_number=page)}}?{{request.query_string.decode()}}">{{ page }}</a>
+      </li>
+      {% endif %}
+      {% endfor %}
+      {% if users.has_next %}
+      <li class="page-item"></li>
+      <a class="page-link"
+        href="{{url_for('user_waiting.index', page_number=users.next_num)}}?{{request.query_string.decode()}}">Siguiente</a>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#">Siguiente</a>
+        {% endif %}
+    </ul>
+  </nav>
+</div>
+
+{% endblock %}

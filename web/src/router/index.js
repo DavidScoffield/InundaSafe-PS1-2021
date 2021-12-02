@@ -3,7 +3,7 @@ import MeetingPointsEvacuationRoutes from '../components/MeetingPointsEvacuation
 
 const routes = [
     {
-        path: '/puntos-recorrdidos',
+        path: '/puntos-recorridos',
         name: 'MeetingPointsEvacuationRoutes',
         component: MeetingPointsEvacuationRoutes
     }

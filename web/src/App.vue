@@ -2,7 +2,7 @@
 
   <div>
     <div id="nav">
-      <router-link to="/puntos-recorrdidos">Puntos de encuentro y recorridos de evacuación</router-link>
+      <router-link to="/puntos-recorridos">Puntos de encuentro y recorridos de evacuación</router-link>
     </div>
     <router-view/>
   </div>

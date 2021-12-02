@@ -21,9 +21,8 @@
           data-bs-toggle="collapse"
           data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent"
-          :aria-expanded="state"
+          :aria-expanded="false"
           aria-label="Toggle navigation"
-          @click="!state"
         >
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -69,7 +68,6 @@ export default {
   data() {
     return {
       logoApp: logoApp,
-      state: false,
       urls: [
         {
           label: "Denuncias",

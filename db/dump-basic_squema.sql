@@ -90,7 +90,12 @@ INSERT INTO `permissions` VALUES
   (17,'zonas_inundables_import'),
   (18,'zonas_inundables_destroy'),
   (28,'zonas_inundables_edit'),
-  (29,'zonas_inundables_update');
+  (29,'zonas_inundables_update'),
+  -- USER WAITING
+  (44,'usuario_waiting_index'),
+  (45,'usuario_waiting_manage'),
+  (46,'usuario_waiting_approve'),
+  (47,'usuario_waiting_refuse');
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -166,6 +171,10 @@ INSERT INTO `role_has_permissions` VALUES
   (1,41),
   (1,42),
   (1,43),
+  (1,44),
+  (1,45),
+  (1,46),
+  (1,47),
   -- OPERATOR
   (2,1),
   (2,2),
@@ -271,6 +280,7 @@ CREATE TABLE `users` (
   `last_name` varchar(50) NOT NULL,
   `active` tinyint(1) NOT NULL,
   `is_deleted` tinyint(1) NOT NULL,
+  `created_by_social_media` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -288,8 +298,8 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` VALUES
 -- Las contraseñas de estos usuarios son "123123"
-  (1,'admin@gmail.com','administrador','$2a$12$NqYB/2oRmZEuuWmACDX4cuM/g5Ez1JCsHN20zo/Ds4mTtX6zT806O','Cosme','Fulanito',1,0,'2021-10-02 14:46:18','2021-10-02 14:46:18'),
-  (2,'ron@gmail.com','operador1','$2a$12$nAy4sJ2yWS14H2TiMROS..Df52NS72jLwJbsOHJ9nYVumxn9n/LRe','Ron','Perez',1,0,'2021-10-02 14:46:18','2021-10-02 14:46:18');
+  (1,'admin@gmail.com','administrador','$2a$12$NqYB/2oRmZEuuWmACDX4cuM/g5Ez1JCsHN20zo/Ds4mTtX6zT806O','Cosme','Fulanito',1,0,0,'2021-10-02 14:46:18','2021-10-02 14:46:18'),
+  (2,'ron@gmail.com','operador1','$2a$12$nAy4sJ2yWS14H2TiMROS..Df52NS72jLwJbsOHJ9nYVumxn9n/LRe','Ron','Perez',1,0,0,'2021-10-02 14:46:18','2021-10-02 14:46:18');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -565,6 +575,22 @@ INSERT INTO `coordinate` VALUES
 /*!40000 ALTER TABLE `coordinate` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+
+DROP TABLE IF EXISTS `users_waiting`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users_waiting` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `email` varchar(150) NOT NULL,
+  `suggested_username` varchar(50) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 
 --

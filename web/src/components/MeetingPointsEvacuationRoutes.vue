@@ -82,7 +82,7 @@
 
             <div class="col-sm">
 
-                <h3>Puntos de encuentro {{this.userLatLong ? "cercanos al usuario" : ""}}</h3><br>
+                <h3>Puntos de encuentro</h3><br>
 
                 <!-- Tabla de puntos de encuentro -->
                 <table v-if="fetchedMeetingPoints" class="table table-striped">
@@ -227,7 +227,7 @@
       fetchMeetingPointPage(page=1) {
         // consulta a la api de puntos de encuentro para obtener la página solicitada
 
-        var url = `http://localhost:5000/api/puntos-encuentro?pagina=${page}`
+        var url = `${process.env.VUE_APP_BASE_URL}/puntos-encuentro?pagina=${page}`
 
         if (this.userLatLong) {
           url += `&lat=${this.userLatLong.lat}&long=${this.userLatLong.long}`
@@ -257,8 +257,8 @@
         // consulta a la api de recorridos de evacuación para obtener la página solicitada
 
         this.fetchedEvacuationRoutes = false
-        
-        fetch(`http://localhost:5000/api/recorridos-evacuacion?pagina=${page}`)
+
+        fetch(`${process.env.VUE_APP_BASE_URL}/recorridos-evacuacion?pagina=${page}`)
           .then((response) => {
               return response.json();
           })
@@ -307,7 +307,7 @@
         // se las haya podido obtener de forma correcta
         this.userLatLong = { lat : position.coords.latitude,
                              long : position.coords.longitude }
-        
+
         this.fetchInitialPages()
       },
 

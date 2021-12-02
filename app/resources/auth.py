@@ -10,10 +10,14 @@ from flask import (
 from app.models.user import User
 from app.helpers.auth import authenticated
 from app.helpers.forms.login_form import LoginForm
+from app.resources.google_auth import auth_google_routes
+
 
 auth_routes = Blueprint(
     "auth_routes", __name__, url_prefix="/auth"
 )
+# Google auth routes
+auth_routes.register_blueprint(auth_google_routes)
 
 
 @auth_routes.get("/iniciar_sesion", endpoint="auth_login")
@@ -27,7 +31,7 @@ def login():
 
     return render_template("auth/login.html", form=form)
 
-
+ 
 @auth_routes.post(
     "/autenticacion", endpoint="auth_authenticate"
 )

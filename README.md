@@ -55,6 +55,12 @@ Aplicación para el trabajo integrador para la materia de Proyecto de Software d
 ## Comentarios sobre Mapa
 - Hemos encontrado un bug en los **mapas de zonas inundables**, en donde en algunos telefonos celulares el mismo no se muestra, mientras que en otros si. En base a la informacion recolectada, concluimos que sea algun tipo de bug con el pluggin `Draw de Leaflet` incorporado para la implementacion del mismo. En navegadores web por su parte, en cualquier tipo de resolucion el mismo funciona correctamente. 
 
+#### Resoluciones
+Probando en un celular con resolucion 375 x 667 el mapa no se veia, pero por ejemplo en un celcular de 5,5" el mismo si podia verse. Intentanto con distintos modelos con distintas resoluciones, en algunos se veia mientras que en otros no.
+
+A continuacion se encuentra el acceso a la issue perteneciente a este problema. 
+https://gitlab.catedras.linti.unlp.edu.ar/proyecto2021/proyectos/grupo24/-/issues/83
+
 
 ## Iniciar ambiente
 

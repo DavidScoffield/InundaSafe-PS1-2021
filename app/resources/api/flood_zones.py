@@ -31,9 +31,7 @@ def getAll():
     """
     try:
         try:
-            if not validate_received_params(
-                request.args.keys()
-            ):
+            if not validate_received_params(request.args):
                 abort(404)
 
             page = request.args.get("pagina", None)
@@ -61,7 +59,7 @@ def getAll():
                 },
             )
 
-        if not flood_zones:
+        if flood_zones.total == 0:
             abort(
                 404,
                 {

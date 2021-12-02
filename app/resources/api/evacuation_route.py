@@ -12,7 +12,6 @@ from app.helpers.validators import (
 from app.helpers.logger import (
     logger_error,
     logger_exception,
-    
 )
 
 evacuation_route_api = Blueprint(

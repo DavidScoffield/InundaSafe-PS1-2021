@@ -28,6 +28,9 @@ def check_param(
         "@user/active": param
         if type(param) is int and param is not None
         else "",
+        "@user_waiting/email": param
+        if param is not None
+        else "",
         "@complaint/title": param
         if param is not None
         else "",

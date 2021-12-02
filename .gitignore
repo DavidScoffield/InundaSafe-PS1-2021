@@ -82,7 +82,7 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
-.env
+/.env
 .envrc
 .venv
 env/
@@ -113,3 +113,7 @@ coc-settings.json
 
 # docker
 docker-compose.yml
+
+# file
+client_secret_OAuth.json
+vetur.config.js

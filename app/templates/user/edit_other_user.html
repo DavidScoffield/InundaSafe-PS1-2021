@@ -2,14 +2,10 @@
 {% extends "private_app_layout.html" %}
 {% block title %}Editar{% endblock %}
 {% block head %}
-  {{ super() }}
+{{ super() }}
 {% endblock %}
 {% block content %}
-{% with messages = get_flashed_messages(category_filter=["update_user"]) %} {% if messages %}
-  {% for message in messages %}
-  {{ message }}
-  {% endfor %}
-{% endif %} {% endwith %} 
+
 
 <div class="container mx-auto py-4">
   <!-- TITULO -->
@@ -20,39 +16,42 @@
     <h1 class="font-weight-bold">Editar datos de {{user.first_name}}:</h1>
   </div>
 
+  {% with messages = get_flashed_messages(category_filter=["update_user"]) %} {% if messages %}
+  {% for message in messages %}
+  {{ message }}
+  {% endfor %}
+  {% endif %} {% endwith %}
+
   <div>
     <p>Nombre de usuario: <b>{{user.username}}</b></p>
   </div>
 
   {{render_form(form, action=url_for('user.update', user_id=user.id), method="POST")}}
-  
+
   <i>* Campos obligatorios</i>
 </div>
-  
-  <script>
-    // Script para tirar una alert cuando se intenta eliminar un User
-    function confirm_destroy(e)
-    {
-        if(!confirm("¿Está seguro que desea borrar a este usuario?")) {
-            e.preventDefault();
-        }
-    }
-  </script>
 
-  {% if (helper_has_role(user.roles, "rol_administrador")) %}
-    <script>
-      // Bloquea los radio button si el usuario a editar es un admin para no poder bloquearlo
-      // *el evento load se ejecuta cuando se carga toda la pagina completamente*
-      window.addEventListener("load", function(){
-        console.log("{{user.first_name}}")
-        let activoRadioButton = document.getElementById("active-0")
-        let bloqueadoRadioButton = document.getElementById("active-1")
-        activoRadioButton.disabled = true
-        bloqueadoRadioButton.disabled = true
-      });
-    </script>
-  {% endif %}
+<script>
+  // Script para tirar una alert cuando se intenta eliminar un User
+  function confirm_destroy(e) {
+    if (!confirm("¿Está seguro que desea borrar a este usuario?")) {
+      e.preventDefault();
+    }
+  }
+</script>
+
+{% if (helper_has_role(user.roles, "rol_administrador")) %}
+<script>
+  // Bloquea los radio button si el usuario a editar es un admin para no poder bloquearlo
+  // *el evento load se ejecuta cuando se carga toda la pagina completamente*
+  window.addEventListener("load", function () {
+    console.log("{{user.first_name}}")
+    let activoRadioButton = document.getElementById("active-0")
+    let bloqueadoRadioButton = document.getElementById("active-1")
+    activoRadioButton.disabled = true
+    bloqueadoRadioButton.disabled = true
+  });
+</script>
+{% endif %}
 
 {% endblock %}
-
-

@@ -2,18 +2,59 @@
 {% extends "layout.html" %}
 {% block title %}Login{% endblock %}
 {% block head %}
-  {{ super() }}
-  <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 {% endblock %}
 {% block content %}
-  <main class="container mx-auto login">
-    <h1>Iniciar sesión</h1>
-    {% with messages = get_flashed_messages(category_filter=["login_error"]) %}
-    <br>
-    {% for message in messages %}
-        <p>{{message}}</p>
-    {% endfor %}
-    {% endwith %}
-    {{render_form(form, action=url_for('auth_routes.auth_authenticate'), method="POST")}}
-  </main>
+<main class="container mx-auto login">
+  <h1>Iniciar sesión</h1>
+  {% with messages = get_flashed_messages(category_filter=["login_error"]) %}
+  <br>
+  {% for message in messages %}
+  <p>{{message}}</p>
+  {% endfor %}
+  {% endwith %}
+  {{render_form(form, action=url_for('auth_routes.auth_authenticate'), method="POST")}}
+  <!-- Login with social media -->
+  <hr>
+  {% with messages = get_flashed_messages(category_filter=["auth_google_login"]) %}
+  {% for message in messages %}
+  <p class="text-center"><strong>{{message}}</strong></p>
+  {% endfor %}
+  {% endwith %}
+  <div class="login-cards">
+    <a href="{{url_for('auth_routes.auth_google_routes.login')}}" class="login-card">
+      <p>Iniciar sesión con Google</p>
+      <i class="fa fa-google fa-2x"></i>
+    </a>
+    {#
+    <!-- <a href="#" class="login-card btn-link disabled">
+      <p>Iniciar sesión con Twitter</p>
+      <i class="fa fa-twitter fa-2x"></i>
+    </a> -->
+    #}
+  </div>
+  <!-- Register with social media -->
+  <hr>
+  <div class="m-2 d-flex justify-content-center">
+    <strong>¿No tienes usuario aún?</strong>
+  </div>
+  {% with messages = get_flashed_messages(category_filter=["auth_google_register"]) %}
+  {% for message in messages %}
+  <p class="text-center"><strong>{{message}}</strong></p>
+  {% endfor %}
+  {% endwith %}
+  <div class="login-cards">
+    <a href="{{url_for('auth_routes.auth_google_routes.register')}}" class="login-card">
+      <p>Registrarse con Google</p>
+      <i class="fa fa-google fa-2x"></i>
+    </a>
+    {#
+    <!-- <a href="#" class="login-card btn-link disabled" disabled="true">
+      <p>Registrarse con Twitter</p>
+      <i class="fa fa-twitter fa-2x"></i>
+    </a> -->
+    #}
+  </div>
+</main>
 {% endblock %}

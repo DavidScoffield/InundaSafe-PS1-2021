@@ -5,7 +5,7 @@
     <a class="navbar-brand font-weight-bold d-flex align-items-center" href="{{url_for('home.index')}}">
       <img src="{{ url_for('static', filename='favicon.ico') }}" alt="Logo de la aplicación"
         style="width: 32px; height: 32px; margin-right: 5px" />
-      <span> InundaSafe </span>
+      <span> InundaSafe - Privada </span>
     </a>
   </div>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -15,11 +15,7 @@
 
   <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      {% if helper_has_permission("usuario_index") %}
-      <li class="nav-item {% if bp == 'user' %} active {% endif %}">
-        <a class="nav-link" href="{{url_for('user.index', page_number=1)}}">Administrar usuarios</a>
-      </li>
-      {% endif %} {% if helper_has_permission("config_show") %}
+      {% if helper_has_permission("config_show") %}
       <li class="nav-item {% if bp == 'config_routes' %} active {% endif %}">
         <a class="nav-link" href="{{url_for('config_routes.index')}}">Configuración</a>
       </li>
@@ -29,12 +25,43 @@
         <a class="nav-link" href="{{url_for('complaint.index', page_number=1)}}">Denuncias</a>
       </li>
       {% endif %}
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+
+      {#
+      {% if helper_has_permission("usuario_index") %}
+      <li class="nav-item {% if bp == 'user' %} active {% endif %}">
+        <a class="nav-link" href="{{url_for('user.index', page_number=1)}}">Administrar usuarios</a>
+      </li>
+      {% endif %}
+      #}
+
+      {% if helper_has_permission("usuario_index") or helper_has_permission("usuario_waiting_index") %}
+      <li class="nav-item dropdown {% if bp == 'user' or bp == 'user_waiting' %} active {% endif %}">
+        <a class=" nav-link dropdown-toggle" href="#" id="navbarDropdownUsers" role="button" data-toggle="dropdown"
+          aria-expanded="false">
+          Usuarios
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownUsers">
+          {% if helper_has_permission("usuario_index") %}
+          <li class="nav-item {% if bp == 'user' %} active {% endif %}">
+            <a class="dropdown-item" href="{{url_for('user.index', page_number=1)}}">Usuarios del sistema</a>
+          </li>
+          {% endif %}
+          {% if helper_has_permission("usuario_waiting_index") %}
+          <li class="nav-item {% if bp == 'user_waiting' %} active {% endif %}">
+            <a class="dropdown-item" href="{{url_for('user_waiting.index', page_number=1)}}">Aprobación de usuarios</a>
+          </li>
+          {% endif %}
+        </ul>
+      </li>
+      {% endif %}
+
+      <li
+        class="nav-item dropdown {% if bp == 'meeting_point' or bp == 'flood_zones' or bp == 'evacuation_route' %} active{% endif %}">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOther" role="button" data-toggle="dropdown"
           aria-expanded="false">
           Más opciones
         </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownOther">
           {% if helper_has_permission("punto_encuentro_index") %}
           <li class="nav-item {% if bp == 'meeting_point' %} active {% endif %}">
             <a class="dropdown-item" href="{{url_for('meeting_point.index', page_number=1)}}">Puntos de encuentro</a>

@@ -162,6 +162,8 @@ class Complaint(db.Model):
     @classmethod
     def search(
         cls,
+        init_date,
+        end_date,
         title: str = "",
         state: int = 1,      
     ):
@@ -176,6 +178,7 @@ class Complaint(db.Model):
             Complaint.query
             .filter(Complaint.title.contains(title))
             .filter(Complaint.state.startswith(state))
+            .filter(Complaint.created_at >= init_date, Complaint.created_at <= end_date)
             .order_by(eval(f"Complaint.title.{order}()"))
         )
 

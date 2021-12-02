@@ -1,6 +1,6 @@
 <template>
   <div style="height: auto; width: 70%; margin: auto">
-    <h1>Puntos de encuentro y recorridos de evacuación</h1>
+    <h2>Puntos de encuentro y recorridos de evacuación</h2>
     <br />
 
     <l-map :zoom="zoom" :center="center" style="height: 500px">

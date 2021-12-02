@@ -11,13 +11,16 @@
         <l-marker :lat-lng="complaint.coordenadas">
           <l-popup :options="{ maxHeight: 300 }">
             <div @click="innerClick">
-              <strong>Titulo:</strong> {{ complaint.titulo }}<br />
-              <strong>Categoría:</strong> {{ complaint.categoria }}<br />
-              <strong>Estado:</strong> {{ complaint.estado }}<br />
-              <strong>Email del denunciante:</strong>
-              {{ complaint.email_denunciante }}<br />
-              <strong>Teléfono del denunciante:</strong>
-              {{ complaint.telcel_denunciante }}<br />
+              <ul class="list-unstyled">
+                <li><strong>Titulo:</strong> {{ complaint.titulo }}</li>
+                <li><strong>Categoría:</strong> {{ complaint.categoria }}</li>
+                <li>
+                  <strong>Estado:</strong>
+                  <span class="text-capitalize"> {{ complaint.estado }}</span>
+                </li>
+                <li><strong>Email del denunciante:</strong> {{ complaint.email_denunciante }}</li>
+                <li><strong>Teléfono del denunciante:</strong> {{ complaint.telcel_denunciante }}</li>
+              </ul>
               <p v-show="showDescription" style="overflow-wrap: break-word">
                 {{ complaint.descripcion }}
               </p>

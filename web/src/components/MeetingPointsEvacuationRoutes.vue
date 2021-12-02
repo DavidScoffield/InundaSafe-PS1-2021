@@ -1,25 +1,41 @@
-<template>
+<template >
 
-  <div style="height: 500px; width: 70%; margin: auto">
+  <div style="height: auto; width: 70%; margin: auto">
 
     <h1> Puntos de encuentro y recorridos de evacuación </h1><br>
 
-    <l-map
-      :zoom="zoom"
-      :center="center"
-      style="height: 100%"
-    >
+    <p v-if="!fetchedMeetingPoints || !fetchedEvacuationRoutes">Cargando mapa...
+       <img style='height:50px; width:70px' src='../assets/loading.gif'> </p>
+
+    <l-map :zoom="zoom" :center="center" style="height: 500px">
 
       <l-tile-layer :url="url"/>
+
+      <!-- Marcador de la ubicación del usuario o ubicación por defecto -->
+      <l-marker :lat-lng="this.userLatLong ? [this.userLatLong.lat, this.userLatLong.long] : this.center">
+
+          <l-icon :icon-url="require('../assets/initial_location.png')"
+                  :icon-size="[20, 30]"/>
+
+          <l-popup :options="{ maxHeight: 350 }">
+            <strong>Mi ubicación</strong> {{this.userLatLong ? "(GPS)" : "(default)"}}
+          </l-popup>
+          
+      </l-marker>
 
       <!-- Se dibujan los puntos de encuentro -->
       <l-marker v-for="(meetingPoint, index) in meetingPoints.puntos_encuentro" :key="index"
                 :lat-lng="[meetingPoint.coordenada.lat, meetingPoint.coordenada.long]">
 
-        <l-popup :options="{ maxHeight: 300 }">
+        <l-icon :icon-url="require('../assets/meeting_point.png')"
+                :icon-size="[30, 40]"/>
+
+        <l-popup :options="{ maxHeight: 350 }">
+          <p style="color:green; text-align:center">Punto de encuentro</p>
           <strong>Nombre:</strong> {{meetingPoint.nombre}}<br>
           <strong>Teléfono:</strong> {{meetingPoint.telefono}}<br>
-          <strong>Dirección</strong> {{meetingPoint.direccion}}<br>
+          <strong>Dirección:</strong> {{meetingPoint.direccion}}<br>
+          <strong>Email:</strong> {{meetingPoint.email}}<br>
         </l-popup>
         
       </l-marker>
@@ -31,11 +47,11 @@
         <!-- Marcador de inicio del recorrido -->
         <l-marker :lat-lng="[evacuationRoute.coordenadas[0].lat, evacuationRoute.coordenadas[0].long]">
 
-          <l-icon 
-            :icon-size="50"
-            icon-url="https://cdn.icon-icons.com/icons2/1854/PNG/512/8_116658.png"/>
+          <l-icon :icon-url="require('../assets/evacuation_route_start.png')"
+                  :icon-size="[35, 45]"/>
 
-          <l-popup :options="{ maxHeight: 300 }">
+          <l-popup :options="{ maxHeight: 350 }">
+              <p style="color:green; text-align:center">Recorrido de evacuación</p>
               <strong>Nombre:</strong> {{evacuationRoute.nombre}}<br>
               <p style="display:inline-block" v-show="showDescription"><strong> Descripcion: </strong> {{evacuationRoute.descripcion}}</p><br>
               <strong>
@@ -52,9 +68,8 @@
 
         <!-- Marcador de fin del recorrido -->
         <l-marker :lat-lng="getEvacuationRouteEndPoint(evacuationRoute.coordenadas)">
-          <l-icon 
-            :icon-size="30"
-            icon-url="http://cdn.onlinewebfonts.com/svg/img_467043.png"/>
+          <l-icon :icon-url="require('../assets/evacuation_route_end.png')"
+                  :icon-size="[20, 30]"/>
         </l-marker>
 
       </l-polyline>
@@ -67,14 +82,17 @@
 
             <div class="col-sm">
 
-                <h3>Puntos de encuentro</h3><br>
+                <h3>Puntos de encuentro {{this.userLatLong ? "cercanos al usuario" : ""}}</h3><br>
 
                 <!-- Tabla de puntos de encuentro -->
-                <table class="table table-striped">
+                <table v-if="fetchedMeetingPoints" class="table table-striped">
                     <thead>
-                        <tr>
+                        <tr v-if="meetingPoints.puntos_encuentro.length">
                             <th>Nombre</th>
                             <th>Dirección</th>
+                        </tr>
+                        <tr v-else>
+                          <th>No se encontraron puntos de encuentro</th>
                         </tr>
                     </thead>
 
@@ -86,8 +104,10 @@
                     </tbody>
                 </table><br>
 
+                <p v-if="!fetchedMeetingPoints">Cargando puntos de encuentro...<img style='height:50px; width:70px' src='../assets/loading.gif'> </p>
+
                 <!-- Barra de navegación para puntos de encuentro -->
-                <nav aria-label="Meeting points page navigation">
+                <nav v-if="meetingPoints.puntos_encuentro.length" aria-label="Meeting points page navigation">
                     <ul class="pagination justify-content-center">
                         <li v-if="meetingPoints.pagina > 1" class="page-item">
                             <a class="page-link" tabindex="-1" @click="fetchMeetingPointPage(meetingPoints.pagina - 1)">Anterior</a>
@@ -95,7 +115,7 @@
                         <li v-else class="page-item disabled">
                             <a class="page-link" tabindex="-1">Anterior</a>
                         </li>
-                        <li v-for="page in [...Array(meetingPoints.paginas).keys()]" :key="`page-${page}`" class="page-item"
+                        <li v-for="page in [...Array(meetingPoints.paginas).keys()]" :key="page" class="page-item"
                             v-bind:class="{ 'active' : meetingPoints.pagina == page + 1 }">
                             <a class="page-link" @click="fetchMeetingPointPage(page + 1)">{{ page + 1 }}</a>
                         </li>
@@ -115,10 +135,10 @@
                 <h3>Recorridos de evacuación</h3><br>
 
                 <!-- Tabla de recorridos de evacuación -->
-                <table class="table table-striped">
+                <table v-if="fetchedEvacuationRoutes" class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Nombre</th>
+                            <th>{{evacuationRoutes.recorridos.length ? "Nombre" : "No se encontraron recorridos de evacuación"}}</th>
                         </tr>
                     </thead>
 
@@ -129,8 +149,10 @@
                     </tbody>
                 </table><br>
 
+                <p v-if="!fetchedEvacuationRoutes">Cargando recorridos de evacuación...<img style='height:50px; width:70px' src='../assets/loading.gif'> </p>
+
                 <!-- Barra de navegación para recorridos de evacuación -->
-                <nav aria-label="Evacuation route page navigation">
+                <nav v-if="evacuationRoutes.recorridos.length" aria-label="Evacuation route page navigation">
                     <ul class="pagination justify-content-center">
                         <li v-if="evacuationRoutes.pagina > 1" class="page-item">
                             <a class="page-link" tabindex="-1" @click="fetchEvacuationRoutePage(evacuationRoutes.pagina - 1)">Anterior</a>
@@ -182,13 +204,16 @@
     data() {
       return {
         zoom: 12.5,
-        center: latLng(-34.9187, -57.956),
+        center: latLng(-34.9213, -57.9545),
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         showDescription: false,
-        meetingPoints: [],
-        evacuationRoutes: [],
+        meetingPoints: { puntos_encuentro : [] },
+        evacuationRoutes: { recorridos : [] },
         currentMeetinpointPage: 0,
         currentEvacuationRoutePage: 0,
+        fetchedMeetingPoints: false,
+        fetchedEvacuationRoutes: false,
+        userLatLong: null
       };
     },
   
@@ -202,31 +227,53 @@
       fetchMeetingPointPage(page=1) {
         // consulta a la api de puntos de encuentro para obtener la página solicitada
 
-        fetch(`http://localhost:5000/api/puntos-encuentro?pagina=${page}`)
+        var url = `http://localhost:5000/api/puntos-encuentro?pagina=${page}`
+
+        if (this.userLatLong) {
+          url += `&lat=${this.userLatLong.lat}&long=${this.userLatLong.long}`
+        }
+
+        this.fetchedMeetingPoints = false
+
+        fetch(url)
           .then((response) => {
               return response.json();
           })
               .then((json) => {
+                  if (json.error_name) {
+                    throw json
+                  }
                   this.meetingPoints = json.puntos_encuentro
               })
                   .catch((e) => {
                       console.log(e)
                   })
+                      .finally(() => {
+                        this.fetchedMeetingPoints = true
+                      })                  
       },
   
       fetchEvacuationRoutePage(page=1) {
         // consulta a la api de recorridos de evacuación para obtener la página solicitada
 
+        this.fetchedEvacuationRoutes = false
+        
         fetch(`http://localhost:5000/api/recorridos-evacuacion?pagina=${page}`)
           .then((response) => {
               return response.json();
           })
               .then((json) => {
+                  if (json.error_name) {
+                    throw json
+                  }
                   this.evacuationRoutes = json.recorridos
               })
                   .catch((e) => {
                       console.log(e)
                   })
+                      .finally(() => {
+                        this.fetchedEvacuationRoutes = true
+                      })
       },
   
       getCoordinateList(coordinates) {
@@ -254,15 +301,43 @@
 
           return [coordinates[coordinates.length - 1].lat, coordinates[coordinates.length - 1].long]
       },
+
+      setUserCoordinates(position) {
+        // función que setea las coordenadas del usuario en caso de que 
+        // se las haya podido obtener de forma correcta
+        this.userLatLong = { lat : position.coords.latitude,
+                             long : position.coords.longitude }
+        
+        this.fetchInitialPages()
+      },
+
+      geoLocationError(error) {
+        // función que se ejecuta en caso de que el usuario no haya aceptado
+        // proveer su ubicación o haya ocurrido algún error al tratar de accederla
+
+        this.fetchInitialPages()
+        console.log(error)
+      },
+
+      fetchInitialPages(){
+        // consulta por las primeras páginas de puntos de encuentro
+        // y recorridos de evacuación
+
+        this.fetchMeetingPointPage(1)
+        this.fetchEvacuationRoutePage(1)
+        
+      }
   
     },
   
     created() {
-      // hook created donde se cargan los puntos de encuentro y recorridos de evacuación
+      // hook created donde se consulta por la ubicación del usuario
+      // y se cargan los puntos de encuentro y recorridos de evacuación
       // con la información de la primer página de los listados
 
-      this.fetchMeetingPointPage(1)
-      this.fetchEvacuationRoutePage(1)
+      navigator.geolocation.getCurrentPosition(this.setUserCoordinates, 
+                                               this.geoLocationError, 
+                                               {enableHighAccuracy : true})
     }
   
   };

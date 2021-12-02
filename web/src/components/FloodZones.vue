@@ -17,7 +17,7 @@
           :fillOpacity="0.5"
         >
           <l-popup :options="{ maxHeight: 300 }">
-            <ul @click="innerClick">
+            <ul>
               <li><strong>Nombre:</strong> {{ zone.nombre }}</li>
               <li><strong>Codigo:</strong> {{ zone.codigo }}</li>
               <li>
@@ -125,7 +125,6 @@ export default {
       zoom: 11.5,
       center: latLng(-34.9187, -57.956),
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      showDescription: false,
       floodZones: [],
     };
   },

@@ -84,9 +84,10 @@ class ComplaintSchema(Schema):
     def format_dump(self, data, **kwargs):
         "Formatea el dump del schema"
 
-        if not self.post_schema:
+        if self.post_schema:
             data["categoria_id"] = data["categoria_id"].id
             del data["coordenadas"]
+            del data["estado"]
         else:
             data["categoria"] = data["categoria_id"].name
             data["coordenadas"] = json.loads(data["coordenadas"])
@@ -94,9 +95,9 @@ class ComplaintSchema(Schema):
 
         return data
 
-complaint_post_schema = ComplaintSchema(many=False)
+complaint_post_schema = ComplaintSchema(post_schema = True, many=False)
 
-complaint_get_schema = ComplaintSchema(post_schema = True, many=False)
+complaint_get_schema = ComplaintSchema(many=False)
 
 class PaginatedComplaintSchema(Schema):
     total = fields.Int()

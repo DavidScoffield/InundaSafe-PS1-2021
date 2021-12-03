@@ -24,57 +24,12 @@
       </l-marker>
 
       <!-- Se dibujan los puntos de encuentro -->
-      <l-marker v-for="(meetingPoint, index) in meetingPoints.puntos_encuentro" :key="index"
-                :lat-lng="[meetingPoint.coordenada.lat, meetingPoint.coordenada.long]">
-
-        <l-icon :icon-url="require('../assets/icons/meeting_point.png')"
-                :icon-size="[30, 40]"/>
-
-        <l-popup :options="{ maxHeight: 350 }">
-          <p style="color:green; text-align:center">Punto de encuentro</p>
-          <strong>Nombre:</strong> {{meetingPoint.nombre}}<br>
-          <strong>Teléfono:</strong> {{meetingPoint.telefono}}<br>
-          <strong>Dirección:</strong> {{meetingPoint.direccion}}<br>
-          <strong>Email:</strong> {{meetingPoint.email}}<br>
-        </l-popup>
-        
-      </l-marker>
+      <MeetingPoint v-for="(meetingPoint, index) in meetingPoints.puntos_encuentro"
+                    :key="index" :meetingPoint="meetingPoint"/>
 
       <!-- Se dibujan los recorridos de evacuación -->
-      <l-polyline v-for="(evacuationRoute, index) in evacuationRoutes.recorridos" :key="index"
-                  :lat-lngs="getCoordinateList(evacuationRoute.coordenadas)" :color="randomColor()">
-        
-        <!-- Marcador de inicio del recorrido -->
-        <l-marker :lat-lng="[evacuationRoute.coordenadas[0].lat, evacuationRoute.coordenadas[0].long]">
-
-          <l-icon :icon-url="require('../assets/icons/evacuation_route_start.png')"
-                  :icon-size="[35, 45]"/>
-
-          <l-popup :options="{ maxHeight: 350 }">
-              <p style="color:green; text-align:center">Recorrido de evacuación</p>
-              <strong>Nombre:</strong> {{evacuationRoute.nombre}}<br>
-              <p style="display:inline-block" v-show="showDescription">
-                <strong> Descripcion: </strong> {{evacuationRoute.descripcion}}
-              </p><br>
-              <strong>
-                <i @click="innerClick">
-                  Haga click para 
-                  <div style="display: inline" v-if="!showDescription">ver</div>
-                  <div style="display: inline" v-else>ocultar</div>
-                  la descripción
-                </i>
-              </strong>
-          </l-popup>
-
-        </l-marker>
-
-        <!-- Marcador de fin del recorrido -->
-        <l-marker :lat-lng="getEvacuationRouteEndPoint(evacuationRoute.coordenadas)">
-          <l-icon :icon-url="require('../assets/icons/evacuation_route_end.png')"
-                  :icon-size="[20, 30]"/>
-        </l-marker>
-
-      </l-polyline>
+      <EvacuationRoute v-for="(evacuationRoute, index) in evacuationRoutes.recorridos"
+                       :key="index" :evacuationRoute="evacuationRoute"/>
 
     </l-map><br><br>    
 
@@ -192,8 +147,10 @@
 <script>
 
   import { latLng } from "leaflet";
-  import { LMap, LTileLayer, LMarker, LPopup, LPolyline, LIcon } from "@vue-leaflet/vue-leaflet";
+  import { LMap, LTileLayer, LMarker, LPopup, LIcon } from "@vue-leaflet/vue-leaflet";
   import Title from "./Title.vue";
+  import MeetingPoint from "./MeetingPoint.vue";
+  import EvacuationRoute from "./EvacuationRoute.vue";
   
   export default {
   
@@ -202,11 +159,12 @@
     components: {
       LMap,
       LTileLayer,
+      Title,
+      MeetingPoint,
+      EvacuationRoute,
       LMarker,
       LPopup,
-      LPolyline,
-      LIcon,
-      Title
+      LIcon
     },
   
     data() {
@@ -214,7 +172,6 @@
         zoom: 12.5,
         center: null,
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        showDescription: false,
         meetingPoints: { puntos_encuentro : [] },
         evacuationRoutes: { recorridos : [] },
         currentMeetinpointPage: 0,
@@ -226,11 +183,7 @@
     },
   
     methods: {
-      innerClick() {
-        // oculta o muestra la descripción del recorrido de evacuación
 
-        this.showDescription = !this.showDescription;
-      },
   
       fetchMeetingPointPage(page=1) {
         // consulta a la api de puntos de encuentro para obtener la página solicitada
@@ -284,32 +237,6 @@
                       })
       },
   
-      getCoordinateList(coordinates) {
-          // retorna un listado con las coordenadas (lat, long) del recorrido de evacuación
-
-          var coordinateList = []
-          for (var latLong of coordinates) {
-              coordinateList.push([latLong.lat, latLong.long])
-          }
-          return coordinateList
-      },
-  
-      randomColor() {
-          // retorna un color aleatorio para marcar el recorrido de evacuación
-
-          var colors = [ "#8B008B", "#3221a5", "#7B68EE", 
-                         "#FF4500", "#5F9EA0", "#8B4513", 
-                         "#32CD32", "#8A2BE2", "#2160d3" ]
-
-          return colors[Math.floor(Math.random()*colors.length)]
-      },
-
-      getEvacuationRouteEndPoint(coordinates) {
-          // retorna el último punto del recorrido de evacuación
-
-          return [coordinates[coordinates.length - 1].lat, coordinates[coordinates.length - 1].long]
-      },
-
       setUserCoordinates(position) {
         // función que setea las coordenadas del usuario en caso de que 
         // se las haya podido obtener de forma correcta
@@ -355,5 +282,3 @@
   };
   
 </script>
-
-

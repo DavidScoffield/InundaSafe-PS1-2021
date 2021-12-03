@@ -11,10 +11,14 @@
       >
     </div>
 
+    <p v-show="errorMessaje" style="color:red">{{errorMessaje}}</p>
+
+    <p v-show="successMessage" style="color:green">{{successMessage}}</p>
+
     <p v-if="!fetchedMeetingPoints || !fetchedEvacuationRoutes">Cargando mapa...
        <img style='height: 50px; width: 70px' src='../assets/icons/loading.gif'> </p>
 
-    <l-map v-if="center" :zoom="zoom" :center="center" style="height: 500px">
+    <l-map :zoom="zoom" :center="center" style="height: 500px">
 
       <l-tile-layer :url="url"/>
 
@@ -122,13 +126,15 @@
     data() {
       return {
         zoom: 12.5,
-        center: null,
+        center: latLng(-34.9213, -57.9545),
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         meetingPoints: { puntos_encuentro : [] },
         evacuationRoutes: { recorridos : [] },
         fetchedMeetingPoints: false,
         fetchedEvacuationRoutes: false,
-        userLatLong: null
+        userLatLong: null,
+        errorMessaje: "",
+        successMessage: ""
       };
     },
   
@@ -196,25 +202,25 @@
         this.center = latLng(position.coords.latitude, 
                              position.coords.longitude)
 
-        this.fetchInitialPages()
+        this.fetchMeetingPointPage(1)
+
+        this.successMessage = "Mostrando los puntos de encuentro más cercanos a la ubicación del usuario"
+        setTimeout(() => this.successMessage = "", 10000)
       },
 
-      geoLocationError(error) {
+      geoLocationError(error, message="", timeout=7000) {
         // función que se ejecuta en caso de que el usuario no haya aceptado
         // proveer su ubicación o haya ocurrido algún error al tratar de accederla
 
-        this.center = latLng(-34.9213, -57.9545)
-        this.fetchInitialPages()
-        console.log(error)
-      },
+        if (message) {
+          this.errorMessaje = message
+        } else if (error.code == 1) {
+          this.errorMessaje = "El usuario no aceptó conocer su ubicación" 
+        } else {
+          this.errorMessaje = "Ocurrió un error inesperado al tratar de obtener su ubicación, por favor, inténtelo nuevamente"
+        }
 
-      fetchInitialPages(){
-        // consulta por las primeras páginas de puntos de encuentro
-        // y recorridos de evacuación
-
-        this.fetchMeetingPointPage(1)
-        this.fetchEvacuationRoutePage(1)
-        
+        setTimeout(() => this.errorMessaje = "", timeout)
       }
   
     },
@@ -224,6 +230,9 @@
       // y se cargan los puntos de encuentro y recorridos de evacuación
       // con la información de la primer página de los listados
 
+      this.fetchMeetingPointPage(1)
+      this.fetchEvacuationRoutePage(1)
+
       if ("geolocation" in navigator) {
         /* la geolocalización está disponible */
         navigator.geolocation.getCurrentPosition(this.setUserCoordinates, 
@@ -232,7 +241,7 @@
                                                   timeout: 8000, maximumAge: 0})
       } else {
         /* la geolocalización no está disponible */
-        this.geoLocationError("Geolocalización no disponible")
+        this.geoLocationError(4, "Su dispositivo no soporta la geolocalización, la ubicación por defecto es el centro de La Plata", 13000)
       }      
     }
   

@@ -7,7 +7,7 @@
     <p v-if="!fetchedMeetingPoints || !fetchedEvacuationRoutes">Cargando mapa...
        <img style='height: 50px; width: 70px' src='../assets/icons/loading.gif'> </p>
 
-    <l-map :zoom="zoom" :center="center" style="height: 500px">
+    <l-map v-if="center" :zoom="zoom" :center="center" style="height: 500px">
 
       <l-tile-layer :url="url"/>
 
@@ -210,7 +210,7 @@
     data() {
       return {
         zoom: 12.5,
-        center: latLng(-34.9213, -57.9545),
+        center: null,
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         showDescription: false,
         meetingPoints: { puntos_encuentro : [] },
@@ -314,6 +314,9 @@
         this.userLatLong = { lat : position.coords.latitude,
                              long : position.coords.longitude }
 
+        this.center = latLng(position.coords.latitude, 
+                             position.coords.longitude)
+
         this.fetchInitialPages()
       },
 
@@ -321,6 +324,7 @@
         // función que se ejecuta en caso de que el usuario no haya aceptado
         // proveer su ubicación o haya ocurrido algún error al tratar de accederla
 
+        this.center = latLng(-34.9213, -57.9545)
         this.fetchInitialPages()
         console.log(error)
       },

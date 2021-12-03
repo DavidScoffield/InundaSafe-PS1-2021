@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Complaint from '../components/Complaint.vue'
+import FormNewComplaint from '../components/FormNewComplaint.vue'
 import MeetingPointsEvacuationRoutes from '../components/MeetingPointsEvacuationRoutes.vue'
 import FloodZonesAll from '../components/FloodZonesAll.vue'
 import FloodZone from '../components/FloodZone.vue'
@@ -20,6 +21,11 @@ const routes = [
     path: '/puntos-recorridos',
     name: 'MeetingPointsEvacuationRoutes',
     component: MeetingPointsEvacuationRoutes,
+  },
+  {
+    path: '/newComplaint',
+    name: 'NewComplaint',
+    component: FormNewComplaint,
   },
   {
     path: '/zonas-inundables',

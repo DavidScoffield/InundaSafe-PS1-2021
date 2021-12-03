@@ -142,6 +142,10 @@ export default {
                 body: JSON.stringify({ categoria_id: categoria, coordenadas: coordenadas, apellido_denunciante: this.apellido_denunciante, nombre_denunciante: this.nombre_denunciante, telcel_denunciante: telefono, email_denunciante: this.email_denunciante, titulo: this.titulo, descripcion: this.descripcion })
             };
             fetch(`${process.env.VUE_APP_BASE_URL}/denuncias/`, requestComplaint)
+            .then(() => {
+                this.$refs.title_error.focus()
+                this.is_correct = "La denuncia se creó correctamente"
+            })
             .catch(() => {
                 this.name_error = "Por favor corrija los errores"
             })
@@ -193,8 +197,6 @@ export default {
                 this.description_error = "La descripción no puede ser tan larga"
                 return false
             }
-            this.$refs.title_error.focus()
-            this.is_correct = "La denuncia se creó correctamente"
             return true
         }
     }

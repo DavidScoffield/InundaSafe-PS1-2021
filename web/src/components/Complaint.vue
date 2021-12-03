@@ -1,5 +1,5 @@
 <template>
-  <div class="container complaint">
+  <div class="container complaint mb-5">
     <Title>Denuncias</Title>
     <div
       class="new-complaint <style.complaint > scoped </style.complaint { position: absolute; rigth: 0; }>"

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid text-center">
+  <div class="container-fluid px-0 mb-3 text-center">
     <div class="welcome">
       <div>
         <h1 style="color: black; font-weight: 600">Bienvenido a InundaSafe</h1>
@@ -38,6 +38,9 @@
                 </p>
               </div>
             </router-link>
+            <router-link class="button-gradient btn w-50 mx-auto my-1" to="/newComplaint"
+              >Nueva denuncia</router-link
+            >
           </div>
         </div>
 
@@ -111,11 +114,6 @@ export default {
 </script>
 
 <style scoped>
-/* @media screen and (min-width: 768px) { */
-.jumbotron .h1,
-.jumbotron h1 {
-  font-size: 63px;
-}
 
 .welcome {
   padding-top: 30px;

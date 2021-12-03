@@ -1,6 +1,13 @@
 <template>
-  <div style="height: auto; width: 100%; margin: 0 auto">
+  <div style="height: auto; width: 100%; margin: 0 auto" class="container flood_zone">
     <Title>Zonas inundables</Title>
+    <div
+      class="new-complaint <style.complaint > scoped </style.complaint { position: absolute; rigth: 0; }>"
+    >
+      <router-link class="button-gradient btn" to="/newComplaint"
+        >Nueva denuncia</router-link
+      >
+    </div>
     <br />
 
     <!-- MAPA -->
@@ -157,5 +164,13 @@ export default {
 <style scoped>
 tbody {
   vertical-align: middle !important;
+}
+.flood_zone {
+  position: relative;
+}
+.new-complaint {
+  position: absolute;
+  right: 10px;
+  top: 35px;
 }
 </style>

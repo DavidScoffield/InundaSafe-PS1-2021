@@ -30,7 +30,7 @@
         </defs>
       </svg>
       <p class="footer-content">
-        Aplicacion Privada - <strong>InundaSafe</strong> - Proyecto de Software
+        Aplicacion Pública - <strong>InundaSafe</strong> - Proyecto de Software
       </p>
     </div>
   </footer>

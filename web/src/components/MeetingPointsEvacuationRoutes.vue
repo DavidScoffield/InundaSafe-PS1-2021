@@ -11,21 +11,30 @@
     <p v-if="!fetchedMeetingPoints || !fetchedEvacuationRoutes">Cargando mapa...
        <img style='height: 50px; width: 70px' src='../assets/icons/loading.gif'> </p>
 
-    <l-map :zoom="zoom" :center="center" style="height: 500px">
+    <l-map :zoom="zoom" :center="userLatLong ? [userLatLong.lat, userLatLong.long] : center" style="height: 500px">
 
       <l-tile-layer :url="url"/>
 
       <!-- Marcador de la ubicación del usuario o ubicación por defecto -->
-      <l-marker :lat-lng="this.userLatLong ? [this.userLatLong.lat, this.userLatLong.long] : this.center">
+      <l-marker :lat-lng="userLatLong ? [userLatLong.lat, userLatLong.long] : center">
 
           <l-icon :icon-url="require('../assets/icons/initial_location.png')"
                   :icon-size="[20, 30]"/>
 
           <l-popup :options="{ maxHeight: 350 }">
-            <strong>Mi ubicación</strong> {{this.userLatLong ? "(GPS)" : "(default)"}}
+            <strong>Mi ubicación</strong> {{userLatLong ? "(GPS)" : "(default)"}}
           </l-popup>
           
       </l-marker>
+
+      <!-- Marcador para referencias  -->
+      <l-marker v-if="pendingMarkers > 0" :lat-lng="markerCoordinates">
+
+          <l-icon :icon-url="require('../assets/icons/circle.png')"
+                  :icon-size="[40, 60]"/>
+          
+      </l-marker>
+
 
       <!-- Se dibujan los puntos de encuentro -->
       <MeetingPoint v-for="(meetingPoint, index) in meetingPoints.puntos_encuentro"
@@ -48,7 +57,8 @@
 
                 <!-- Tabla de puntos de encuentro -->
                 <MeetingPointTable v-if="fetchedMeetingPoints"
-                                   :meetingPoints="meetingPoints"/><br>
+                                   :meetingPoints="meetingPoints"
+                                   :placeMarker="placeMarker"/><br>
 
                 <p v-if="!fetchedMeetingPoints">Buscando puntos de encuentro...<img style='height:50px; width:70px' src='../assets/icons/loading.gif'> </p>
 
@@ -66,7 +76,8 @@
 
                 <!-- Tabla de recorridos de evacuación -->
                 <EvacuationRouteTable v-if="fetchedEvacuationRoutes"
-                                      :evacuationRoutes="evacuationRoutes"/><br>
+                                      :evacuationRoutes="evacuationRoutes"
+                                      :placeMarker="placeMarker"/><br>
 
                 <p v-if="!fetchedEvacuationRoutes">Buscando recorridos de evacuación...<img style='height:50px; width:70px' src='../assets/icons/loading.gif'> </p>
 
@@ -127,7 +138,9 @@
         fetchedEvacuationRoutes: false,
         userLatLong: null,
         errorMessaje: "",
-        successMessage: ""
+        successMessage: "",
+        pendingMarkers: 0,
+        markerCoordinates: []
       };
     },
   
@@ -199,7 +212,7 @@
 
         this.successMessage = "Mostrando los puntos de encuentro más cercanos a la ubicación del usuario"
         setTimeout(() => this.successMessage = "", 10000)
-      },
+      }, 
 
       geoLocationError(error, message="", timeout=7000) {
         // función que se ejecuta en caso de que el usuario no haya aceptado
@@ -214,11 +227,17 @@
         }
 
         setTimeout(() => this.errorMessaje = "", timeout)
+      },
+
+      placeMarker(coordinates) {
+        this.markerCoordinates = coordinates
+        this.pendingMarkers += 1
+        setTimeout(() => this.pendingMarkers -= 1, 5000)
       }
   
     },
   
-    created() {
+    mounted() {
       // hook created donde se consulta por la ubicación del usuario
       // y se cargan los puntos de encuentro y recorridos de evacuación
       // con la información de la primer página de los listados
@@ -236,8 +255,7 @@
         /* la geolocalización no está disponible */
         this.geoLocationError(4, "Su dispositivo no soporta la geolocalización, la ubicación por defecto es el centro de La Plata", 13000)
       }      
-    }
-  
+    },
   };
   
 </script>

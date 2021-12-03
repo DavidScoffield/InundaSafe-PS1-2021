@@ -193,7 +193,6 @@ export default {
                 this.description_error = "La descripción no puede ser tan larga"
                 return false
             }
-            //document.getElementById("name_error")
             this.$refs.title_error.focus()
             this.is_correct = "La denuncia se creó correctamente"
             return true

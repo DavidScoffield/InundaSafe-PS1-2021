@@ -43,48 +43,15 @@
                       Puntos de encuentro {{userLatLong ? "cercanos al usuario" : ""}}</h3><br>
 
                 <!-- Tabla de puntos de encuentro -->
-                <table v-if="fetchedMeetingPoints" class="table table-striped">
-                    <thead>
-                        <tr v-if="meetingPoints.puntos_encuentro.length">
-                            <th>Nombre</th>
-                            <th>Dirección</th>
-                        </tr>
-                        <tr v-else>
-                          <th>No se encontraron puntos de encuentro</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr v-for="(meetingPoint, index) in meetingPoints.puntos_encuentro" :key="index">
-                            <th scope="row">{{ meetingPoint.nombre }}</th>  
-                            <td>{{ meetingPoint.direccion }}</td> 
-                        </tr>
-                    </tbody>
-                </table><br>
+                <MeetingPointTable v-if="fetchedMeetingPoints"
+                                   :meetingPoints="meetingPoints"/><br>
 
                 <p v-if="!fetchedMeetingPoints">Buscando puntos de encuentro...<img style='height:50px; width:70px' src='../assets/icons/loading.gif'> </p>
 
                 <!-- Barra de navegación para puntos de encuentro -->
-                <nav v-if="meetingPoints.puntos_encuentro.length" aria-label="Meeting points page navigation">
-                    <ul class="pagination justify-content-center">
-                        <li v-if="meetingPoints.pagina > 1" class="page-item">
-                            <a class="page-link" tabindex="-1" @click="fetchMeetingPointPage(meetingPoints.pagina - 1)">Anterior</a>
-                        </li>
-                        <li v-else class="page-item disabled">
-                            <a class="page-link" tabindex="-1">Anterior</a>
-                        </li>
-                        <li v-for="page in [...Array(meetingPoints.paginas).keys()]" :key="page" class="page-item"
-                            v-bind:class="{ 'active' : meetingPoints.pagina == page + 1 }">
-                            <a class="page-link" @click="fetchMeetingPointPage(page + 1)">{{ page + 1 }}</a>
-                        </li>
-                        <li v-if="meetingPoints.pagina < meetingPoints.paginas" class="page-item">
-                            <a class="page-link" @click="fetchMeetingPointPage(meetingPoints.pagina + 1)">Siguiente</a>
-                        </li>
-                        <li v-else class="page-item disabled">
-                            <a class="page-link" href="#">Siguiente</a>
-                        </li>
-                    </ul>
-                </nav>
+                <MeetingPointNavigationBar v-if="meetingPoints.puntos_encuentro.length"
+                                           :meetingPoints="meetingPoints"
+                                           :fetchMeetingPointPage="fetchMeetingPointPage"/>
 
             </div>
 
@@ -94,45 +61,15 @@
                     Recorridos de evacuación</h3><br>
 
                 <!-- Tabla de recorridos de evacuación -->
-                <table v-if="fetchedEvacuationRoutes" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>{{evacuationRoutes.recorridos.length ? "Nombre" : "No se encontraron recorridos de evacuación"}}</th>
-                            <th v-if="evacuationRoutes.recorridos.length">Descripción</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr v-for="(evacuationRoute, index) in evacuationRoutes.recorridos" :key="index">
-                            <th scope="row">{{ evacuationRoute.nombre }}</th>  
-                            <th scope="row">{{ evacuationRoute.descripcion }}</th>
-                        </tr>
-                    </tbody>
-                </table><br>
+                <EvacuationRouteTable v-if="fetchedEvacuationRoutes"
+                                      :evacuationRoutes="evacuationRoutes"/><br>
 
                 <p v-if="!fetchedEvacuationRoutes">Buscando recorridos de evacuación...<img style='height:50px; width:70px' src='../assets/icons/loading.gif'> </p>
 
                 <!-- Barra de navegación para recorridos de evacuación -->
-                <nav v-if="evacuationRoutes.recorridos.length" aria-label="Evacuation route page navigation">
-                    <ul class="pagination justify-content-center">
-                        <li v-if="evacuationRoutes.pagina > 1" class="page-item">
-                            <a class="page-link" tabindex="-1" @click="fetchEvacuationRoutePage(evacuationRoutes.pagina - 1)">Anterior</a>
-                        </li>
-                        <li v-else class="page-item disabled">
-                            <a class="page-link" tabindex="-1">Anterior</a>
-                        </li>
-                        <li v-for="page in [...Array(evacuationRoutes.paginas).keys()]" :key="`page-${page}`" class="page-item"
-                            v-bind:class="{ 'active' : evacuationRoutes.pagina == page + 1 }">
-                            <a class="page-link active" active="{{evacuationRoutes.pagina == page}}" @click="fetchEvacuationRoutePage(page + 1)">{{ page + 1 }}</a>
-                        </li>
-                        <li v-if="evacuationRoutes.pagina < evacuationRoutes.paginas" class="page-item">
-                            <a class="page-link" @click="fetchEvacuationRoutePage(evacuationRoutes.pagina + 1)">Siguiente</a>
-                        </li>
-                        <li v-else class="page-item disabled">
-                            <a class="page-link" href="#">Siguiente</a>
-                        </li>
-                    </ul>
-                </nav>
+                <EvacuationRouteNavigationBar v-if="evacuationRoutes.recorridos.length"
+                                              :evacuationRoutes="evacuationRoutes" 
+                                              :fetchEvacuationRoutePage="fetchEvacuationRoutePage"/>
 
             </div>
 
@@ -149,9 +86,13 @@
   import { latLng } from "leaflet";
   import { LMap, LTileLayer, LMarker, LPopup, LIcon } from "@vue-leaflet/vue-leaflet";
   import Title from "./Title.vue";
-  import MeetingPoint from "./MeetingPoint.vue";
-  import EvacuationRoute from "./EvacuationRoute.vue";
-  
+  import MeetingPoint from "./meeting-point/MeetingPoint.vue";
+  import MeetingPointTable from "./meeting-point/MeetingPointTable.vue";
+  import MeetingPointNavigationBar from "./meeting-point/MeetingPointNavigationBar.vue";
+  import EvacuationRoute from "./evacuation-route/EvacuationRoute.vue";
+  import EvacuationRouteTable from "./evacuation-route/EvacuationRouteTable.vue";
+  import EvacuationRouteNavigationBar from "./evacuation-route/EvacuationRouteNavigationBar.vue";
+
   export default {
   
     name: "MeetingPointsEvacuationRoutes",
@@ -161,7 +102,11 @@
       LTileLayer,
       Title,
       MeetingPoint,
+      MeetingPointTable,
+      MeetingPointNavigationBar,
       EvacuationRoute,
+      EvacuationRouteTable,
+      EvacuationRouteNavigationBar,
       LMarker,
       LPopup,
       LIcon
@@ -174,8 +119,6 @@
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         meetingPoints: { puntos_encuentro : [] },
         evacuationRoutes: { recorridos : [] },
-        currentMeetinpointPage: 0,
-        currentEvacuationRoutePage: 0,
         fetchedMeetingPoints: false,
         fetchedEvacuationRoutes: false,
         userLatLong: null
@@ -183,7 +126,6 @@
     },
   
     methods: {
-
   
       fetchMeetingPointPage(page=1) {
         // consulta a la api de puntos de encuentro para obtener la página solicitada
@@ -240,6 +182,7 @@
       setUserCoordinates(position) {
         // función que setea las coordenadas del usuario en caso de que 
         // se las haya podido obtener de forma correcta
+        
         this.userLatLong = { lat : position.coords.latitude,
                              long : position.coords.longitude }
 

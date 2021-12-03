@@ -3,7 +3,7 @@
     <!-- Se dibuja el punto de encuentro -->
     <l-marker :lat-lng="[meetingPoint.coordenada.lat, meetingPoint.coordenada.long]">
 
-        <l-icon :icon-url="require('../assets/icons/meeting_point.png')"
+        <l-icon :icon-url="require('../../assets/icons/meeting_point.png')"
                 :icon-size="[30, 40]"/>
 
         <l-popup :options="{ maxHeight: 350 }">

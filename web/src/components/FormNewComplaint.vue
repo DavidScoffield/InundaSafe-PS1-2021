@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h2>Realizar una denuncia</h2>
+        <Title>Realizar una denuncia</Title>
         <form
             @submit="save"
             method="post"
@@ -81,13 +81,15 @@
 <script>
 import { latLng } from "leaflet";
 import {LMap, LTileLayer, LMarker} from '@vue-leaflet/vue-leaflet';
+import Title from "./Title.vue"
 
 export default {
     name: 'FormNewComplaint',
     components: {
         LMap,
         LTileLayer,
-        LMarker
+        LMarker, 
+        Title
     },
     data () {
         return {

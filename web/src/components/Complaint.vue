@@ -1,8 +1,12 @@
 <template>
-  <div class="container">
+  <div class="container complaint">
     <Title>Denuncias</Title>
-    <div>
-      <router-link class="button-gradient btn" to="/newComplaint">Nueva denuncia</router-link>
+    <div
+      class="new-complaint <style.complaint > scoped </style.complaint { position: absolute; rigth: 0; }>"
+    >
+      <router-link class="button-gradient btn" to="/newComplaint"
+        >Nueva denuncia</router-link
+      >
     </div>
     <l-map :zoom="zoom" :center="center" style="height: 80%">
       <l-tile-layer :url="url" />
@@ -141,3 +145,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.complaint {
+  position: relative;
+}
+.new-complaint {
+  position: absolute;
+  right: 10px;
+  top: 30px;
+}
+</style>

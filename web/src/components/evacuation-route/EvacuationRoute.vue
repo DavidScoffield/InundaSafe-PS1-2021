@@ -6,22 +6,17 @@
     <!-- Marcador de inicio del recorrido -->
     <l-marker :lat-lng="[evacuationRoute.coordenadas[0].lat, evacuationRoute.coordenadas[0].long]">
 
-        <l-icon :icon-url="require('../assets/icons/evacuation_route_start.png')"
+        <l-icon :icon-url="require('../../assets/icons/evacuation_route_start.png')"
                 :icon-size="[35, 45]"/>
 
         <l-popup :options="{ maxHeight: 350 }">
             <p style="color:green; text-align:center">Recorrido de evacuación</p>
-            <strong>Nombre:</strong> {{evacuationRoute.nombre}}<br>
+                <strong> Nombre: </strong> {{evacuationRoute.nombre}}<br>
             <p style="display:inline-block" v-show="showDescription">
-            <strong> Descripción: </strong> {{evacuationRoute.descripcion}}
+                <strong> Descripción: </strong> {{evacuationRoute.descripcion}}
             </p><br>
-            <strong>
-            <i @click="innerClick">
-                Haga click para 
-                <div style="display: inline" v-if="!showDescription">ver</div>
-                <div style="display: inline" v-else>ocultar</div>
-                la descripción
-            </i>
+            <strong @click="innerClick">
+                Haga click para {{showDescription ? "ocultar" : "ver"}} la descripción
             </strong>
         </l-popup>
 
@@ -29,7 +24,7 @@
 
     <!-- Marcador de fin del recorrido -->
     <l-marker :lat-lng="getEvacuationRouteEndPoint(evacuationRoute.coordenadas)">
-        <l-icon :icon-url="require('../assets/icons/evacuation_route_end.png')"
+        <l-icon :icon-url="require('../../assets/icons/evacuation_route_end.png')"
                 :icon-size="[20, 30]"/>
     </l-marker>
 

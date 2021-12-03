@@ -217,9 +217,16 @@
       // y se cargan los puntos de encuentro y recorridos de evacuación
       // con la información de la primer página de los listados
 
-      navigator.geolocation.getCurrentPosition(this.setUserCoordinates, 
-                                               this.geoLocationError, 
-                                               {enableHighAccuracy : true})
+      if ("geolocation" in navigator) {
+        /* la geolocalización está disponible */
+        navigator.geolocation.getCurrentPosition(this.setUserCoordinates, 
+                                                 this.geoLocationError, 
+                                                 {enableHighAccuracy: true,
+                                                  timeout: 8000, maximumAge: 0})
+      } else {
+        /* la geolocalización no está disponible */
+        this.geoLocationError("Geolocalización no disponible")
+      }      
     }
   
   };

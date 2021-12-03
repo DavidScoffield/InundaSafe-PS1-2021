@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 from app.db import db
-from sqlalchemy import Index
-
+from sqlalchemy import Index, func
+from sqlalchemy.ext.hybrid import hybrid_method
+import math
 
 class Coordinate(db.Model):
     """Modelo para el manejo de la tabla Coordinate de la base de datos"""
 
     __tablename__ = "coordinate"
     id = db.Column(db.Integer, primary_key=True)
-    latitude = db.Column(db.String(100), nullable=False)
-    longitude = db.Column(db.String(100), nullable=False)
+    latitude = db.Column(db.Float(), nullable=False)
+    longitude = db.Column(db.Float(), nullable=False)
     flood_zone_id = db.Column(
         db.Integer,
         db.ForeignKey("flood_zones.id", ondelete="CASCADE"),
@@ -43,12 +44,12 @@ class Coordinate(db.Model):
 
     def __init__(
         self,
-        latitude: str = None,
-        longitude: str = None,
+        latitude = None,
+        longitude = None,
     ):
         """Constructor del modelo"""
-        self.latitude = latitude
-        self.longitude = longitude
+        self.latitude = float(latitude)
+        self.longitude = float(longitude)
 
     @classmethod
     def new(
@@ -69,3 +70,16 @@ class Coordinate(db.Model):
 
     def as_array(self):
         return [self.latitude, self.longitude]
+
+    @hybrid_method
+    def distance_between(self, lat2, long2):
+        pass
+
+    @distance_between.expression
+    def distance_between(self, y2, x1):
+        "Función que retorna la distancia entre la coordenada y otro punto"
+
+        y1 = self.latitude
+        x2 = self.longitude
+
+        return func.pow((((x2 - x1 ) * (x2 - x1 )) + ((y2 - y1) * (y2 - y1))), 0.5)

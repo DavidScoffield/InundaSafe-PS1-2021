@@ -32,20 +32,29 @@ def validate_params_pagination(page):
     return (page, per_page)
 
 
-def validate_received_params(params):
+def validate_received_params(params, validate_coordinate = False):
     """
     Valida que los nombres de los parametros sean los correctos
     """
 
-    valids_params = ["pagina"]
+    valid_params = ["pagina"]
 
     if len(params.getlist("pagina")) > 1:
         return False
 
+    if validate_coordinate:
+        valid_params += ["lat", "long"]
+
+        if len(params.getlist("lat")) > 1:
+            return False
+
+        if len(params.getlist("long")) > 1:
+            return False
+
     params = list(params.keys())
 
     for param in params:
-        if param not in valids_params:
+        if param not in valid_params:
             return False
 
     return True

@@ -1,8 +1,8 @@
 <template >
 
-  <div style="height: auto; width: 85%; margin: 0 auto">
+  <div style="height: auto; width: 85%; margin: auto">
 
-    <br><h1> Puntos de encuentro y recorridos de evacuación </h1><br>
+    <Title> Puntos de encuentro y recorridos de evacuación </Title>
 
     <p v-if="!fetchedMeetingPoints || !fetchedEvacuationRoutes">Cargando mapa...
        <img style='height: 50px; width: 70px' src='../assets/icons/loading.gif'> </p>
@@ -193,6 +193,7 @@
 
   import { latLng } from "leaflet";
   import { LMap, LTileLayer, LMarker, LPopup, LPolyline, LIcon } from "@vue-leaflet/vue-leaflet";
+  import Title from "./Title.vue";
   
   export default {
   
@@ -204,7 +205,8 @@
       LMarker,
       LPopup,
       LPolyline,
-      LIcon
+      LIcon,
+      Title
     },
   
     data() {
@@ -353,3 +355,5 @@
   };
   
 </script>
+
+

@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Complaint from '../components/Complaint.vue'
 import MeetingPointsEvacuationRoutes from '../components/MeetingPointsEvacuationRoutes.vue'
-import FloodZones from '../components/FloodZones.vue'
+import FloodZonesAll from '../components/FloodZonesAll.vue'
+import FloodZone from '../components/FloodZone.vue'
 import Home from '../components/Home.vue'
 
 const routes = [
@@ -22,8 +23,13 @@ const routes = [
   },
   {
     path: '/zonas-inundables',
-    name: 'FloodZones',
-    component: FloodZones,
+    name: 'FloodZonesAll',
+    component: FloodZonesAll,
+  },
+  {
+    path: '/zonas-inundables/:id(\\d+)',
+    name: 'FloodZone',
+    component: FloodZone,
   },
   {
     path: '/:pathMatch(.*)*',

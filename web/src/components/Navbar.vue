@@ -41,7 +41,6 @@
           </ul>
           <div class="btn-group col-auto">
             <a
-              type="button"
               href="https://admin-grupo24.proyecto2021.linti.unlp.edu.ar/"
               target="_blank"
               class="btn button-gradient"

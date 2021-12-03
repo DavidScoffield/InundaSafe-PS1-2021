@@ -19,7 +19,7 @@
                                          meetingPoint.coordenada.long])">
                     {{ meetingPoint.nombre }}
                 </th>  
-                <td scope="row">{{ meetingPoint.direccion }}</td> 
+                <td>{{ meetingPoint.direccion }}</td> 
             </tr>
         </tbody>
     </table>

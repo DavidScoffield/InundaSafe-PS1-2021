@@ -16,7 +16,7 @@
                                          evacuationRoute.coordenadas[0].long])">
                     {{ evacuationRoute.nombre }}
                 </th>  
-                <td scope="row">{{ evacuationRoute.descripcion }}</td>
+                <td>{{ evacuationRoute.descripcion }}</td>
             </tr>
         </tbody>
     </table>

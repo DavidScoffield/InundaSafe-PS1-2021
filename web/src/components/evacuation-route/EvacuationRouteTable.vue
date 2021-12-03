@@ -12,7 +12,7 @@
         <tbody>
             <tr v-for="(evacuationRoute, index) in evacuationRoutes.recorridos" :key="index">
                 <th scope="row">{{ evacuationRoute.nombre }}</th>  
-                <th scope="row">{{ evacuationRoute.descripcion }}</th>
+                <td scope="row">{{ evacuationRoute.descripcion }}</td>
             </tr>
         </tbody>
     </table>

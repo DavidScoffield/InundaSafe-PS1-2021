@@ -27,7 +27,6 @@
                 <label class="d-flex" for="">Descripción (*) </label>
                 <textarea ref="description_error" style="resize: none" rows="3" class="form-control" maxlength= 400 v-model="descripcion" placeholder="Ingrese una descripción"></textarea>
                 <p class="d-flex" style="color:red" v-show="description_error">{{ description_error }}</p>
-                <br>
             </div>
             <div class="form-group">
                 <label class="d-flex" for="">Apellido (*) </label>
@@ -200,6 +199,74 @@ export default {
                 return false
             }
             return true
+        }
+    },
+    watch: {
+        titulo: function(){
+            if (!this.titulo){
+                this.title_error = false
+            }
+            else if(!(/^[a-zA-Z ]+$/.test(this.titulo))){
+                this.title_error = true
+            }
+            else{
+                this.title_error = false
+            }
+        },
+        descripcion: function(){
+            if (!this.descripcion){
+                this.description_error = ""
+            }
+            else if(!(/^[a-zA-Z0-9 ]+$/.test(this.descripcion))){
+                this.description_error = "La descripción no puede contener caracteres especiales, solo letras y/o números"
+            }
+            else{
+                this.description_error = ""
+            }
+        },
+        apellido_denunciante: function(){
+            if (!this.apellido_denunciante){
+                this.last_name_error = false
+            }
+            else if(!(/^[a-zA-Z ]+$/.test(this.apellido_denunciante))){
+                this.last_name_error = true
+            }
+            else{
+                this.last_name_error = false
+            }
+        },
+        nombre_denunciante: function(){
+            if (!this.nombre_denunciante){
+                this.first_name_error = false
+            }
+            else if(!(/^[a-zA-Z ]+$/.test(this.nombre_denunciante))){
+                this.first_name_error = true
+            }
+            else{
+                this.first_name_error = false
+            }
+        },
+        telcel_denunciante: function(){
+            if (!this.telcel_denunciante){
+                this.phone_error = false
+            }
+            else if(!(/^[\d]+$/.test(this.telcel_denunciante))){
+                this.phone_error = true
+            }
+            else{
+                this.phone_error = false
+            }
+        },
+        email_denunciante: function(){
+            if (!this.email_denunciante){
+                this.email_error = false
+            }
+            else if(!(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.email_denunciante))){
+                this.email_error = true
+            }
+            else{
+                this.email_error = false
+            }
         }
     }
   }

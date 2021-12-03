@@ -1,16 +1,13 @@
 <template >
 
-  <div style="height: auto; width: 85%; margin: auto" class="meetingPointEvacuationRoute">
-
-    <Title> Puntos de encuentro y recorridos de evacuación </Title>
-    <div
-      class="new-complaint <style.complaint > scoped </style.complaint { position: absolute; rigth: 0; }>"
-    >
-      <router-link class="button-gradient btn" to="/newComplaint"
-        >Nueva denuncia</router-link
-      >
+  <div style="height: auto; width: 85%; margin: auto;">
+    
+    <div class="d-flex justify-content-between">
+      <Title>Puntos de encuentro y recorridos de evacuación</Title>
+        <router-link class="button-gradient btn my-auto w-auto" style="white-space: nowrap" to="/newComplaint"
+          >Nueva denuncia</router-link
+        >
     </div>
-
     <p v-if="!fetchedMeetingPoints || !fetchedEvacuationRoutes">Cargando mapa...
        <img style='height: 50px; width: 70px' src='../assets/icons/loading.gif'> </p>
 
@@ -239,14 +236,3 @@
   };
   
 </script>
-
-<style scoped>
-.meetingPointEvacuationRoute {
-  position: relative;
-}
-.new-complaint {
-  position: absolute;
-  right: 10px;
-  top: 35px;
-}
-</style>

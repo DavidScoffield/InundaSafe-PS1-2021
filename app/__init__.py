@@ -1,5 +1,5 @@
 from os import environ
-from flask import Flask, Blueprint, request
+from flask import Flask, render_template, Blueprint
 from flask_session import Session
 from flask_bootstrap import Bootstrap
 from dotenv import load_dotenv
@@ -66,12 +66,8 @@ from flask_login import (
     login_user,
     logout_user,
 )
-
-# CORS
 from flask_cors import CORS
 
-# CORS
-from flask_wtf.csrf import CSRFProtect
 
 # ----- Logger -----
 # import logging
@@ -87,10 +83,8 @@ def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
 
-    # Cross Origin Resource Sharing (CORS) handling para las apis
-    cors = CORS(
-        app, resources={r"/api/*": {"origins": "*"}}
-    )
+    #Cross Origin Resource Sharing (CORS) handling para las apis
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # Setea bootstrap para la aplicacion
     bootstrap = Bootstrap(app)
@@ -120,10 +114,6 @@ def create_app(environment="development"):
     @login_manager.user_loader
     def load_user(user_id):
         return User.get(user_id)
-
-    # CSRF
-    csrf = CSRFProtect(app)
-    app.config["WTF_CSRF_CHECK_DEFAULT"] = False
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(
@@ -185,7 +175,7 @@ def create_app(environment="development"):
     # Rutas página evacuation routes (usando Blueprints)
     app.register_blueprint(evacuation_route)
 
-    # APIS
+    # APIS 
     api = Blueprint("api", __name__, url_prefix="/api")
     # Register of apis
     api.register_blueprint(flood_zones_api)
@@ -200,11 +190,6 @@ def create_app(environment="development"):
 
     # Rutas página followUp (usando Blueprints)
     app.register_blueprint(follow_up_route)
-
-    @app.before_request
-    def before_request():
-        if not request.path.startswith("/api/"):
-            csrf.protect()
 
     # Handlers
     app.register_error_handler(

@@ -1,30 +1,30 @@
 ### Correcto
-GET http://localhost:5000/api/denuncias HTTP/1.1
+GET https://localhost:5000/api/denuncias HTTP/1.1
 
 
 ### Correcto - Página 1
-GET http://localhost:5000/api/denuncias?pagina=1 HTTP/1.1
+GET https://localhost:5000/api/denuncias?pagina=1 HTTP/1.1
 
 
 ### Correcto - Página 2
-GET http://localhost:5000/api/denuncias?pagina=3 HTTP/1.1
+GET https://localhost:5000/api/denuncias?pagina=3 HTTP/1.1
 
 
 ### Incorrecto - La página X no tiene elementos
-GET http://localhost:5000/api/denuncias?pagina=25 HTTP/1.1
+GET https://localhost:5000/api/denuncias?pagina=25 HTTP/1.1
 
 
 ### Incorrecto - Parámetros no permitidos
-GET http://localhost:5000/api/denuncias?pagina=4&por_pagina=1 HTTP/1.1
+GET https://localhost:5000/api/denuncias?pagina=4&por_pagina=1 HTTP/1.1
 
 
 ### Incorrecto - String en página
-GET http://localhost:5000/api/denuncias?pagina=a HTTP/1.1
+GET https://localhost:5000/api/denuncias?pagina=a HTTP/1.1
 
 
 ### Incorrecto - String en página
-GET http://localhost:5000/api/denuncias?pagina=1a HTTP/1.1
+GET https://localhost:5000/api/denuncias?pagina=1a HTTP/1.1
 
 
 ### Incorrecto - Parámetro no válido
-GET http://localhost:5000/api/denuncias?page=2 HTTP/1.1
+GET https://localhost:5000/api/denuncias?page=2 HTTP/1.1

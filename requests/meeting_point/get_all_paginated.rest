@@ -1,5 +1,5 @@
 ### Correcto - 
-GET http://localhost:5000/api/puntos-encuentro HTTP/1.1
+GET https://localhost:5000/api/puntos-encuentro HTTP/1.1
 
 ### Correcto - Página 1 con cantidad de elementos de la configuración del sistema, cercanos a la coordenada latitud "3" longitud "1"
 GET https://localhost:5000/api/puntos-encuentro?lat=3&long=1 HTTP/1.1
@@ -9,31 +9,31 @@ GET https://localhost:5000/api/puntos-encuentro?pagina=2&lat=3&long=1 HTTP/1.1
 
 
 ### Correcto - Pagina 1 con cant de elementos de config del sistema
-GET http://localhost:5000/api/puntos-encuentro?pagina=1 HTTP/1.1
+GET https://localhost:5000/api/puntos-encuentro?pagina=1 HTTP/1.1
 
 
 ### Correcto - Pagina 2 con cant de elementos de config del sistema
-GET http://localhost:5000/api/puntos-encuentro?pagina=3 HTTP/1.1
+GET https://localhost:5000/api/puntos-encuentro?pagina=3 HTTP/1.1
 
 
 ### Incorrecto - Pagina X no hay elementos
-GET http://localhost:5000/api/puntos-encuentro?pagina=25 HTTP/1.1
+GET https://localhost:5000/api/puntos-encuentro?pagina=25 HTTP/1.1
 
 
 ### Incorrecto - con parametros no permitidos
-GET http://localhost:5000/api/puntos-encuentro?pagina=4&por_pagina=1 HTTP/1.1
+GET https://localhost:5000/api/puntos-encuentro?pagina=4&por_pagina=1 HTTP/1.1
 
 
 ### Incorrecto - String en pagina
-GET http://localhost:5000/api/puntos-encuentro?pagina=a HTTP/1.1
+GET https://localhost:5000/api/puntos-encuentro?pagina=a HTTP/1.1
 
 
 ### Incorrecto - String en pagina
-GET http://localhost:5000/api/puntos-encuentro?pagina=1a HTTP/1.1
+GET https://localhost:5000/api/puntos-encuentro?pagina=1a HTTP/1.1
 
 
 ### Incorrecto - Parametro no valido
-GET http://localhost:5000/api/puntos-encuentro?page=2 HTTP/1.1
+GET https://localhost:5000/api/puntos-encuentro?page=2 HTTP/1.1
 
 ### Incorrecto - Coordenada inválida
 GET https://localhost:5000/api/puntos-encuentro?lat=3&long=-900 HTTP/1.1

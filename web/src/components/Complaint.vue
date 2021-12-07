@@ -58,43 +58,9 @@
     </l-map>
 
     <!-- Barra de navegación para denuncias -->
-    <nav aria-label="Complaints page navigation" class="mt-1">
-      <ul class="pagination justify-content-center">
-        <li v-if="complaints.pagina > 1" class="page-item">
-          <button
-            class="page-link"
-            tabindex="-1"
-            @click="fetchNextPage(complaints.pagina - 1)"
-          >
-            Anterior
-          </button>
-        </li>
-        <li v-else class="page-item disabled">
-          <a class="page-link" tabindex="-1">Anterior</a>
-        </li>
-        <li
-          v-for="page in [...Array(complaints.paginas).keys()]"
-          :key="`page-${page}`"
-          class="page-item"
-          v-bind:class="{ active: complaints.pagina == page + 1 }"
-        >
-          <button class="page-link" @click="fetchNextPage(page + 1)">
-            {{ page + 1 }}
-          </button>
-        </li>
-        <li v-if="complaints.pagina < complaints.paginas" class="page-item">
-          <button
-            class="page-link"
-            @click="fetchNextPage(complaints.pagina + 1)"
-          >
-            Siguiente
-          </button>
-        </li>
-        <li v-else class="page-item disabled">
-          <a class="page-link" href="#">Siguiente</a>
-        </li>
-      </ul>
-    </nav>
+    <NavigationBar v-if="complaints.total"
+                   :items="complaints" 
+                   :fetchPage="fetchNextPage"/>
   </div>
 </template>
 
@@ -102,6 +68,7 @@
 import { latLng } from "leaflet";
 import { LMap, LTileLayer, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
 import Title from "./Title.vue";
+import NavigationBar from "./NavigationBar.vue";
 
 export default {
   name: "Complaint",
@@ -111,6 +78,7 @@ export default {
     LMarker,
     LPopup,
     Title,
+    NavigationBar
   },
   data() {
     return {

@@ -66,7 +66,12 @@ from flask_login import (
     login_user,
     logout_user,
 )
+
+# CORS
 from flask_cors import CORS
+
+# CSRF
+from flask_wtf.csrf import CSRFProtect
 
 
 # ----- Logger -----
@@ -83,11 +88,16 @@ def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
 
-    #Cross Origin Resource Sharing (CORS) handling para las apis
-    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # Cross Origin Resource Sharing (CORS) handling para las apis
+    cors = CORS(
+        app, resources={r"/api/*": {"origins": "*"}}
+    )
 
     # Setea bootstrap para la aplicacion
     bootstrap = Bootstrap(app)
+
+    # Setea csrf para la aplicacion
+    csrf = CSRFProtect(app)
 
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)

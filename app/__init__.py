@@ -175,7 +175,7 @@ def create_app(environment="development"):
     # Rutas página evacuation routes (usando Blueprints)
     app.register_blueprint(evacuation_route)
 
-    # APIS
+    # APIS 
     api = Blueprint("api", __name__, url_prefix="/api")
     # Register of apis
     api.register_blueprint(flood_zones_api)

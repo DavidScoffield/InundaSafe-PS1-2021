@@ -8,7 +8,7 @@ class Config(object):
     DB_USER = "db_user"
     DB_PASS = "db_pass"
     DB_NAME = "db_name"
-    SECRET_KEY = "secret"
+    # SECRET_KEY = "secret"
     UPLOAD_EXTENSIONS = [".csv"]
     UPLOAD_FOLDER = "app/static/uploads"
 

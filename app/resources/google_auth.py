@@ -90,6 +90,11 @@ def callback_login():
         )
         return redirect(url_for("auth_routes.auth_login"))
 
+    if user.is_deleted:
+            flash("El usuario fue eliminado",
+                   category="login_error")
+            return redirect(url_for("auth_routes.auth_login"))
+
     permisos = []
     for rol in user_logged.roles:
         for permiso in rol.permissions:

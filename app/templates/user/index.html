@@ -77,12 +77,14 @@
         <td class="text-center d-flex justify-content-center">
           {% if not helper_has_role(user.roles, "rol_administrador") %}
           <form action="{{ url_for('user.toggle_state') }}" method="POST" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <input name="user_id" type="hidden" value="{{user.id}}">
             <input name="state" type="hidden" value="{{user.active}}">
             <button class="btn button-gradient" type="submit">{{buttonText}}</button>
           </form>
           {% endif %}
           <form action="{{url_for('user.show')}}" method="post" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <input name="id_user" type="hidden" value="{{user.id}}">
             <button type="submit" class="btn button-gradient mx-1">Ver</button>
           </form>

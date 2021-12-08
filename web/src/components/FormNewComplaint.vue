@@ -2,7 +2,6 @@
     <div class="container">
         <Title>Realizar una denuncia</Title>
         <form
-            id="formulario"
             @submit="save"
             method="post"
         >

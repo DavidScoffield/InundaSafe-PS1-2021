@@ -56,7 +56,7 @@
 
             <l-map style="height: 350px" :zoom="zoom" :center="center" @click="onClickMap">
                 <l-tile-layer :url="url"></l-tile-layer>
-                <l-marker :lat-lng="coordenadas" ></l-marker>
+                <l-marker v-if="coordenadas" :lat-lng="coordenadas" ></l-marker>
             </l-map>
             <br>
             <button style="float:right" class="button-gradient btn-lg" type="submit">Aceptar</button>
@@ -146,10 +146,24 @@ export default {
             .then(() => {
                 this.$refs.title_error.focus()
                 this.is_correct = "La denuncia se creó correctamente"
+                this.cleanFormFields()
             })
             .catch(() => {
                 this.name_error = "Por favor corrija los errores"
             })
+        },
+        cleanFormFields() {
+            // resetea los campos del formulario y muestra el mensaje de éxito por 7 segundos
+
+            this.coordenadas = latLng()
+            this.titulo = ""
+            this.categoria_id = ""
+            this.descripcion = ""
+            this.apellido_denunciante = ""
+            this.nombre_denunciante = ""
+            this.telcel_denunciante = ""
+            this.email_denunciante = ""
+            setTimeout(() => this.is_correct = "", 7000)
         },
         validate(){
             if (!this.coordenadas || !this.titulo || !this.categoria_id || !this.descripcion || !this.apellido_denunciante || !this.nombre_denunciante || !this.telcel_denunciante || !this.email_denunciante){

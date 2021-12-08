@@ -14,8 +14,12 @@
 
         <tbody>
             <tr v-for="(meetingPoint, index) in meetingPoints.puntos_encuentro" :key="index">
-                <th scope="row">{{ meetingPoint.nombre }}</th>  
-                <td scope="row">{{ meetingPoint.direccion }}</td> 
+                <th scope="row" style="cursor: pointer"
+                    @click="placeMarker([meetingPoint.coordenada.lat, 
+                                         meetingPoint.coordenada.long])">
+                    {{ meetingPoint.nombre }}
+                </th>  
+                <td>{{ meetingPoint.direccion }}</td> 
             </tr>
         </tbody>
     </table>
@@ -27,7 +31,7 @@
     export default {
         name: "MeetingPointTable",
 
-        props: ["meetingPoints"]
+        props: ["meetingPoints", "placeMarker"]
     }
     
 </script>

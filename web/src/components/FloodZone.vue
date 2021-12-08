@@ -36,6 +36,11 @@
         </tbody>
       </table>
     </div>
+    <div class="container d-flex">
+      <router-link to="/zonas-inundables" class="btn button-gradient"
+        >Volver al listado</router-link
+      >
+    </div>
   </div>
 </template>
 

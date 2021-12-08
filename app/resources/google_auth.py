@@ -90,6 +90,11 @@ def callback_login():
         )
         return redirect(url_for("auth_routes.auth_login"))
 
+    if user.is_deleted:
+            flash("El usuario fue eliminado",
+                   category="login_error")
+            return redirect(url_for("auth_routes.auth_login"))
+
     permisos = []
     for rol in user_logged.roles:
         for permiso in rol.permissions:
@@ -181,6 +186,10 @@ def callback_register():
 
 
 def use_auth_google(redirect_uri: str):
+    """
+    Funcion para generar la redireccion a auth con google.
+    Dependiendo el parametro la uri de redirect sera para login o register
+    """
     client = current_app.client
     REDIRECT_URI_GOOGLE = current_app.config[redirect_uri]
 
@@ -202,6 +211,9 @@ def use_auth_google(redirect_uri: str):
 
 
 def callback_auth_google(request):
+    """
+    Funcion para procesar datos devuelto por google en el callback
+    """
     client = current_app.client
     GOOGLE_CLIENT_ID = current_app.config[
         "GOOGLE_CLIENT_ID"
@@ -257,27 +269,6 @@ def callback_auth_google(request):
             },
         )
 
-    # Chequeo de existencia de usuario
-    # stored_user = User
-
-    # # Create a user in your db with the information provided
-    # # by Google
-    # user = User(
-    #     id_=unique_id,
-    #     name=users_name,
-    #     email=users_email,
-    #     profile_pic=picture,
-    # )
-
-    # # Doesn't exist? Add it to the database.
-    # print(userinfo_response.json())
-    # if not User.get(unique_id):
-    #     User.create(
-    #         unique_id, users_name, users_email, picture
-    #     )
-
-    # Begin user session by logging the user in
-    # login_user(user)
     return userinfo_response.json()
 
 

@@ -16,21 +16,37 @@
     <p v-if="!fetchedMeetingPoints || !fetchedEvacuationRoutes">Cargando mapa...
        <img style='height: 50px; width: 70px' src='../assets/icons/loading.gif'> </p>
 
-    <l-map :zoom="zoom" :center="center" style="height: 500px">
+    <l-map style="height: 500px" :zoom="zoom" :key="map" :center="markerCoordinates ? markerCoordinates :
+                                      (userLatLong ? [userLatLong.lat, userLatLong.long] : center)" >
 
       <l-tile-layer :url="url"/>
 
       <!-- Marcador de la ubicación del usuario o ubicación por defecto -->
-      <l-marker :lat-lng="this.userLatLong ? [this.userLatLong.lat, this.userLatLong.long] : this.center">
+      <l-marker :lat-lng="userLatLong ? [userLatLong.lat, userLatLong.long] : center">
 
           <l-icon :icon-url="require('../assets/icons/initial_location.png')"
                   :icon-size="[20, 30]"/>
 
           <l-popup :options="{ maxHeight: 350 }">
-            <strong>Mi ubicación</strong> {{this.userLatLong ? "(GPS)" : "(default)"}}
+            <strong>Mi ubicación</strong> {{userLatLong ? "(GPS)" : "(default)"}}
           </l-popup>
           
       </l-marker>
+
+      <l-control position="bottomleft" >
+        <button type="button" class="btn btn-success" @click="reCenterMap()">
+          Centrar
+        </button>
+      </l-control>
+
+      <!-- Marcador para referencias  -->
+      <l-marker v-if="pendingMarkers > 0" :lat-lng="markerCoordinates">
+
+          <l-icon :icon-url="require('../assets/icons/circle.png')"
+                  :icon-size="[40, 60]"/>
+          
+      </l-marker>
+
 
       <!-- Se dibujan los puntos de encuentro -->
       <MeetingPoint v-for="(meetingPoint, index) in meetingPoints.puntos_encuentro"
@@ -53,7 +69,8 @@
 
                 <!-- Tabla de puntos de encuentro -->
                 <MeetingPointTable v-if="fetchedMeetingPoints"
-                                   :meetingPoints="meetingPoints"/><br>
+                                   :meetingPoints="meetingPoints"
+                                   :placeMarker="placeMarker"/><br>
 
                 <p v-if="!fetchedMeetingPoints">Buscando puntos de encuentro...<img style='height:50px; width:70px' src='../assets/icons/loading.gif'> </p>
 
@@ -71,7 +88,8 @@
 
                 <!-- Tabla de recorridos de evacuación -->
                 <EvacuationRouteTable v-if="fetchedEvacuationRoutes"
-                                      :evacuationRoutes="evacuationRoutes"/><br>
+                                      :evacuationRoutes="evacuationRoutes"
+                                      :placeMarker="placeMarker"/><br>
 
                 <p v-if="!fetchedEvacuationRoutes">Buscando recorridos de evacuación...<img style='height:50px; width:70px' src='../assets/icons/loading.gif'> </p>
 
@@ -93,7 +111,7 @@
 <script>
 
   import { latLng } from "leaflet";
-  import { LMap, LTileLayer, LMarker, LPopup, LIcon } from "@vue-leaflet/vue-leaflet";
+  import { LMap, LTileLayer, LMarker, LPopup, LIcon, LControl } from "@vue-leaflet/vue-leaflet";
   import Title from "./Title.vue";
   import MeetingPoint from "./meeting-point/MeetingPoint.vue";
   import MeetingPointTable from "./meeting-point/MeetingPointTable.vue";
@@ -118,7 +136,8 @@
       EvacuationRouteNavigationBar,
       LMarker,
       LPopup,
-      LIcon
+      LIcon,
+      LControl
     },
   
     data() {
@@ -126,13 +145,16 @@
         zoom: 12.5,
         center: latLng(-34.9213, -57.9545),
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        map: 0,
         meetingPoints: { puntos_encuentro : [] },
         evacuationRoutes: { recorridos : [] },
         fetchedMeetingPoints: false,
         fetchedEvacuationRoutes: false,
         userLatLong: null,
         errorMessaje: "",
-        successMessage: ""
+        successMessage: "",
+        pendingMarkers: 0,
+        markerCoordinates: null
       };
     },
   
@@ -197,14 +219,11 @@
         this.userLatLong = { lat : position.coords.latitude,
                              long : position.coords.longitude }
 
-        this.center = latLng(position.coords.latitude, 
-                             position.coords.longitude)
-
         this.fetchMeetingPointPage(1)
 
         this.successMessage = "Mostrando los puntos de encuentro más cercanos a la ubicación del usuario"
         setTimeout(() => this.successMessage = "", 10000)
-      },
+      }, 
 
       geoLocationError(error, message="", timeout=7000) {
         // función que se ejecuta en caso de que el usuario no haya aceptado
@@ -219,6 +238,21 @@
         }
 
         setTimeout(() => this.errorMessaje = "", timeout)
+      },
+
+      placeMarker(coordinates) {
+        // posiciona un marcador de referencia por 5 segundos
+
+        this.markerCoordinates = coordinates
+        this.pendingMarkers += 1
+        setTimeout(() => this.pendingMarkers -= 1, 5000)
+      },
+
+      reCenterMap() {
+        // reubica el centro del mapa
+
+        this.markerCoordinates = this.userLatLong ? [this.userLatLong.lat, this.userLatLong.long] : this.center
+        this.map += 1
       }
   
     },
@@ -241,8 +275,7 @@
         /* la geolocalización no está disponible */
         this.geoLocationError(4, "Su dispositivo no soporta la geolocalización, la ubicación por defecto es el centro de La Plata", 13000)
       }      
-    }
-  
+    },
   };
   
 </script>

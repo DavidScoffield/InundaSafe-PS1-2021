@@ -11,8 +11,12 @@
 
         <tbody>
             <tr v-for="(evacuationRoute, index) in evacuationRoutes.recorridos" :key="index">
-                <th scope="row">{{ evacuationRoute.nombre }}</th>  
-                <td scope="row">{{ evacuationRoute.descripcion }}</td>
+                <th scope="row" style="cursor: pointer"
+                    @click="placeMarker([evacuationRoute.coordenadas[0].lat, 
+                                         evacuationRoute.coordenadas[0].long])">
+                    {{ evacuationRoute.nombre }}
+                </th>  
+                <td>{{ evacuationRoute.descripcion }}</td>
             </tr>
         </tbody>
     </table>
@@ -24,7 +28,7 @@
     export default {
         name: "EvacuationRouteTable",
 
-        props: ["evacuationRoutes"]
+        props: ["evacuationRoutes", "placeMarker"]
     }
     
 </script>

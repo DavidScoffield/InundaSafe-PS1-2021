@@ -8,47 +8,46 @@
             <p class="d-flex" style="color:red" v-show="name_error">{{ name_error }}</p>
             <p class="d-flex" style="color:green" v-show="is_correct">{{ is_correct }}</p>
             <div class="form-group">
-                <label class="d-flex" for="">Título (*) </label>
-                <input ref="title_error" class="form-control" placeholder="Ingrese un título" v-model="titulo">
+                <label class="d-flex" for="titulo">Título (*) </label>
+                <input id="titulo" ref="title_error" class="form-control" placeholder="Ingrese un título" v-model="titulo">
                 <p class="d-flex" style="color:red" v-if="title_error">El título solo puede estar compuesto de letras</p>
                 <br>
             </div>
             <div class="form-group">
-                <label class="d-flex" for="">Categoría (*) </label>
-                <select ref="category_error" class="form-control" v-model="categoria_id">
+                <label class="d-flex" for="categoria">Categoría (*) </label>
+                <select id="categoria" ref="category_error" class="form-control" v-model="categoria_id">
                     <option disabled value="">Seleccione una categoría</option>
-                    <option value="2">Basural</option>
-                    <option value="1">Alcantarilla tapada</option>
+                    <option v-for="(category, index) in categories" :value="category.id" :key="index">{{category.nombre}}</option>                   
                 </select>
                 <p class="d-flex" style="color:red" v-if="category_error">La categoría es incorrecta</p>
                 <br>
             </div>
             <div class="form-group">
-                <label class="d-flex" for="">Descripción (*) </label>
-                <textarea ref="description_error" style="resize: none" rows="3" class="form-control" maxlength= 400 v-model="descripcion" placeholder="Ingrese una descripción"></textarea>
+                <label class="d-flex" for="descripcion">Descripción (*) </label>
+                <textarea id="descripcion" ref="description_error" style="resize: none" rows="3" class="form-control" maxlength= 400 v-model="descripcion" placeholder="Ingrese una descripción"></textarea>
                 <p class="d-flex" style="color:red" v-show="description_error">{{ description_error }}</p>
             </div>
             <div class="form-group">
-                <label class="d-flex" for="">Apellido (*) </label>
-                <input ref="last_name_error" class="form-control" placeholder="Ingrese un apellido" v-model="apellido_denunciante">
+                <label class="d-flex" for="apellido">Apellido (*) </label>
+                <input id="apellido" ref="last_name_error" class="form-control" placeholder="Ingrese un apellido" v-model="apellido_denunciante">
                 <p class="d-flex" style="color:red" v-if="last_name_error">El apellido solo puede estar compuesto de letras</p>
                 <br>
             </div>
             <div class="form-group">
-                <label class="d-flex" for="">Nombre (*) </label>
-                <input ref="first_name_error" class="form-control" placeholder="Ingrese un nombre" v-model="nombre_denunciante">
+                <label class="d-flex" for="nombre">Nombre (*) </label>
+                <input id="nombre" ref="first_name_error" class="form-control" placeholder="Ingrese un nombre" v-model="nombre_denunciante">
                 <p class="d-flex" style="color:red" v-if="first_name_error">El nombre solo puede estar compuesto de letras</p>
                 <br>
             </div>
             <div class="form-group">
-                <label class="d-flex" for="">Teléfono (*) </label>
-                <input ref="phone_error" class="form-control" placeholder="Ingrese un télefono" v-model="telcel_denunciante">
+                <label class="d-flex" for="telefono">Teléfono (*) </label>
+                <input id="telefono" ref="phone_error" class="form-control" placeholder="Ingrese un télefono" v-model="telcel_denunciante">
                 <p class="d-flex" style="color:red" v-if="phone_error">El teléfono solo puede estar compuesto de números</p>
                 <br>
             </div>
             <div class="form-group">
-                <label class="d-flex" for="">Email (*) </label>
-                <input ref="email_error" class="form-control" placeholder="Ingrese un email" v-model="email_denunciante">
+                <label class="d-flex" for="email">Email (*) </label>
+                <input id="email" ref="email_error" class="form-control" placeholder="Ingrese un email" v-model="email_denunciante">
                 <p class="d-flex" style="color:red" v-if="email_error">El email debe ser válido</p>
                 <br>   
             </div>     
@@ -56,26 +55,13 @@
 
             <l-map style="height: 350px" :zoom="zoom" :center="center" @click="onClickMap">
                 <l-tile-layer :url="url"></l-tile-layer>
-                <l-marker :lat-lng="coordenadas" ></l-marker>
+                <l-marker v-if="coordenadas" :lat-lng="coordenadas" ></l-marker>
             </l-map>
             <br>
             <button style="float:right" class="button-gradient btn-lg" type="submit">Aceptar</button>
         </form>
     </div>
 </template>
-<style>
-    /* Chrome, Safari, Edge, Opera */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-    }
-
-    /* Firefox */
-    input[type=number] {
-    -moz-appearance: textfield;
-    }
-</style>
 
 <script>
 import { latLng } from "leaflet";
@@ -96,6 +82,7 @@ export default {
         zoom: 13,
         center: [-34.9187, -57.956],
         coordenadas: latLng(),
+        categories: [],
         titulo: "",
         categoria_id: "",
         descripcion: "",
@@ -114,6 +101,18 @@ export default {
         email_error: false,
         };
     },
+    created(){
+        fetch("https://localhost:5000/api/categories/")
+        .then((res) => {
+            return res.json()
+        })
+        .then((resJson) =>{
+            this.categories = resJson
+        })
+        .catch(() =>{
+            console.log("catch")
+        })
+    },
     methods: {
         onClickMap(e){
             if(e.latlng){
@@ -123,6 +122,7 @@ export default {
         save(e) {
             e.preventDefault()
             this.name_error = ""
+            this.is_correct = ""
             this.title_error = false
             this.category_error = false
             this.description_error = ""
@@ -133,19 +133,18 @@ export default {
             if(!this.validate()){
                 return false
             }
-            let categoria = Number(this.categoria_id)
             let coordenadas = String(this.coordenadas.lat) + ", " + String(this.coordenadas.lng)
             let telefono = String(this.telcel_denunciante)
-            //console.log(JSON.stringify({categoria_id: this.categoria_id, coordenadas: this.coordenadas, apellido_denunciante: this.apellido_denunciante, nombre_denunciante: this.nombre_denunciante, telcel_denunciante: this.telcel_denunciante, email_denunciante: this.email_denunciante, titulo: this.titulo, descripcion: this.descripcion}))
             const requestComplaint = {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ categoria_id: categoria, coordenadas: coordenadas, apellido_denunciante: this.apellido_denunciante, nombre_denunciante: this.nombre_denunciante, telcel_denunciante: telefono, email_denunciante: this.email_denunciante, titulo: this.titulo, descripcion: this.descripcion })
+                body: JSON.stringify({ categoria_id: this.categoria_id, coordenadas: coordenadas, apellido_denunciante: this.apellido_denunciante, nombre_denunciante: this.nombre_denunciante, telcel_denunciante: telefono, email_denunciante: this.email_denunciante, titulo: this.titulo, descripcion: this.descripcion })
             };
             fetch(`${process.env.VUE_APP_BASE_URL}/denuncias/`, requestComplaint)
             .then(() => {
                 this.$refs.title_error.focus()
                 this.is_correct = "La denuncia se creó correctamente"
+                this.cleanUp()
             })
             .catch(() => {
                 this.name_error = "Por favor corrija los errores"
@@ -199,6 +198,17 @@ export default {
                 return false
             }
             return true
+        },
+        cleanUp(){
+            this.titulo = ""
+            this.categoria_id = ""
+            this.descripcion = ""
+            this.apellido_denunciante = ""
+            this.nombre_denunciante = ""
+            this.telcel_denunciante = ""
+            this.email_denunciante = ""
+            this.coordenadas = latLng()
+            setTimeout(() => this.is_correct = "", 7000)
         }
     },
     watch: {

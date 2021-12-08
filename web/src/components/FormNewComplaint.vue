@@ -102,7 +102,7 @@ export default {
         };
     },
     created(){
-        fetch("https://localhost:5000/api/categories/")
+        fetch(`${process.env.VUE_APP_BASE_URL}/categories`)
         .then((res) => {
             return res.json()
         })

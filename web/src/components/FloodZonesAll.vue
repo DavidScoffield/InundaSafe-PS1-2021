@@ -56,45 +56,9 @@
       </p>
 
       <!-- Barra de navegación  -->
-      <template v-if="emptyZones === null">
-        <nav aria-label="Pagina de navegacion para zonas inundables">
-          <ul class="pagination justify-content-center">
-            <li v-if="floodZones.pagina > 1" class="page-item">
-              <button
-                class="page-link"
-                tabindex="-1"
-                @click="fetchFloodZonesPage(floodZones.pagina - 1)"
-              >
-                Anterior
-              </button>
-            </li>
-            <li v-else class="page-item disabled">
-              <button class="page-link" tabindex="-1">Anterior</button>
-            </li>
-            <li
-              v-for="page in [...Array(floodZones.paginas).keys()]"
-              :key="`page-${page}`"
-              class="page-item"
-              v-bind:class="{ active: floodZones.pagina == page + 1 }"
-            >
-              <button class="page-link" @click="fetchFloodZonesPage(page + 1)">
-                {{ page + 1 }}
-              </button>
-            </li>
-            <li v-if="floodZones.pagina < floodZones.paginas" class="page-item">
-              <button
-                class="page-link"
-                @click="fetchFloodZonesPage(floodZones.pagina + 1)"
-              >
-                Siguiente
-              </button>
-            </li>
-            <li v-else class="page-item disabled">
-              <button class="page-link" href="#">Siguiente</button>
-            </li>
-          </ul>
-        </nav>
-      </template>
+      <NavigationBar v-if="emptyZones === null"
+                     :items="floodZones" 
+                     :fetchPage="fetchFloodZonesPage"/>
     </div>
   </div>
 </template>
@@ -104,6 +68,8 @@ import { latLng } from "leaflet";
 import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
 import ListPolygonZones from "./ListPolygonZones.vue";
 import Title from "./Title.vue";
+import NavigationBar from "./NavigationBar.vue";
+
 
 export default {
   name: "FloodZonesAll",
@@ -113,6 +79,7 @@ export default {
     LTileLayer,
     ListPolygonZones,
     Title,
+    NavigationBar
   },
 
   data() {

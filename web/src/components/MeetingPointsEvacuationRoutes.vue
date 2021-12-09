@@ -75,9 +75,9 @@
                 <p v-if="!fetchedMeetingPoints">Buscando puntos de encuentro...<img style='height:50px; width:70px' src='../assets/icons/loading.gif'> </p>
 
                 <!-- Barra de navegación para puntos de encuentro -->
-                <MeetingPointNavigationBar v-if="meetingPoints.puntos_encuentro.length"
-                                           :meetingPoints="meetingPoints"
-                                           :fetchMeetingPointPage="fetchMeetingPointPage"/>
+                <NavigationBar v-if="meetingPoints.puntos_encuentro.length"
+                               :items="meetingPoints"
+                               :fetchPage="fetchMeetingPointPage"/>
 
             </div>
 
@@ -94,9 +94,9 @@
                 <p v-if="!fetchedEvacuationRoutes">Buscando recorridos de evacuación...<img style='height:50px; width:70px' src='../assets/icons/loading.gif'> </p>
 
                 <!-- Barra de navegación para recorridos de evacuación -->
-                <EvacuationRouteNavigationBar v-if="evacuationRoutes.recorridos.length"
-                                              :evacuationRoutes="evacuationRoutes" 
-                                              :fetchEvacuationRoutePage="fetchEvacuationRoutePage"/>
+                <NavigationBar v-if="evacuationRoutes.recorridos.length"
+                               :items="evacuationRoutes" 
+                               :fetchPage="fetchEvacuationRoutePage"/>
 
             </div>
 
@@ -115,10 +115,9 @@
   import Title from "./Title.vue";
   import MeetingPoint from "./meeting-point/MeetingPoint.vue";
   import MeetingPointTable from "./meeting-point/MeetingPointTable.vue";
-  import MeetingPointNavigationBar from "./meeting-point/MeetingPointNavigationBar.vue";
   import EvacuationRoute from "./evacuation-route/EvacuationRoute.vue";
   import EvacuationRouteTable from "./evacuation-route/EvacuationRouteTable.vue";
-  import EvacuationRouteNavigationBar from "./evacuation-route/EvacuationRouteNavigationBar.vue";
+  import NavigationBar from "./NavigationBar.vue";
 
   export default {
   
@@ -130,10 +129,9 @@
       Title,
       MeetingPoint,
       MeetingPointTable,
-      MeetingPointNavigationBar,
       EvacuationRoute,
       EvacuationRouteTable,
-      EvacuationRouteNavigationBar,
+      NavigationBar,
       LMarker,
       LPopup,
       LIcon,

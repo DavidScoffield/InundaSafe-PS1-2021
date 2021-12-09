@@ -1,14 +1,14 @@
 <template>
-  <div class="container complaint mb-5">
+  <div class="complaint container d-flex" style="flex-direction:column">
+    
     <Title>Denuncias</Title>
-    <div
-      class="new-complaint <style.complaint > scoped </style.complaint { position: absolute; rigth: 0; }>"
-    >
-      <router-link class="button-gradient btn" to="/newComplaint"
-        >Nueva denuncia</router-link
-      >
+    <div class="new-complaint <style.complaint > scoped </style.complaint { position: absolute; rigth: 0; }>">
+      <router-link class="button-gradient btn" to="/newComplaint">
+        Nueva denuncia
+      </router-link>
     </div>
-    <l-map :zoom="zoom" :center="center" style="height: 80%">
+    
+    <l-map :zoom="zoom" :center="center" style="height: 500px">
       <l-tile-layer :url="url" />
       <div
         v-for="(complaint, index) in complaints.items"
@@ -18,13 +18,13 @@
           <l-popup :options="{ maxHeight: 300 }">
             <div @click="innerClick">
               <ul class="list-unstyled">
-                <li><strong>Titulo:</strong> {{ complaint.titulo }}</li>
+                <li style="overflow-wrap: break-word"><strong>Titulo:</strong> {{ complaint.titulo }}</li>
                 <li><strong>Categoría:</strong> {{ complaint.categoria }}</li>
                 <li>
                   <strong>Estado:</strong>
                   <span class="text-capitalize"> {{ complaint.estado }}</span>
                 </li>
-                <li>
+                <li style="overflow-wrap: break-word">
                   <strong>Email del denunciante:</strong>
                   {{ complaint.email_denunciante }}
                 </li>
@@ -56,6 +56,29 @@
         </l-marker>
       </div>
     </l-map>
+
+    <!-- Listado -->
+    <table v-if="complaints.items" class="table table-striped mt-1" style="table-layout:fixed;">
+      <thead>
+        <tr>
+          <th>Titulo</th>
+          <th>Categoría</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr v-for="(complaint, index) in complaints.items" :key="index">
+          <td style="overflow-wrap: break-word" scope="row">{{ complaint.titulo }}</td>  
+          <td scope="row">{{ complaint.categoria }}</td>
+          <td scope="row">{{ complaint.estado }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div v-if="emptyComplaints" class="w-100 mt-2">
+      <p> Aún no hay denuncias cargadas. </p>
+    </div>
 
     <!-- Barra de navegación para denuncias -->
     <nav aria-label="Complaints page navigation" class="mt-1">
@@ -95,6 +118,7 @@
         </li>
       </ul>
     </nav>
+
   </div>
 </template>
 
@@ -120,6 +144,7 @@ export default {
       showDescription: false,
       complaints: [],
       currentPage: 0,
+      emptyComplaints: false
     };
   },
   methods: {
@@ -133,6 +158,9 @@ export default {
         })
         .then((json) => {
           this.complaints = json;
+
+          //Si no hay denuncias seteo a True y muestra el mensaje de vacio
+          this.complaints.items.length ? this.emptyComplaints = false : this.emptyComplaints = true
         })
         .catch((e) => {
           console.log("CATCH! complaint index");

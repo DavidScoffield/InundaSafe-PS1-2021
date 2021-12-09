@@ -30,6 +30,7 @@ from app.resources.auth import auth_routes
 from app.resources.api.flood_zones import flood_zones_api
 from app.resources.api.complaint import complaint_api
 from app.resources.api.color import color_api
+from app.resources.api.categories import categories_api
 from app.resources.api.evacuation_route import (
     evacuation_route_api,
 )
@@ -183,6 +184,7 @@ def create_app(environment="development"):
     api.register_blueprint(evacuation_route_api)
     api.register_blueprint(meeting_point_api)
     api.register_blueprint(color_api)
+    api.register_blueprint(categories_api)
 
     app.register_blueprint(api)
     # Rutas página complaint (usando Blueprints)

@@ -61,6 +61,13 @@ Probando en un celular con resolucion 375 x 667 el mapa no se veia, pero por eje
 A continuacion se encuentra el acceso a la issue perteneciente a este problema. 
 https://gitlab.catedras.linti.unlp.edu.ar/proyecto2021/proyectos/grupo24/-/issues/83
 
+## Validación CSRF
+
+Detectamos un bug a la hora de realizar las validaciones de los formularios de la aplicación privada del sistema, el cuál provoca que dicha validación falle informando "The CSRF token is invalid". Este bug ocurre de forma aparentemente "aleatoria" al enviar un formulario al servidor. La función donde se arroja la excepción es llamada "[`validate_csrf`](https://flask-unchained.readthedocs.io/en/latest/_modules/flask_wtf/csrf.html)" (perteneciente a la librería [`Flask-WTF`](https://flask-wtf.readthedocs.io/en/0.15.x/)).
+
+Intentamos solucionar el problema renderizando los campos del formulario uno a uno (en lugar de de utilizar la función "render_form"), actualizando el archivo de requirements, borrando librerías que podrían llegar a tener conflictos entre sí, aumentando el tiempo de expiración del token CSRF, renderizando el token de distintas maneras (invocando los métodos "csrf_token" y "hidden_tag" del formulario, e invocando a la función "csrf_token"), pero no tuvimos éxito. Siguiendo los pasos de la [`documentación oficial`](https://flask-wtf.readthedocs.io/en/0.15.x/csrf/) tampoco pudimos solucionar el problema.
+
+Issue perteneciente a este problema: [`#87`](https://gitlab.catedras.linti.unlp.edu.ar/proyecto2021/proyectos/grupo24/-/issues/87).
 
 ## Iniciar ambiente
 

@@ -68,7 +68,7 @@ from flask_login import (
     logout_user,
 )
 from flask_cors import CORS
-
+from flask_wtf.csrf import CSRFProtect
 
 # ----- Logger -----
 # import logging
@@ -209,4 +209,6 @@ def create_app(environment="development"):
     )
     app.config["JSON_SORT_KEYS"] = False
     # Retornar la instancia de app configurada
+
+    CSRFProtect(app)
     return app

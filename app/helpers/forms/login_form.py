@@ -21,6 +21,9 @@ class LoginForm(FlaskForm):
                 message="Este campo es obligatorio"
             ),
         ],
+        render_kw={
+            "class": "form-control"
+        }
     )
 
     password = PasswordField(
@@ -37,10 +40,11 @@ class LoginForm(FlaskForm):
         render_kw={
             "pattern": "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$",
             "title": "La contraseña debe al menos 8 caracteres, una letra y un número",
-        },
+            "class": "form-control"
+        }
     )
 
     submit = SubmitField(
         "Iniciar Sesión",
-        render_kw={"class": "button-gradient"},
+        render_kw={"class": "btn button-gradient"},
     )

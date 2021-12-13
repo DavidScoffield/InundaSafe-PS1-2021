@@ -15,7 +15,7 @@
   {% endfor %}
   {% endwith %}
   {{render_form(form, action=url_for('auth_routes.auth_authenticate'), method="POST")}}
-  <!-- Login with social media -->
+  <!-- Login with social media --> 
   <hr>
   {% with messages = get_flashed_messages(category_filter=["auth_google_login"]) %}
   {% for message in messages %}

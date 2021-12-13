@@ -208,5 +208,6 @@ def create_app(environment="development"):
         500, handler.internal_server_error
     )
     app.config["JSON_SORT_KEYS"] = False
+    app.config['WTF_CSRF_TIME_LIMIT'] = 60
     # Retornar la instancia de app configurada
     return app

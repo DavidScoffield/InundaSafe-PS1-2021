@@ -90,7 +90,7 @@ def callback_login():
         )
         return redirect(url_for("auth_routes.auth_login"))
 
-    if user.is_deleted:
+    if user_logged.is_deleted:
             flash("El usuario fue eliminado",
                    category="login_error")
             return redirect(url_for("auth_routes.auth_login"))

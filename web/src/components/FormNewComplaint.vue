@@ -161,11 +161,6 @@ export default {
                 this.title_error = true
                 return false
             }
-            if(this.categoria_id != "1" && this.categoria_id != "2"){
-                this.$refs.category_error.focus()
-                this.category_error = true
-                return false
-            }
             if(!(/^[a-zA-Z0-9 ]+$/.test(this.descripcion))){
                 this.$refs.description_error.focus()
                 this.description_error = "La descripción no puede contener caracteres especiales, solo letras y/o números"

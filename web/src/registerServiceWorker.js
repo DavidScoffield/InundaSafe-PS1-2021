@@ -21,7 +21,8 @@ if (process.env.NODE_ENV === 'production') {
     },
     updated(registration) {
       console.log('New content is available; please refresh.')
-      let confirmationResult = confirm('New content found! Do you want to reload the app?')
+
+      let confirmationResult = confirm('Nuevo contenido encontrado! Quiere recargar la aplicación?')
       if (confirmationResult) registration.waiting.postMessage({ action: 'skipWaiting' })
     },
     offline() {

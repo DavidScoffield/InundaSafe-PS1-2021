@@ -12,6 +12,7 @@
           cuanto antes.
         </p>
       </div>
+      <InstallButton />
     </div>
 
     <hr class="my-4" />
@@ -38,7 +39,9 @@
                 </p>
               </div>
             </router-link>
-            <router-link class="button-gradient btn w-50 mx-auto my-1" to="/newComplaint"
+            <router-link
+              class="button-gradient btn w-50 mx-auto my-1"
+              to="/newComplaint"
               >Nueva denuncia</router-link
             >
           </div>
@@ -101,8 +104,15 @@
 import imagenRecorridos from "../assets/icons/recorridos_y_puntos3.png";
 import imagenZonasInundables from "../assets/icons/zonas_inundables_sin_texto.png";
 import imagenDenuncias from "../assets/icons/Denuncias.png";
+import InstallButton from "../components/InstallButton.vue";
 
 export default {
+  name: "Home",
+
+  components: {
+    InstallButton,
+  },
+
   data() {
     return {
       imagenRecorridos: imagenRecorridos,
@@ -114,7 +124,6 @@ export default {
 </script>
 
 <style scoped>
-
 .welcome {
   padding-top: 30px;
   padding-bottom: 30px;

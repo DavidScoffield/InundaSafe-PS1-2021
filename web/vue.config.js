@@ -2,7 +2,7 @@ module.exports = {
   // ...other vue-cli plugin options...
   pwa: {
     name: 'InundaSafe App',
-    themeColor: '#4da4ba',
+    themeColor: '#fff',
     msTileColor: '#000000',
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',

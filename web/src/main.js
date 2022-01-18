@@ -8,5 +8,6 @@ import '@popperjs/core'
 import 'bootstrap/dist/js/bootstrap.bundle'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap'
+import './registerServiceWorker'
 
 createApp(App).use(router).mount('#app')

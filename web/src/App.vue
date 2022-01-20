@@ -27,6 +27,7 @@ export default {
     };
   },
   created() {
+    console.log("App created");
     fetch(`${process.env.VUE_APP_BASE_URL}/colors`)
       .then((response) => {
         //let myRules = document.styleSheets[4].cssRules; //nuestra hoja de estilos personalizada (button-gradient, ...)

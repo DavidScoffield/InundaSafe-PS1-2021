@@ -1,6 +1,5 @@
 from . import BaseTestClass
 from app.models.user import User
-from app import create_app
 from app.db import db
 
 class TestUserMethods(BaseTestClass):
@@ -9,8 +8,8 @@ class TestUserMethods(BaseTestClass):
         """
         Crea algunos usuarios para hacer los tests
         """
-        
-        self.app = create_app()
+
+        super().setUp()
         with self.app.app_context():
             db.create_all()
             new_user = User("admin@gmail.com", "administrador", "Admin123", "Cosme", "Fulanito", 1, 0, 0)

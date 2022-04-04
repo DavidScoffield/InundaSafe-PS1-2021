@@ -11,7 +11,6 @@ class TestUserMethods(BaseTestClass):
 
         super().setUp()
         with self.app.app_context():
-            db.create_all()
             new_user = User("admin@gmail.com", "administrador", "Admin123", "Cosme", "Fulanito", 1, 0, 0)
             db.session.add(new_user)
             new_user = User("ron@gmail.com", "operador1", "Operador123", "Ron", "Perez", 1, 0, 0)

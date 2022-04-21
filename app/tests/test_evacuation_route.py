@@ -33,7 +33,7 @@ class TestEvacuationRouteMethods(BaseTestClass):
             self.assertEqual(recorridos[1], EvacuationRoute.query.get(3))
 
             config = Configuration.query.get(1)
-            config.update('50', 'desc', 1, 1)
+            config.update(50, 'desc', 1, 1)
             
             recorridos = EvacuationRoute.all().items
 
@@ -41,7 +41,7 @@ class TestEvacuationRouteMethods(BaseTestClass):
             self.assertEqual(recorridos[0], EvacuationRoute.query.get(3))
             self.assertEqual(recorridos[1], EvacuationRoute.query.get(1))
 
-            config.update('1', 'desc', 1, 1)
+            config.update(1, 'desc', 1, 1)
 
             recorridos = EvacuationRoute.all(page = 1).items
 
@@ -78,16 +78,34 @@ class TestEvacuationRouteMethods(BaseTestClass):
         """
         
         with self.app.app_context():
-            pass
+            config = Configuration.query.get(1)
+            recorridos = EvacuationRoute.query.all()
 
-    def test_paginate(self):
-        """
-        Se verifica que se retorne una lista de recorridos paginados en base a la cantidad máxima 
-        de páginas configurada en el sistema
-        """
+            publicados = EvacuationRoute.search(page_number = 1, name = "Ejemplo", state = "publicated").items
 
-        with self.app.app_context():
-            pass
+            self.assertEqual(len(publicados), 2)
+            self.assertEqual(publicados[0], recorridos[0])
+            self.assertEqual(publicados[1], recorridos[2])
+
+            publicados = EvacuationRoute.search(page_number = 2, name = "Ejemplo", state = "publicated").items
+
+            self.assertEqual(len(publicados), 0)
+
+            config.update(1, 'desc', 1, 1)
+
+            publicados = EvacuationRoute.search(page_number = 1, name = "Ejemplo", state = "publicated").items
+
+            self.assertEqual(len(publicados), 1)
+            self.assertEqual(publicados[0], recorridos[2])
+
+            publicados = EvacuationRoute.search(page_number = 2, name = "Ejemplo", state = "publicated").items
+
+            self.assertEqual(len(publicados), 1)
+            self.assertEqual(publicados[0], recorridos[0])
+
+            publicados = EvacuationRoute.search(page_number = 1, name = "Ejemplo1", state = "despublicated").items
+
+            self.assertEqual(len(publicados), 0)
 
     def test_new(self):
         """

@@ -11,7 +11,7 @@ class BaseTestClass(unittest.TestCase):
         Crea la aplicación y datos iniciales para comenzar a hacer pruebas
         """
 
-        self.app = create_app()
+        self.app = create_app(environment = "test")
         with self.app.app_context():
             db.create_all()
             color = Color('#00D9F5','#00F5A0','#C6FCE5','#63FFC2','#F5FFFD')

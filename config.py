@@ -62,8 +62,6 @@ class DevelopmentConfig(Config):
     REDIRECT_LOGIN_URI_GOOGLE = "https://127.0.0.1:5000/auth/google/iniciar_sesion/callback"
     REDIRECT_REGISTER_URI_GOOGLE = "https://127.0.0.1:5000/auth/google/registro/callback"
 
-    print("ESTO0", SQLALCHEMY_DATABASE_URI)
-
 
 class TestingConfig(Config):
     """Testing configuration."""

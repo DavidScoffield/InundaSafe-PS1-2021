@@ -6,12 +6,14 @@ from app.models.colors import Color
 
 class BaseTestClass(unittest.TestCase):
 
+    app = create_app(environment = "test")
+
     def setUp(self):
         """
-        Crea la aplicación y datos iniciales para comenzar a hacer pruebas
+        Datos iniciales para comenzar a hacer pruebas
         """
-
-        self.app = create_app(environment = "test")
+        
+        self.app = BaseTestClass.app
         with self.app.app_context():
             db.create_all()
             color = Color('#00D9F5','#00F5A0','#C6FCE5','#63FFC2','#F5FFFD')

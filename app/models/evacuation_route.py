@@ -3,7 +3,6 @@ from app.helpers.config import actual_config
 from sqlalchemy.orm import relationship
 from app.models.coordinate import Coordinate
 
-
 class EvacuationRoute(db.Model):
     """Modelo para el manejo de la tabla EvacuationRoute de la base de datos"""
 
@@ -43,6 +42,8 @@ class EvacuationRoute(db.Model):
 
         ac = actual_config()
         order = ac.order_by
+        if not per_page:
+            per_page = ac.elements_quantity
 
         return (
             cls.query.filter(cls.state == "publicated")

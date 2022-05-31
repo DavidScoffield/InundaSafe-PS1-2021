@@ -1,5 +1,8 @@
 from os import environ, urandom
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Config(object):
     """Base configuration."""
@@ -65,10 +68,13 @@ class TestingConfig(Config):
 
     TESTING = True
     DB_HOST = environ.get("DB_HOST", "localhost")
-    DB_USER = environ.get("DB_USER", "MY_DB_USER")
-    DB_PASS = environ.get("DB_PASS", "MY_DB_PASS")
-    DB_NAME = environ.get("DB_NAME", "MY_DB_NAME")
+    DB_USER = environ.get("DB_USER", "grupo24")
+    DB_PASS = environ.get("DB_PASS", "M2MzZjBlMzZlOWRj")
+    DB_NAME = environ.get("DB_NAME", "grupo24tests")
+    DB_PORT = environ.get("DB_PORT", "3306")
 
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 config = dict(
     development=DevelopmentConfig,

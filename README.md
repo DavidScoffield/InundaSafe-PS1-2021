@@ -11,54 +11,58 @@ Aplicación para el trabajo integrador para la materia de Proyecto de Software d
   - Email: ron@gmail.com
   - Contraseña: Operador123
 
-
 ## APIs:
 
-- Zonas Inundables:    
-----------
-  **/api/zonas-inundables**  
- 
-  @param: **pagina** -> int  
-  @param: **por_pagina** -> int
+- Zonas Inundables:
 
-  Ejemplos:
+---
 
-  * [localhost/servidor]/api/zonas-inundables
-  * [localhost/servidor]/api/zonas-inundables?pagina=2
-  * [localhost/servidor]/api/zonas-inundables?por_pagina=15
-  * [localhost/servidor]/api/zonas-inundables?pagina=5&por_pagina=6  
-  *Ver mas ejemplos en el archivo /request/flood_zones/get_all_paginated.rest*
+**/api/zonas-inundables**
 
-----------
-      
-  **/api/zonas-inundables/:id**  
- 
-  Ejemplos:
+@param: **pagina** -> int  
+ @param: **por_pagina** -> int
 
-  * [localhost/servidor]/api/zonas-inundables/6
-  * [localhost/servidor]/api/zonas-inundables/6a
-  *Ver mas ejemplos en el archivo /request/flood_zones/get_by_id.rest*
- 
------------
+Ejemplos:
 
-- Denuncias:    
+- [localhost/servidor]/api/zonas-inundables
+- [localhost/servidor]/api/zonas-inundables?pagina=2
+- [localhost/servidor]/api/zonas-inundables?por_pagina=15
+- [localhost/servidor]/api/zonas-inundables?pagina=5&por*pagina=6  
+  \_Ver mas ejemplos en el archivo /request/flood_zones/get_all_paginated.rest*
 
-----------
-  **/api/denuncias**
+---
 
-  * [localhost/servidor]/api/denuncias/
+**/api/zonas-inundables/:id**
 
-  Realiza la creación de una denuncia en base a los parámetros recibidos por post.
+Ejemplos:
 
-  *Ver ejemplos en el archivo /request/complaints/create.md*
+- [localhost/servidor]/api/zonas-inundables/6
+- [localhost/servidor]/api/zonas-inundables/6a
+  _Ver mas ejemplos en el archivo /request/flood_zones/get_by_id.rest_
+
+---
+
+- Denuncias:
+
+---
+
+**/api/denuncias**
+
+- [localhost/servidor]/api/denuncias/
+
+Realiza la creación de una denuncia en base a los parámetros recibidos por post.
+
+_Ver ejemplos en el archivo /request/complaints/create.md_
 
 ## Comentarios sobre Mapa
-- Hemos encontrado un bug en los **mapas de zonas inundables**, en donde en algunos telefonos celulares el mismo no se muestra, mientras que en otros si. En base a la informacion recolectada, concluimos que sea algun tipo de bug con el pluggin `Draw de Leaflet` incorporado para la implementacion del mismo. En navegadores web por su parte, en cualquier tipo de resolucion el mismo funciona correctamente. 
+
+- Hemos encontrado un bug en los **mapas de zonas inundables**, en donde en algunos telefonos celulares el mismo no se muestra, mientras que en otros si. En base a la informacion recolectada, concluimos que sea algun tipo de bug con el pluggin `Draw de Leaflet` incorporado para la implementacion del mismo. En navegadores web por su parte, en cualquier tipo de resolucion el mismo funciona correctamente.
 
 #### Resoluciones
+
 Probando en un celular con resolucion 375 x 667 el mapa no se veia, pero por ejemplo en un celcular de 5,5" el mismo si podia verse. Intentanto con distintos modelos con distintas resoluciones, en algunos se veia mientras que en otros no.
 
-A continuacion se encuentra el acceso a la issue perteneciente a este problema. 
+A continuacion se encuentra el acceso a la issue perteneciente a este problema.
 https://gitlab.catedras.linti.unlp.edu.ar/proyecto2021/proyectos/grupo24/-/issues/83
 
 ## Validación CSRF
@@ -105,3 +109,12 @@ templates         # Módulo con los templates
 db.py             # Instancia de base de datos
 __init__.py       # Instancia de la aplicación y ruteo
 ```
+
+## TESTING
+
+- Tener creada la base de datos "_grupo24tests_"
+- Ejecutar siguiente comando para correr los tests:
+
+  ```
+  python -m unittest
+  ```

@@ -114,7 +114,7 @@ __init__.py       # Instancia de la aplicación y ruteo
 
 Pasos para ejecutar los tests:
 
-- Crear una base de datos con el nombre "_grupo24tests_". Las credenciales que se utilizarán para la conexión se encuentran especificadas en el archivo “config.py”, en la definición de la clase “[`TestingConfig`](https://gitlab.catedras.linti.unlp.edu.ar/proyecto2021/proyectos/grupo24/-/blob/master/config.py#L66)“. Allí se debe modificar "grupo24" y "M2MzZjBlMzZlOWRj" por el usuario y contraseña, respectivamente, de la base de datos a utilizar.
+- Crear una base de datos con el nombre "_grupo24tests_". Las credenciales que se utilizarán para la conexión se encuentran especificadas en el archivo “config.py”, en la definición de la clase “[`TestingConfig`](https://gitlab.catedras.linti.unlp.edu.ar/proyecto2021/proyectos/grupo24/-/blob/master/config.py#L66)“. Allí se debe reemplazar "grupo24" y "M2MzZjBlMzZlOWRj" por el usuario y contraseña, respectivamente, de la base de datos a utilizar.
   
 - Ejecutar el siguiente comando desde la raíz del proyecto:
 
